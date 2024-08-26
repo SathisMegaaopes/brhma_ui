@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "brhma_normal";  
+  src: local("palatinolinotype"),
+    url("./fonts/palatinolinotype.ttf") format("truetype");
+} 
+
+.important{
+  width: 1000px;
+}
