@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Drawer, TextField, MenuItem, Button, Typography, FormControl, InputLabel, Select, Box
 } from '@mui/material';
@@ -6,29 +6,10 @@ import TaskTimingPicker from './time';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-// import Datetime from 'react-datetime';
+import URL from "../Global/Utils/url_route.js";
+import axios from "axios"
 
 const drawerWidth = 600;
-
-
-const Department = [
-    { id: '1', name: 'Software Development' },
-    { id: '2', name: 'IT support Helpdesk' },
-    { id: '3', name: 'HR Executive' },
-    { id: '4', name: 'Front desk' },
-    { id: '5', name: 'Admin & Facility' },
-    { id: '6', name: 'Business Development' },
-]
-
-const Teams = [
-    { id: '1', name: 'One' },
-    { id: '2', name: 'Two' },
-    { id: '3', name: 'Three' },
-    { id: '4', name: 'Four' },
-    { id: '5', name: 'Five' },
-    { id: '6', name: 'Six' },
-    { id: '7', name: 'Seven' }
-]
 
 const Assgine = [
     { id: '1', name: 'Sathis kumar R' },
@@ -41,12 +22,66 @@ const Assgine = [
 
 const AddTodo = ({ value }) => {
 
-    console.log(value, 'important one buddy')
-    const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
+    const [departments, setDepartments] = useState([]);
 
-    // if(value === 1){
-    //     const state 
-    // }
+    const [departid, setdepartid] = useState(null);
+
+    const [Teams, setTeams] = useState([]);
+
+    const [teamID, setteamID] = useState(null);
+
+    const [employee, setEmployee] = useState([])
+
+    useEffect(() => {
+
+        let url = `${URL}todolist/department`
+
+        axios.get(url)
+            .then((response) => {
+                setDepartments(response.data.data)
+            })
+            .catch();
+
+    }, [])
+
+
+    useEffect(() => {
+
+        let url = `${URL}todolist/teams`;
+        axios.get(url, {
+            params: {
+                id: departid
+            }
+        })
+            .then((response) => {
+                setTeams(response.data.data)
+            })
+            .catch();
+
+    }, [departid])
+
+
+
+    useEffect(() => {
+
+        let url = `${URL}todolist/employee`;
+        axios.get(url, {
+            params: {
+                id: teamID
+            }
+        })
+            .then((response) => {
+                setEmployee(response.data.data)
+            })
+            .catch();
+
+        console.log(employee, 'emlpoyeeDetails')
+
+    }, [teamID])
+
+
+
+    const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
 
     const [formState, setFormState] = useState({
         name: '',
@@ -58,13 +93,9 @@ const AddTodo = ({ value }) => {
         endDateTime: dayjs().add(1, 'hour')
     });
 
-
-
     const AuthorizedPerson = userinfo.user_role
 
-
     const [open, setOpen] = useState(false);
-
 
 
     const toggleDrawer = () => {
@@ -77,6 +108,17 @@ const AddTodo = ({ value }) => {
             ...prevState,
             [name]: value
         }));
+
+        if (name === 'department') {
+            const departmentlist = departments.filter((item) => item.name === value)
+            setdepartid(departmentlist[0].id);
+        }
+
+        if (name === 'team') {
+            const teamlist = Teams.filter((item) => item.name === value)
+            setteamID(teamlist[0].id)
+        }
+
     };
 
     const handleDateChange = (name, newValue) => {
@@ -101,60 +143,87 @@ const AddTodo = ({ value }) => {
         diff -= minutes * (1000 * 60);
         const seconds = Math.floor(diff / 1000);
 
-        return {
-            hours,
-            minutes,
-            seconds
-        };
-    }
+        const final = `${hours}-${minutes}-${seconds}`
 
+        // return {
+        //     hours,
+        //     minutes,
+        //     seconds
+        // };
+
+        return final;
+
+    }
 
     const isFormIncomplete = () => {
         return Object.values(formState).some(value => value === '' || value === null);
     };
 
-    const handleSend = () => {
-        // try {
-        //     const response = await axios.post('', formState);
+    const handleSend = async () => {
 
-        //     if (response.status === 200) {
-        //         setFormState({
-        //             name: '',
-        //             description: '',
-        //             department: '',
-        //             team: '',
-        //             assignee: '',
-        //             tat: '',
-        //         });
-        //         toggleDrawer();
-        //     } else {
-        //         console.error('Failed to save data');
-        //     }
-        // } catch (error) {
-        //     console.error('Error saving data:', error);
+        let url = `${URL}todolist`;
+
+        const userID = userinfo.user_name
+
+        const status = 0;
+
+        const tatValue = calculateTimeDifference(formState.startDateTime, formState.endDateTime);
+
+        console.log(tatValue, 'this is the tatValue for the my task')
+
+        // if (formState.startDateTime && formState.endDateTime) {
+        //     const difference = calculateTimeDifference(formState.startDateTime, formState.endDateTime);
+        //     console.log(difference, 'so much important sathis ')
         // }
-        // console.log(formState, '34343434343')
-        // console.log(formState.startDateTime)
-        // console.log(formState.endDateTime)
 
-        if (formState.startDateTime && formState.endDateTime) {
-            const difference = calculateTimeDifference(formState.startDateTime, formState.endDateTime);
-            console.log(difference, 'so much important sathis ')
+
+        try {
+            const response = await axios.post(url, { formState, tatValue, userID, status });
+            console.log(response)
+
+        } catch (error) {
+
+            console.error('Error saving data:', error);
+
+        } finally {
+            toggleDrawer();
+
+            setFormState({
+                name: '',
+                description: '',
+                department: value === '1' ? userinfo.user_role : '',
+                team: value === '1' ? userinfo.user_role : '',
+                assignee: value === '1' ? userinfo.user_name : '',
+                startDateTime: dayjs(new Date()),
+                endDateTime: dayjs().add(1, 'hour'),
+            });
+
+
         }
 
-        console.log(formState, 'state action must be seen')
 
-        setFormState({
-            name: '',
-            description: '',
-            department: '',
-            team: '',
-            assignee: '',
-            startDateTime: dayjs(new Date()),
-            endDateTime: dayjs().add(1, 'hour')
-        });
 
-        toggleDrawer();
+        // if (response.status === 200) {
+        //     setFormState({
+        //         name: '',
+        //         description: '',
+        //         department: '',
+        //         team: '',
+        //         assignee: '',
+        //         tat: '',
+        //     });
+        //     toggleDrawer();
+        // } else {
+        //     console.error('Failed to save data');
+        // }
+
+
+
+
+
+        // task_name , task_description , task_dept , task_team , task_assignee , status , tat , created_by , created_at ;
+
+        // console.log(formState, 'state action must be seen')
 
     };
 
@@ -202,8 +271,8 @@ const AddTodo = ({ value }) => {
                                     onChange={handleChange}
                                     label="Department"
                                 >
-                                    {Department.map((item) => (
-                                        <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>
+                                    {departments.map((item) => (
+                                        <MenuItem key={item.id} value={item.name}>{item.name}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
@@ -217,7 +286,7 @@ const AddTodo = ({ value }) => {
                                     label="Team"
                                 >
                                     {Teams.map((items) => (
-                                        <MenuItem key={items.name} value={items.name}>{items.name}</MenuItem>
+                                        <MenuItem key={items.id} value={items.name}>{items.name}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
@@ -231,9 +300,16 @@ const AddTodo = ({ value }) => {
                                     onChange={handleChange}
                                     label="Assignee"
                                 >
-                                    {Assgine.map((item) => (
-                                        <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>
-                                    ))}
+                                    {/* {employee.map((item) => (
+                                        <MenuItem key={item.id} value={item.f_name}>{item.f_name}</MenuItem>
+                                    ))} */}
+                                    {employee.length > 0 ? (
+                                        employee.map((item) => (
+                                            <MenuItem key={item.id} value={item.f_name}>{item.f_name}</MenuItem>
+                                        ))
+                                    ) : (
+                                        <MenuItem disabled>No employees available</MenuItem>
+                                    )}
                                 </Select>
                             </FormControl>
                         </>

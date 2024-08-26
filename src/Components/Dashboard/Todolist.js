@@ -37,7 +37,9 @@ const Todolist = () => {
 
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
 
-    const tat = 2
+    const username = userinfo.user_name;
+
+    const tat = 2;
 
     const [todoList, setTodoList] = useState([])
 
@@ -65,11 +67,14 @@ const Todolist = () => {
 
         let url = URL + "todolist"
 
-        axios.get(url)
+        axios.get(url, {
+            params: {
+                id: username
+            }
+        })
             .then((response) => {
                 // console.log(response.data.status)
                 if (response.data.status === 1) {
-                    console.log(response.data.data.todolist)
                     setTodoList(response.data.data.todolist)
                 } else {
                     console.log("ERROR : ", JSON.stringify(response.message));
@@ -246,7 +251,7 @@ const Todolist = () => {
         }
     }
 
-    console.log(selectedTask, 'important one')
+    // console.log(typeof(todoList[0].tat), 'The whole tasks..')
 
     return (
         <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
@@ -372,7 +377,7 @@ const Todolist = () => {
                                                     <TimelapseSharpIcon />
                                                 </>
                                                 <>
-                                                    {formatTime(timeLeft)}
+                                                    {formatTime(tat)}
                                                 </>
                                             </div>
 
@@ -401,7 +406,7 @@ const Todolist = () => {
                                 </TableCell>
                                 {userinfo.user_role === 1 ?
                                     <TableCell sx={{ padding: '0px', textAlign: 'right' }}>
-                                        <AddTodo value='2'/>
+                                        <AddTodo value='2' />
                                     </TableCell>
                                     :
                                     <TableCell sx={{ padding: '4px', textAlign: 'right' }}>
