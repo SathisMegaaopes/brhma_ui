@@ -8,19 +8,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import URL from "../Global/Utils/url_route.js";
 import axios from "axios"
+import SuccessFailureModal from './successfailuremodal.js';
 
 const drawerWidth = 600;
 
-const Assgine = [
-    { id: '1', name: 'Sathis kumar R' },
-    { id: '2', name: 'Rohit V' },
-    { id: '3', name: 'Siddhalingaiyah' },
-    { id: '4', name: 'Suresh' },
-    { id: '5', name: 'Dilip' },
-    { id: '6', name: 'Sampath' },
-]
 
 const AddTodo = ({ value }) => {
+
+    const importantValue = value;
 
     const [departments, setDepartments] = useState([]);
 
@@ -31,6 +26,67 @@ const AddTodo = ({ value }) => {
     const [teamID, setteamID] = useState(null);
 
     const [employee, setEmployee] = useState([])
+
+    const [employeeID, setEmployeeID] = useState(null)
+
+    const [openModal, setOpenModal] = useState(false)
+
+    const [addtskstatus, setaddtaskstats] = useState(null)
+
+    const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
+
+    const [formState, setFormState] = useState({
+        name: '',
+        description: '',
+        department: value === '1' ? userinfo.user_role : '',
+        team: value === '1' ? userinfo.user_role : '',
+        assignee: value === '1' ? userinfo.user_name : '',
+        startDateTime: dayjs(),
+        endDateTime: dayjs().add(1, 'hour')
+    });
+
+
+    useEffect(() => {
+        let url = `${URL}todolist/employee`;
+        axios.get(url, {
+            params: {
+                id: teamID
+            }
+        })
+            .then((response) => {
+                const fetchedEmployees = response.data.data;
+
+                setEmployee(fetchedEmployees);
+                console.log(fetchedEmployees);
+
+                if (importantValue === '1') {
+                    const getLoggedUserDetails = fetchedEmployees.find((item) => item["Emp ID"] === userinfo.user_details.emp_id);
+
+                    if (getLoggedUserDetails) {
+                        console.log('this is executed');
+
+                        setdepartid(getLoggedUserDetails.Department);
+                        setteamID(getLoggedUserDetails.Team);
+                        setEmployeeID(getLoggedUserDetails["Emp ID"]);
+
+                        setFormState((prevState) => ({
+                            ...prevState,
+                            department: getLoggedUserDetails.Department,
+                            team: getLoggedUserDetails.Team,
+                            assignee: getLoggedUserDetails["Emp ID"]
+                        }));
+                    }
+                }
+
+                console.log(formState);
+            })
+            .catch((error) => {
+                console.error('Error fetching employee data:', error);
+            });
+
+
+    }, [teamID])
+
 
     useEffect(() => {
 
@@ -61,53 +117,26 @@ const AddTodo = ({ value }) => {
     }, [departid])
 
 
-
-    useEffect(() => {
-
-        let url = `${URL}todolist/employee`;
-        axios.get(url, {
-            params: {
-                id: teamID
-            }
-        })
-            .then((response) => {
-                setEmployee(response.data.data)
-            })
-            .catch();
-
-        console.log(employee, 'emlpoyeeDetails')
-
-    }, [teamID])
-
-
-
-    const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
-
-    const [formState, setFormState] = useState({
-        name: '',
-        description: '',
-        department: value === '1' ? userinfo.user_role : '',
-        team: value === '1' ? userinfo.user_role : '',
-        assignee: value === '1' ? userinfo.user_name : '',
-        startDateTime: dayjs(),
-        endDateTime: dayjs().add(1, 'hour')
-    });
-
     const AuthorizedPerson = userinfo.user_role
 
     const [open, setOpen] = useState(false);
 
+    const handleCloseModal = () => {
+        setOpenModal(!openModal)
+    }
 
     const toggleDrawer = () => {
         setOpen(!open);
     };
 
     const handleChange = (event) => {
+
         const { name, value } = event.target;
         setFormState(prevState => ({
             ...prevState,
             [name]: value
         }));
+
 
         if (name === 'department') {
             const departmentlist = departments.filter((item) => item.name === value)
@@ -119,6 +148,11 @@ const AddTodo = ({ value }) => {
             setteamID(teamlist[0].id)
         }
 
+        if (name === 'assignee') {
+            const employeelist = employee.filter((item) => item.f_name === value)
+            setEmployeeID(employeelist[0]["Emp ID"])
+        }
+
     };
 
     const handleDateChange = (name, newValue) => {
@@ -127,8 +161,6 @@ const AddTodo = ({ value }) => {
             [name]: newValue
         }));
     };
-
-
 
 
     function calculateTimeDifference(startTime, endTime) {
@@ -164,22 +196,16 @@ const AddTodo = ({ value }) => {
         let url = `${URL}todolist`;
 
         const userID = userinfo.user_name
-
         const status = 0;
-
         const tatValue = calculateTimeDifference(formState.startDateTime, formState.endDateTime);
-
-        console.log(tatValue, 'this is the tatValue for the my task')
-
-        // if (formState.startDateTime && formState.endDateTime) {
-        //     const difference = calculateTimeDifference(formState.startDateTime, formState.endDateTime);
-        //     console.log(difference, 'so much important sathis ')
-        // }
-
+        const taskname = formState.name;
+        const taskdes = formState.description;
 
         try {
-            const response = await axios.post(url, { formState, tatValue, userID, status });
-            console.log(response)
+            const response = await axios.post(url, { taskname, taskdes, departid, teamID, employeeID, status, tatValue, userID });
+            // console.log(response.data.status,'response important')
+            setaddtaskstats(response.data.status)
+            setOpenModal(true)
 
         } catch (error) {
 
@@ -200,35 +226,21 @@ const AddTodo = ({ value }) => {
 
 
         }
-
-
-
-        // if (response.status === 200) {
-        //     setFormState({
-        //         name: '',
-        //         description: '',
-        //         department: '',
-        //         team: '',
-        //         assignee: '',
-        //         tat: '',
-        //     });
-        //     toggleDrawer();
-        // } else {
-        //     console.error('Failed to save data');
-        // }
-
-
-
-
-
         // task_name , task_description , task_dept , task_team , task_assignee , status , tat , created_by , created_at ;
-
-        // console.log(formState, 'state action must be seen')
 
     };
 
     return (
         <>
+            <SuccessFailureModal 
+            open={openModal} 
+            handleClose={handleCloseModal} 
+            status={addtskstatus} 
+            successmsg={"Task added Successfully"}
+            errormsg={"Something went wrong, Please try again !"}
+
+            />
+
             <Button variant="text" onClick={toggleDrawer} sx={{ fontSize: 'xs' }}>Add Task</Button>
             <Drawer
                 anchor="right"
@@ -291,7 +303,6 @@ const AddTodo = ({ value }) => {
                                 </Select>
                             </FormControl>
 
-
                             <FormControl fullWidth margin="normal">
                                 <InputLabel>Assignee</InputLabel>
                                 <Select
@@ -300,9 +311,6 @@ const AddTodo = ({ value }) => {
                                     onChange={handleChange}
                                     label="Assignee"
                                 >
-                                    {/* {employee.map((item) => (
-                                        <MenuItem key={item.id} value={item.f_name}>{item.f_name}</MenuItem>
-                                    ))} */}
                                     {employee.length > 0 ? (
                                         employee.map((item) => (
                                             <MenuItem key={item.id} value={item.f_name}>{item.f_name}</MenuItem>
@@ -337,7 +345,6 @@ const AddTodo = ({ value }) => {
                             Cancel
                         </Button>
                         <Button variant="contained" onClick={handleSend} disabled={isFormIncomplete()}>
-                            {/* <Button variant="contained" onClick={handleSend}> */}
                             Submit
                         </Button>
                     </Box>
@@ -346,117 +353,6 @@ const AddTodo = ({ value }) => {
         </>
     );
 
-
-    // return (
-    //     <>
-    //         <Button variant="contained" onClick={toggleDrawer}>Add Todo</Button>
-    //         <Drawer
-    //             anchor="right"
-    //             open={open}
-    //             onClose={toggleDrawer}
-    //             sx={{ width: drawerWidth, flexShrink: 0 }}
-    //         >
-    //             <Box
-    //                 sx={{ width: drawerWidth, p: 5, marginTop: 4 }}
-    //                 role="presentation"
-    //             >
-    //                 <Typography variant="h6" gutterBottom>
-    //                     Task
-    //                 </Typography>
-    //                 <TextField
-    //                     fullWidth
-    //                     label="Name"
-    //                     name="name"
-    //                     value={formState.name}
-    //                     onChange={handleChange}
-    //                     margin="normal"
-    //                 />
-    //                 <TextField
-    //                     fullWidth
-    //                     label="Description"
-    //                     name="description"
-    //                     value={formState.description}
-    //                     onChange={handleChange}
-    //                     multiline
-    //                     rows={4}
-    //                     margin="normal"
-    //                 />
-    //                 <FormControl fullWidth margin="normal">
-    //                     <InputLabel>Department</InputLabel>
-    //                     <Select
-    //                         name="department"
-    //                         value={formState.department}
-    //                         onChange={handleChange}
-    //                         label="Department"
-    //                     >
-    //                         {Department.map((item) => (
-
-    //                             <MenuItem value={item.name}>{item.name}</MenuItem>
-    //                         ))}
-    //                     </Select>
-    //                 </FormControl>
-    //                 <FormControl fullWidth margin="normal">
-    //                     <InputLabel>Team</InputLabel>
-    //                     <Select
-    //                         name="team"
-    //                         value={formState.team}
-    //                         onChange={handleChange}
-    //                         label="Team" Department
-    //                     >
-    //                         {
-    //                             Teams.map((items) => (
-    //                                 <MenuItem value={items.name}>{items.name}</MenuItem>
-    //                             ))
-    //                         }
-
-    //                     </Select>
-    //                 </FormControl>
-    //                 <FormControl fullWidth margin="normal">
-    //                     <InputLabel>Assignee</InputLabel>
-    //                     <Select
-    //                         name="assignee"
-    //                         value={formState.assignee}
-    //                         onChange={handleChange}
-    //                         label="Assignee"
-    //                     >
-
-    //                         {Assgine.map((item) => (
-    //                             <MenuItem value={item.name}>{item.name}</MenuItem>
-    //                         ))}
-
-    //                     </Select>
-    //                 </FormControl>
-
-    //                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-    //                     <Box sx={{ padding: 2,display:'flex',flexDirection:'row',justifyContent:'space-between' }}>
-    //                         <DateTimePicker
-    //                             label="Start Date & Time"
-    //                             value={startDateTime}
-    //                             onChange={(newValue) => setStartDateTime(newValue)}
-    //                             renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2 }} />}
-    //                         />
-    //                         <DateTimePicker
-    //                             label="End Date & Time"
-    //                             value={endDateTime}
-    //                             onChange={(newValue) => setEndDateTime(newValue)}
-    //                             renderInput={(params) => <TextField  {...params} sx={{ marginBottom: 2 }} />}
-    //                         />
-
-    //                     </Box>
-    //                 </LocalizationProvider>
-
-    //                 <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-    //                     <Button variant="outlined" onClick={toggleDrawer}>
-    //                         Cancel
-    //                     </Button>
-    //                     <Button variant="contained" onClick={handleSend}>
-    //                         Send
-    //                     </Button>
-    //                 </Box>
-    //             </Box>
-    //         </Drawer>
-    //     </>
-    // );
 };
 
 export default AddTodo;
