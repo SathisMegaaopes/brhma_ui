@@ -23,6 +23,7 @@ import {
     Tooltip,
     tooltipClasses,
     styled,
+    TextField,
 } from '@mui/material';
 import URL from '../Global/Utils/url_route';
 import Fade from '@mui/material/Fade';
@@ -48,24 +49,28 @@ const Todolist = () => {
 
     const [othertasks, setOthertasks] = useState([])
 
-    console.log(mytodoList, 'othertasks')
+    // console.log(mytodoList, 'othertasks')
 
     const [timeLeft, setTimeLeft] = useState(0);
 
     const [color, setColor] = useState('inherit');
 
-    const [select, setSelect] = React.useState('open');
+    const [select, setSelect] = React.useState('');
 
 
     const [open, setOpen] = useState(false);
 
     const [selectedTask, setSelectedTask] = useState(null);
 
+    console.log(selectedTask, 'this is the selected task..')
+
     const [referesh, setRefresh] = useState(false)
 
     const [stsupdateml, setStsupdateml] = useState(false)
 
     const [updateStatus, setUpdateStatus] = useState(null)
+
+    const [comment, setComment] = useState(null);
 
 
     const handleChange = (event, id) => {
@@ -76,10 +81,6 @@ const Todolist = () => {
     const handleUploadStatusModal = () => {
         setStsupdateml(!stsupdateml)
     }
-
-
-
-    // console.log(select, 'this is inside the select')
 
     useEffect(() => {
 
@@ -104,66 +105,8 @@ const Todolist = () => {
     }, [referesh])
 
 
-
-
-
-    // useEffect(() => {
-    //     const storedEndTime = localStorage.getItem('endTime');
-    //     if (storedEndTime) {
-    //         const endTime = parseInt(storedEndTime, 10);
-    //         const now = Date.now();
-    //         const timeRemaining = Math.max(Math.floor((endTime - now) / 1000), 0);
-    //         setTimeLeft(timeRemaining);
-    //     } else {
-    //         const endTime = Date.now() + tat * 60 * 60 * 1000;
-    //         localStorage.setItem('endTime', endTime.toString());
-    //         setTimeLeft(tat * 60 * 60);
-    //     }
-    // }, [tat]);
-
-
-
-    // useEffect(() => {
-    //     if (timeLeft <= 0) {
-    //         setColor('red');
-    //     } else if (timeLeft <= tat * 60 * 60 * 0.2) {
-    //         setColor('orange');
-    //     } else {
-    //         setColor('green');
-    //     }
-    // }, [timeLeft, tat]);
-
-
-
-    // useEffect(() => {
-
-    //     const interval = setInterval(() => {
-    //         setTimeLeft((prev) => {
-    //             if (prev <= 0) {
-    //                 clearInterval(interval);
-    //                 localStorage.removeItem('endTime');
-    //                 return 0;
-    //             }
-    //             return prev - 1;
-    //         });
-    //     }, 1000);
-
-    //     return () => clearInterval(interval);
-    // }, []);
-
-
-
-
-    // const formatTime = (seconds) => {
-    //     const hours = Math.floor(seconds / 3600);
-    //     const minutes = Math.floor((seconds % 3600) / 60);
-    //     const secs = seconds % 60;
-    //     // return `${hours}h ${minutes}m ${secs < 10 ? '0' : ''}${secs}s`;
-    //     return `${hours}h ${minutes}m`;
-    // };
-
     const formatTimeFromSeconds = (seconds) => {
-        
+
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const secs = seconds % 60;
@@ -176,17 +119,22 @@ const Todolist = () => {
     };
 
 
+    // if(selectedTask){
+    // if (selectedTask.task_assignee === userinfo.user_name) {
+    //     console.log('yes it issssssssssssssssssssssssssss')
+    // }
+    // }
+
+    // selectedTask ? selectedTask.task_assignee === userinfo.user_name ?  console.log('yes it issssssssssssssssssssssssssss') : console.log(' no it is not ') : console.log('not comming inside')
+
+
+    // selectedTask ? selectedTask.task_assignee.toString() === userinfo.user_name ?  console.log('yes it issssssssssssssssssssssssssss') : console.log(typeof(userinfo.user_name)) : console.log('not comming inside')
 
 
     const handleClose = () => {
         setOpen(false);
         setSelectedTask(null);
     };
-
-    const handleempidtoname = (name) => {
-
-    }
-
 
     const handleStatus = (status) => {
         switch (status) {
@@ -232,7 +180,7 @@ const Todolist = () => {
 
 
         try {
-            const response = await axios.put(url, { id, status, username })
+            const response = await axios.put(url, { id, status, username, comment })
             console.log(response)
             setUpdateStatus(response.data.status)
         } catch (error) {
@@ -244,6 +192,7 @@ const Todolist = () => {
         }
 
     }
+
 
     const Timer = ({ initialSeconds }) => {
         const [timeRemaining, setTimeRemaining] = useState(initialSeconds);
@@ -261,7 +210,6 @@ const Todolist = () => {
 
         const percentageRemaining = (timeRemaining / initialSeconds) * 100;
 
-        // console.log(percentageRemaining, 'this is the remaining percentage')
 
         let textColor = 'black';
         if (percentageRemaining <= 10) {
@@ -284,10 +232,10 @@ const Todolist = () => {
 
 
     return (
-        <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-            <>
-
-                <TableContainer component={Paper} sx={{ maxWidth: 500, margin: '0px auto', maxHeight: 350, padding: '0px' }} >
+        // <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+        <Container sx={{ display: 'flex', flexDirection: 'column', height: '65vh' , width:'60vh' }}>
+             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+                <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '0px auto', maxHeight: 350, padding: '0px' }} >  
                     <Table stickyHeader >
 
                         <TableHead>
@@ -412,30 +360,37 @@ const Todolist = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-            </>
+            </Box>
 
-            <>
-                <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '10px 20011auto', maxHeight: 350, paddingTop: '0px' }} >
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+
+                <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '10px auto', maxHeight: 350, paddingTop: '0px' }} >
                     <Table stickyHeader >
                         <TableHead>
-                            <TableRow>
-                                <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '100px' }} colSpan={3}>
-                                    <Typography variant="h6" sx={{ fontSize: '1rem' }}>
-                                        Assigned Tasks
-                                    </Typography>
-                                </TableCell>
-                                {userinfo.user_role === 1 ?
-                                    <TableCell sx={{ padding: '0px', textAlign: 'right' }}>
+                            {userinfo.user_role === 1 ?
+                                <TableRow>
+                                    <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '95px' }} colSpan={2}>
+                                        <Typography variant="h6" sx={{ fontSize: '1rem' }}>
+                                            Assigned Tasks
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell sx={{ padding: '0px', textAlign: 'right' }} colSpan={4}>
                                         <AddTodo value='2' />
                                     </TableCell>
-                                    :
-                                    <TableCell sx={{ padding: '4px', textAlign: 'right' }}>
-                                        {/* <AddTodo /> */}
-                                    </TableCell>
-                                }
-                            </TableRow>
-                        </TableHead>
+                                </TableRow>
 
+                                :
+                                <TableRow>
+                                    <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '0px' }} colSpan={4}>
+                                        <Typography variant="h6" sx={{ fontSize: '1rem' }}>
+                                            Assigned Tasks
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell sx={{ padding: '0px', textAlign: 'right' }} colSpan={0}>
+                                    </TableCell>
+                                </TableRow>
+                            }
+                        </TableHead>
 
                         <TableHead >
                             <TableRow>
@@ -552,7 +507,7 @@ const Todolist = () => {
 
                                                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', gap: 14 }}>
                                                     <>
-                                                        <TimelapseSharpIcon sx={{marginTop:'-2px'}}/>
+                                                        <TimelapseSharpIcon sx={{ marginTop: '-2px' }} />
                                                     </>
                                                     <>
                                                         {/* {formatTimeFromSeconds(todo.tat)} */}
@@ -574,7 +529,7 @@ const Todolist = () => {
 
                     </Table>
                 </TableContainer>
-            </>
+            </Box>
 
 
             <SuccessFailureModal
@@ -611,21 +566,15 @@ const Todolist = () => {
                             >
                                 Task Details
                             </Typography>
-
-                            <div style={{ marginBottom: '16px' }}>
-                                <Typography
-                                    variant="subtitle1"
-                                    style={{ color: '#007bff', fontWeight: 'bold', marginBottom: '8px' }}
-                                >
+                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                                <Typography variant="subtitle1" style={{ color: '#007bff', fontWeight: 'bold', marginBottom: '10px' }}>
                                     Task Name:
                                 </Typography>
-                                <Typography
-                                    variant="body1"
-                                    style={{ color: '#495057', wordWrap: 'break-word' }}
-                                >
+                                <Typography variant="body1" style={{ color: '#495057', wordWrap: 'normal', marginTop: '-10px' }}>
                                     {selectedTask.task_name}
                                 </Typography>
                             </div>
+
 
                             <div style={{ marginBottom: '16px' }}>
                                 <Typography
@@ -659,7 +608,7 @@ const Todolist = () => {
                                     </Typography>
                                 </div>
 
-                                <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '20px', textAlign: 'center' }}>
+                                <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '30px', textAlign: 'center' }}>
                                     <Typography
                                         variant="subtitle1"
                                         style={{ color: '#dc3545', fontWeight: 'bold' }}
@@ -676,34 +625,101 @@ const Todolist = () => {
 
                             </div>
 
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <Typography
                                     variant="subtitle1"
                                     style={{ color: '#007bff', fontWeight: 'bold' }}
                                 >
                                     Status: {handleStatus(selectedTask.status)}
                                 </Typography>
-                                <FormControl variant="outlined" size="small">
-                                    <InputLabel>Status</InputLabel>
-                                    <Select
-                                        label="Status"
-                                        value={select}
-                                        onChange={(e) => handleChange(e, selectedTask.id)}
-                                        style={{
-                                            width: '150px',
-                                            fontSize: '0.875rem',
-                                            height: '35px',
-                                            backgroundColor: '#ffffff',
-                                        }}
-                                    >
-                                        {select === 'open' && <MenuItem value="open">Open</MenuItem>}
-                                        {userinfo.user_role === 1 && <MenuItem value="onhold">On hold</MenuItem>}
-                                        {userinfo.user_role === 1 && <MenuItem value="done">Done</MenuItem>}
-                                        {userinfo.user_role !== 1 && <MenuItem value="in-progress">In Progress</MenuItem>}
-                                        {userinfo.user_role !== 1 && <MenuItem value="completed">Completed</MenuItem>}
-                                    </Select>
-                                </FormControl>
+
+
+                                {selectedTask.task_assignee.toString() === userinfo.user_name &&
+                                    selectedTask.created_by.toString() === userinfo.user_name
+                                    ? (
+                                        <FormControl variant="outlined" size="small">
+                                            <InputLabel>Status</InputLabel>
+                                            <Select
+                                                label="Status"
+                                                value={select}
+                                                onChange={(e) => handleChange(e, selectedTask.id)}
+                                                style={{
+                                                    width: '150px',
+                                                    fontSize: '0.875rem',
+                                                    height: '35px',
+                                                    backgroundColor: '#ffffff',
+                                                }}
+                                            >
+                                                <MenuItem value="open">Open</MenuItem>
+                                                <MenuItem value="in-progress">In Progress</MenuItem>
+                                                <MenuItem value="completed">Completed</MenuItem>
+                                                <MenuItem value="onhold">On hold</MenuItem>
+                                                <MenuItem value="done">Done</MenuItem>
+                                            </Select>
+                                        </FormControl>
+
+                                    ) : (userinfo.user_role === 1 &&
+                                        selectedTask.task_assignee.toString() !== userinfo.user_name &&
+                                        selectedTask.created_by.toString() === userinfo.user_name)
+                                        ? (
+                                            <FormControl variant="outlined" size="small">
+                                                <InputLabel>Status</InputLabel>
+                                                <Select
+                                                    label="Status"
+                                                    value={select}
+                                                    onChange={(e) => handleChange(e, selectedTask.id)}
+                                                    style={{
+                                                        width: '150px',
+                                                        fontSize: '0.875rem',
+                                                        height: '35px',
+                                                        backgroundColor: '#ffffff',
+                                                    }}
+                                                >
+                                                    <MenuItem value="onhold">On hold</MenuItem>
+                                                    <MenuItem value="done">Done</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        ) : (
+
+                                            <FormControl variant="outlined" size="small">
+                                                <InputLabel>Status</InputLabel>
+                                                <Select
+                                                    label="Status"
+                                                    value={select}
+                                                    onChange={(e) => handleChange(e, selectedTask.id)}
+                                                    style={{
+                                                        width: '150px',
+                                                        fontSize: '0.875rem',
+                                                        height: '35px',
+                                                        backgroundColor: '#ffffff',
+                                                    }}
+                                                >
+                                                    <MenuItem value="in-progress">In Progress</MenuItem>
+                                                    <MenuItem value="completed">Completed</MenuItem>
+                                                </Select>
+                                            </FormControl>
+
+                                        )}
                             </div>
+                            {selectedTask.status !== 0 ?
+                                <div style={{ marginBottom: '16px' }}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        style={{ color: '#007bff', fontWeight: 'bold', marginBottom: '0px' }}
+                                    >
+                                        Comments:
+                                    </Typography>
+                                    <TextField
+                                        label="Add a comment"
+                                        multiline
+                                        rows={2}
+                                        variant="outlined"
+                                        fullWidth
+                                        style={{ marginTop: '8px' }}
+                                        onChange={(e) => setComment(e.target.value)}
+                                    />
+                                </div> : ''}
+
 
                             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
                                 <Button
@@ -727,10 +743,23 @@ const Todolist = () => {
                         </>
                     )}
                 </div>
-            </Modal>
-        </Container>
+            </Modal >
+        </Container >
 
     )
+
+    // return (
+    //     <Container sx={{ display: 'flex', flexDirection: 'column', height: '80vh' }}>
+    //     <Box sx={{ flex: 1, backgroundColor: 'lightblue', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+    //         <Typography variant="h4" sx={{ mt: 2 }}>Top Container</Typography>
+    //     </Box>
+    //     <Box sx={{ flex: 1, backgroundColor: 'lightcoral', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+    //         <Typography variant="h4" sx={{ mt: 2 }}>Bottom Container</Typography>
+    //     </Box>
+    // </Container>
+    
+
+    // )
 }
 
 export default Todolist

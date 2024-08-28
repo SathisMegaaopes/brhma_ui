@@ -267,41 +267,12 @@ export default function MOSDashboard() {
     const subtitle1 = 'subtitle1'
 
     return (
-        // <div style={{ display: 'flex', alignItems:'center',justifyContent:'space-between', gap: '130px' }}>
-        <Container sx={{display:'flex', alignItems:'center',justifyContent:'space-between',gap:3}}>
-
-
-
-            <Container maxWidth="lg" sx={{ marginTop: "20px" }}>
-                {/* marginLeft: '60px' important don't delete it sathis kumar  */}
+        <Container style={{ display: 'flex', alignItems:'center', gap:'700px' }}>
+        {/* // <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}> */}
+            <Container maxWidth="lg" sx={{ marginTop: "0px" }}>
                 <Typography variant='h6' sx={{ margin: "8px" }}>
                     Welcome {userinfo?.user_details?.emp_name} !
                 </Typography>
-                {/* <Grid container spacing={4}>
-                    <Grid item xs={4} md={3} lg={7}>
-                        <Card
-                            variant="outlined"
-                            onClick={(e) => handleNavigate(1)}
-                            sx={{ cursor: "pointer", background: "#FEFAE0" }}
-                        >
-                            <CardHeader title="Candidate Evaluation" />
-                        </Card>
-                    </Grid>
-
-                    <Grid item xs={4} md={3} lg={6} >
-                        {userinfo?.user_role === 1 ? (
-                            <Card
-                                variant="outlined"
-                                onClick={(e) => handleNavigate(2)}
-                                sx={{ cursor: "pointer", background: "#FEFAE0" }}
-                            >
-                                <CardHeader title="Candidate Database"  />
-                            </Card>
-                        ) : (
-                            ""
-                        )}
-                    </Grid>
-                </Grid> */}
                 <Grid>
                     <React.Fragment>
                         <Modal
@@ -461,12 +432,6 @@ export default function MOSDashboard() {
                 {/* </div>  */}
                 {/* } */}
             </Container>
-
-{/* 
-            <Container maxWidth="lg" sx={{ marginTop: "20px" }}>
-
-            </Container> */}
-
 
             <Container maxWidth="lg" sx={{ marginTop: "20px" }} >
                 <Todolist />

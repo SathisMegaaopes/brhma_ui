@@ -226,7 +226,7 @@ const SuccessFailureModal = ({ open, handleClose, status, successmsg, errormsg }
         if (open) {
             const timer = setTimeout(() => {
                 handleClose();
-            }, 5000);
+            }, 3000);
 
             return () => clearTimeout(timer);
         }

@@ -32,7 +32,7 @@ const SidebarContainer = styled('div')(({ isOpen, isActive }) => ({
 
 const MainContainer = styled('div')(() => ({
     padding: "16px",
-    marginLeft: "85px",
+    marginLeft: "40px",
 }));
 
 const SidebarIcon = styled(IconButton)(({ theme, isOpen, isActive }) => ({
@@ -49,61 +49,11 @@ const SidebarIcon = styled(IconButton)(({ theme, isOpen, isActive }) => ({
     },
 }));
 
-// color: isOpen ? "#f1f1f1" : isActive ? 'black' : isActive ? 'red' : "#eeeee4",
 
 function Sidebar() {
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('tasks');
     const navigate = useNavigate();
-
-    // const handleMouseEnter = () => {
-    //     setIsOpen(true);
-    // };
-
-    // const handleMouseLeave = () => {
-    //     setIsOpen(false);
-    // };
-
-    // const handleTabChange = (tab) => {
-    //     setActiveTab(tab);
-    //     switch (tab) {
-    //         case 'tasks':
-    //             navigate("/dashboard");
-    //             break;
-    //         case 'CandidateEvaluation':
-    //             navigate("/dashboard/evalution");
-    //             break;
-    //         case 'CandidateDatabase':
-    //             navigate("/dashboard/candidate-master");
-    //             break;
-    //         case 'inprogress-3':
-    //             // Add a route for this case if necessary
-    //             // navigate("/dashboard");
-    //             break;
-    //         default:
-    //             navigate("/");
-    //     }
-    // };
-
-    // const renderContent = () => {
-    //     switch (activeTab) {
-    //         case 'tasks':
-    //             return <MOSDashboard />;
-    //         case 'CandidateEvaluation':
-    //             return <CandidateInterview />;
-    //         case 'CandidateDatabase':
-    //             return <MOSCandidate />;
-    //         case 'inprogress-3':
-    //             // return <MOSDashboard />;
-    //             return <div>
-    //                 <h2>Feature Under Development</h2>
-    //                 <p>This feature is currently under development.</p>
-    //             </div>
-
-    //         default:
-    //             return <MOSDashboard />;
-    //     }
-    // };
 
     React.useEffect(() => {
         const savedTab = localStorage.getItem('activeTab');
