@@ -48,6 +48,7 @@ const Todolist = () => {
 
     const [othertasks, setOthertasks] = useState([])
 
+    console.log(mytodoList, 'othertasks')
 
     const [timeLeft, setTimeLeft] = useState(0);
 
@@ -78,7 +79,7 @@ const Todolist = () => {
 
 
 
-    console.log(select, 'this is inside the select')
+    // console.log(select, 'this is inside the select')
 
     useEffect(() => {
 
@@ -153,13 +154,28 @@ const Todolist = () => {
 
 
 
-    const formatTime = (seconds) => {
+    // const formatTime = (seconds) => {
+    //     const hours = Math.floor(seconds / 3600);
+    //     const minutes = Math.floor((seconds % 3600) / 60);
+    //     const secs = seconds % 60;
+    //     // return `${hours}h ${minutes}m ${secs < 10 ? '0' : ''}${secs}s`;
+    //     return `${hours}h ${minutes}m`;
+    // };
+
+    const formatTimeFromSeconds = (seconds) => {
+        
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const secs = seconds % 60;
-        // return `${hours}h ${minutes}m ${secs < 10 ? '0' : ''}${secs}s`;
-        return `${hours}h ${minutes}m`;
+
+        const formattedHours = hours.toString().padStart(2, '0');
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        const formattedSeconds = secs.toString().padStart(2, '0');
+
+        return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
     };
+
+
 
 
     const handleClose = () => {
@@ -213,8 +229,10 @@ const Todolist = () => {
 
         const status = statustonumber(select)
 
+
+
         try {
-            const response = await axios.put(url, { id, status })
+            const response = await axios.put(url, { id, status, username })
             console.log(response)
             setUpdateStatus(response.data.status)
         } catch (error) {
@@ -226,6 +244,43 @@ const Todolist = () => {
         }
 
     }
+
+    const Timer = ({ initialSeconds }) => {
+        const [timeRemaining, setTimeRemaining] = useState(initialSeconds);
+
+        useEffect(() => {
+            if (timeRemaining <= 0) return;
+
+            const timerId = setInterval(() => {
+                setTimeRemaining((prevTime) => Math.max(prevTime - 1, 0));
+            }, 1000);
+
+            return () => clearInterval(timerId);
+        }, [timeRemaining]);
+
+
+        const percentageRemaining = (timeRemaining / initialSeconds) * 100;
+
+        // console.log(percentageRemaining, 'this is the remaining percentage')
+
+        let textColor = 'black';
+        if (percentageRemaining <= 10) {
+            textColor = 'red';
+        } else if (percentageRemaining <= 30) {
+            textColor = 'orange';
+        } else if (percentageRemaining <= 100) {
+            textColor = 'green';
+        } else if (percentageRemaining == 0) {
+            textColor = 'black';
+        }
+
+
+        return (
+            <div style={{ color: textColor, marginLeft: '-12px' }}>
+                <span>{timeRemaining > 0 ? formatTimeFromSeconds(timeRemaining) : '- - -'}</span>
+            </div>
+        );
+    };
 
 
     return (
@@ -339,7 +394,8 @@ const Todolist = () => {
                                                         <TimelapseSharpIcon />
                                                     </>
                                                     <>
-                                                        {formatTime(tat)}
+                                                        {/* {formatTimeFromSeconds(todo.tat)} */}
+                                                        <Timer initialSeconds={todo.tat} />
                                                     </>
                                                 </div>
 
@@ -486,7 +542,7 @@ const Todolist = () => {
                                             </Typography>
                                         </TableCell>
 
-                                        <TableCell align='justify' sx={{ padding: '4px' }}>
+                                        <TableCell align='center' sx={{ padding: '4px' }}>
                                             <Typography variant="subtitle2" color={color} sx={{
                                                 padding: 0.5,
                                                 fontSize: '0.9rem',
@@ -494,19 +550,15 @@ const Todolist = () => {
                                                 whiteSpace: 'nowrap',
                                             }}>
 
-                                                {todo.status !== 4 ?
-                                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', gap: 6 }}>
-                                                        <>
-                                                            <TimelapseSharpIcon />
-                                                        </>
-                                                        <>
-                                                            {formatTime(timeLeft)}
-                                                        </>
-                                                    </div> :
-                                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', gap: 6, color: 'black' }}>
-                                                        <> - -  - </>
-                                                    </div>
-                                                }
+                                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', gap: 14 }}>
+                                                    <>
+                                                        <TimelapseSharpIcon sx={{marginTop:'-2px'}}/>
+                                                    </>
+                                                    <>
+                                                        {/* {formatTimeFromSeconds(todo.tat)} */}
+                                                        <Timer initialSeconds={todo.tat} />
+                                                    </>
+                                                </div>
 
                                             </Typography>
                                         </TableCell>
@@ -618,7 +670,7 @@ const Todolist = () => {
                                         variant="body1"
                                         style={{ color: '#495057' }}
                                     >
-                                        {formatTime(timeLeft)}
+                                        <Timer initialSeconds={selectedTask.tat} />
                                     </Typography>
                                 </div>
 

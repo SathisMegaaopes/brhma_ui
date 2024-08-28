@@ -46,6 +46,41 @@ const AddTodo = ({ value }) => {
     });
 
 
+    // console.log(formState)
+
+
+
+    useEffect(() => {
+
+        let url = `${URL}todolist/department`
+
+        axios.get(url)
+            .then((response) => {
+                setDepartments(response.data.data)
+            })
+            .catch();
+
+    }, [])
+
+
+
+    useEffect(() => {
+
+        let url = `${URL}todolist/teams`;
+        axios.get(url, {
+            params: {
+                id: departid
+            }
+        })
+            .then((response) => {
+                setTeams(response.data.data)
+            })
+            .catch();
+
+    }, [departid])
+
+
+
     useEffect(() => {
         let url = `${URL}todolist/employee`;
         axios.get(url, {
@@ -78,7 +113,7 @@ const AddTodo = ({ value }) => {
                     }
                 }
 
-                console.log(formState);
+                // console.log(formState);
             })
             .catch((error) => {
                 console.error('Error fetching employee data:', error);
@@ -86,35 +121,6 @@ const AddTodo = ({ value }) => {
 
 
     }, [teamID])
-
-
-    useEffect(() => {
-
-        let url = `${URL}todolist/department`
-
-        axios.get(url)
-            .then((response) => {
-                setDepartments(response.data.data)
-            })
-            .catch();
-
-    }, [])
-
-
-    useEffect(() => {
-
-        let url = `${URL}todolist/teams`;
-        axios.get(url, {
-            params: {
-                id: departid
-            }
-        })
-            .then((response) => {
-                setTeams(response.data.data)
-            })
-            .catch();
-
-    }, [departid])
 
 
     const AuthorizedPerson = userinfo.user_role
@@ -177,16 +183,23 @@ const AddTodo = ({ value }) => {
 
         const final = `${hours}-${minutes}-${seconds}`
 
-        // return {
-        //     hours,
-        //     minutes,
-        //     seconds
-        // };
+
 
         return final;
 
     }
 
+    const calculateTotalDuration = (a ,b ) => {
+        return Math.abs(a.diff(b, 'second'));
+    };
+
+
+    
+    // return {
+    //     hours,
+    //     minutes,
+    //     seconds
+    // };
     const isFormIncomplete = () => {
         return Object.values(formState).some(value => value === '' || value === null);
     };
@@ -197,9 +210,13 @@ const AddTodo = ({ value }) => {
 
         const userID = userinfo.user_name
         const status = 0;
-        const tatValue = calculateTimeDifference(formState.startDateTime, formState.endDateTime);
+        // const tatValue = calculateTimeDifference(formState.startDateTime, formState.endDateTime);
         const taskname = formState.name;
         const taskdes = formState.description;
+
+
+        const tatValue = calculateTotalDuration(formState.startDateTime, formState.endDateTime)
+        console.log(tatValue, 'imoorttttttttttttttttttttt')
 
         try {
             const response = await axios.post(url, { taskname, taskdes, departid, teamID, employeeID, status, tatValue, userID });
@@ -232,12 +249,12 @@ const AddTodo = ({ value }) => {
 
     return (
         <>
-            <SuccessFailureModal 
-            open={openModal} 
-            handleClose={handleCloseModal} 
-            status={addtskstatus} 
-            successmsg={"Task added Successfully"}
-            errormsg={"Something went wrong, Please try again !"}
+            <SuccessFailureModal
+                open={openModal}
+                handleClose={handleCloseModal}
+                status={addtskstatus}
+                successmsg={"Task added Successfully"}
+                errormsg={"Something went wrong, Please try again !"}
 
             />
 
