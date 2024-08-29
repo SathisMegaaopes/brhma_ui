@@ -9,6 +9,10 @@ import dayjs from 'dayjs';
 import URL from "../Global/Utils/url_route.js";
 import axios from "axios"
 import SuccessFailureModal from './successfailuremodal.js';
+import ConfirmationModal from './confirmationModal.js';
+import { formatMeridiem } from '@mui/x-date-pickers/internals';
+import { DateFormater } from '../Global/Utils/common_data.js';
+import { VerticalAlignBottom } from '@mui/icons-material';
 
 const drawerWidth = 600;
 
@@ -33,16 +37,19 @@ const AddTodo = ({ value }) => {
 
     const [addtskstatus, setaddtaskstats] = useState(null)
 
+    const [confirmCancel, setConfirmCancel] = useState(false)
+
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
 
     const [formState, setFormState] = useState({
         name: '',
         description: '',
-        department: value === '1' ? userinfo.user_role : '',
-        team: value === '1' ? userinfo.user_role : '',
-        assignee: value === '1' ? userinfo.user_name : '',
-        // startDateTime: dayjs(),
-        // endDateTime: dayjs().add(1, 'hour')
+        // department: value === '1' ? userinfo.user_role : null,
+        // team: value === '1' ? userinfo.user_role : null ,
+        // assignee: value === '1' ? userinfo.user_name : null,
+        department: null,
+        team: null,
+        assignee: null,
         startDateTime: null,
         endDateTime: null
     });
@@ -134,7 +141,29 @@ const AddTodo = ({ value }) => {
     }
 
     const toggleDrawer = () => {
-        setOpen(!open);
+        // setOpen(!open);
+
+    };
+
+    const handleCloseConfirmationModal = () => {
+        setConfirmCancel(false)
+        setOpen(true);
+    }
+
+
+    const handleConfirm = () => {
+        setConfirmCancel(false)
+        setOpen(false)
+        setFormState({
+            name: null,
+            description: null,
+            department: value === '1' ? userinfo.user_role : null,
+            team: value === '1' ? userinfo.user_role : null,
+            assignee: value === '1' ? userinfo.user_name : null,
+            startDateTime: null,
+            endDateTime: null,
+        });
+
     };
 
     const handleChange = (event) => {
@@ -195,10 +224,17 @@ const AddTodo = ({ value }) => {
         return Math.abs(a.diff(b, 'second'));
     };
 
-
     const isFormIncomplete = () => {
         return Object.values(formState).some(value => value === '' || value === null);
     };
+
+
+
+    const formatDateTime = (dateTime) => {
+        return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
+    }
+
+
 
     const handleSend = async () => {
 
@@ -206,16 +242,22 @@ const AddTodo = ({ value }) => {
 
         const userID = userinfo.user_name
         const status = 0;
-        // const tatValue = calculateTimeDifference(formState.startDateTime, formState.endDateTime);
+
         const taskname = formState.name;
         const taskdes = formState.description;
 
+        const startDate = formatDateTime(formState.startDateTime)
+        const endDate = formatDateTime(formState.endDateTime)
 
-        const tatValue = calculateTotalDuration(formState.startDateTime, formState.endDateTime)
-        console.log(tatValue, 'imoorttttttttttttttttttttt')
+
+        console.log(startDate,'startDate')
+        console.log(endDate,'endDate')
+
+        // const tatValue = calculateTotalDuration(formState.startDateTime, formState.endDateTime)
+        // console.log(tatValue, 'imoorttttttttttttttttttttt')
 
         try {
-            const response = await axios.post(url, { taskname, taskdes, departid, teamID, employeeID, status, tatValue, userID });
+            const response = await axios.post(url, { taskname , taskdes , departid , teamID , employeeID , status , startDate , endDate , userID });
             // console.log(response.data.status,'response important')
             setaddtaskstats(response.data.status)
             setOpenModal(true)
@@ -225,7 +267,8 @@ const AddTodo = ({ value }) => {
             console.error('Error saving data:', error);
 
         } finally {
-            toggleDrawer();
+
+            setOpen(false);
 
             setFormState({
                 name: '',
@@ -233,8 +276,8 @@ const AddTodo = ({ value }) => {
                 department: value === '1' ? userinfo.user_role : '',
                 team: value === '1' ? userinfo.user_role : '',
                 assignee: value === '1' ? userinfo.user_name : '',
-                startDateTime:null,
-                endDateTime:null,
+                startDateTime: null,
+                endDateTime: null,
             });
 
 
@@ -254,7 +297,7 @@ const AddTodo = ({ value }) => {
 
             />
 
-            <Button variant="text" onClick={toggleDrawer} sx={{ fontSize: 'xs' }}>Add Task</Button>
+            <Button variant="text" onClick={() => setOpen(true)} sx={{ fontSize: 'xs' }}>Add Task</Button>
 
             {/* <Drawer
                 anchor="right"
@@ -365,6 +408,9 @@ const AddTodo = ({ value }) => {
                 </Box>
             </Drawer> */}
 
+            <ConfirmationModal open={confirmCancel} title={"Do you wish to cancel !"} description={"The Content will be lost "} onConfirm={handleConfirm} onClose={handleCloseConfirmationModal} />
+
+
             <Drawer
                 anchor="right"
                 open={open}
@@ -389,7 +435,7 @@ const AddTodo = ({ value }) => {
                         </Typography>
                         <TextField
                             fullWidth
-                            label="Name"
+                            label={<span>Name<span style={{ color: 'red' }}> *</span></span>}
                             name="name"
                             value={formState.name}
                             onChange={handleChange}
@@ -397,7 +443,8 @@ const AddTodo = ({ value }) => {
                         />
                         <TextField
                             fullWidth
-                            label="Description"
+                            // label="Description"
+                            label={<span>Description<span style={{ color: 'red' }}> *</span></span>}
                             name="description"
                             value={formState.description}
                             onChange={handleChange}
@@ -408,12 +455,13 @@ const AddTodo = ({ value }) => {
                         {AuthorizedPerson === 1 && value === '2' && (
                             <>
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Department</InputLabel>
+                                    <InputLabel>Department <span style={{ color: 'red' }}> *</span></InputLabel>
                                     <Select
                                         name="department"
                                         value={formState.department}
                                         onChange={handleChange}
                                         label="Department"
+
                                     >
                                         {departments.map((item) => (
                                             <MenuItem key={item.id} value={item.name}>{item.name}</MenuItem>
@@ -422,12 +470,13 @@ const AddTodo = ({ value }) => {
                                 </FormControl>
 
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Team</InputLabel>
+                                    <InputLabel>Team <span style={{ color: 'red' }}> *</span></InputLabel>
                                     <Select
                                         name="team"
                                         value={formState.team}
                                         onChange={handleChange}
                                         label="Team"
+                                        disabled={!Boolean(formState.department)}
                                     >
                                         {Teams.map((items) => (
                                             <MenuItem key={items.id} value={items.name}>{items.name}</MenuItem>
@@ -436,12 +485,13 @@ const AddTodo = ({ value }) => {
                                 </FormControl>
 
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Assignee</InputLabel>
+                                    <InputLabel>Assignee <span style={{ color: 'red' }}> *</span></InputLabel>
                                     <Select
                                         name="assignee"
                                         value={formState.assignee}
                                         onChange={handleChange}
                                         label="Assignee"
+                                        disabled={!Boolean(formState.team)}
                                     >
                                         {employee.length > 0 ? (
                                             employee.map((item) => (
@@ -451,29 +501,33 @@ const AddTodo = ({ value }) => {
                                             <MenuItem disabled>No employees available</MenuItem>
                                         )}
                                     </Select>
+
                                 </FormControl>
+
                             </>
                         )}
 
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <Box sx={{ padding: 2, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 4 }}>
                                 <DateTimePicker
-                                    label="Start Date & Time"
+                                    // label="Start Date & Time"
+                                    label={<span>Start Date & Time<span style={{ color: 'red' }}> *</span></span>}
                                     value={formState.startDateTime}
                                     onChange={(newValue) => handleDateChange('startDateTime', newValue)}
                                     renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2, flex: 1 }} />}
                                     minDate={dayjs()} // Ensure this is a Day.js object
                                     minTime={formState.startDateTime ? formState.startDateTime : dayjs()}
-                                    sx={{marginLeft:'-15px'}} // Ensure this is a Day.js object
+                                    sx={{ marginLeft: '-15px' }} // Ensure this is a Day.js object
                                 />
                                 <DateTimePicker
-                                    label="End Date & Time"
+                                    // label="End Date & Time"
+                                    label={<span>End Date & Time<span style={{ color: 'red' }}> *</span></span>}
                                     value={formState.endDateTime}
                                     onChange={(newValue) => handleDateChange('endDateTime', newValue)}
                                     renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2, flex: 1 }} />}
                                     minDate={formState.startDateTime ? formState.startDateTime : dayjs()} // Ensure this is a Day.js object
                                     minTime={formState.startDateTime && dayjs(formState.startDateTime).isSame(dayjs(), 'day') ? formState.startDateTime : null} // Ensure this is a Day.js object
-                                    sx={{marginRight:'-15px'}}
+                                    sx={{ marginRight: '-15px' }}
                                 />
 
                             </Box>
@@ -481,7 +535,7 @@ const AddTodo = ({ value }) => {
                     </Box>
 
                     <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-                        <Button variant="outlined" onClick={toggleDrawer}>
+                        <Button variant="outlined" onClick={() => setConfirmCancel(!confirmCancel)}>
                             Cancel
                         </Button>
                         <Button variant="contained" onClick={handleSend} disabled={isFormIncomplete()}>

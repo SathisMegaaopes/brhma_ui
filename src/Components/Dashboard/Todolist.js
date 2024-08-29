@@ -34,6 +34,7 @@ import AddTodo from './AddTodo';
 import TimelapseSharpIcon from '@mui/icons-material/TimelapseSharp';
 import { Description } from '@mui/icons-material';
 import SuccessFailureModal from './successfailuremodal';
+import ConfirmationModal from './confirmationModal';
 
 const Todolist = () => {
 
@@ -73,6 +74,7 @@ const Todolist = () => {
     const [comment, setComment] = useState(null);
 
 
+
     const handleChange = (event, id) => {
         setSelect(event.target.value);
 
@@ -80,6 +82,7 @@ const Todolist = () => {
 
     const handleUploadStatusModal = () => {
         setStsupdateml(!stsupdateml)
+
     }
 
     useEffect(() => {
@@ -133,7 +136,7 @@ const Todolist = () => {
 
     const handleClose = () => {
         setOpen(false);
-        setSelectedTask(null);
+        
     };
 
     const handleStatus = (status) => {
@@ -233,9 +236,9 @@ const Todolist = () => {
 
     return (
         // <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-        <Container sx={{ display: 'flex', flexDirection: 'column', height: '65vh' , width:'60vh' }}>
-             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
-                <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '0px auto', maxHeight: 350, padding: '0px' }} >  
+        <Container sx={{ display: 'flex', flexDirection: 'column', height: '65vh', width: '60vh' }}>
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+                <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '0px auto', maxHeight: 350, padding: '0px' }} >
                     <Table stickyHeader >
 
                         <TableHead>
@@ -362,7 +365,7 @@ const Todolist = () => {
                 </TableContainer>
             </Box>
 
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
 
                 <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '10px auto', maxHeight: 350, paddingTop: '0px' }} >
                     <Table stickyHeader >
@@ -540,6 +543,8 @@ const Todolist = () => {
                 errormsg={"Something went wrong, Please try again !"}
 
             />
+
+            
 
             <Modal
                 open={open}
@@ -748,18 +753,6 @@ const Todolist = () => {
 
     )
 
-    // return (
-    //     <Container sx={{ display: 'flex', flexDirection: 'column', height: '80vh' }}>
-    //     <Box sx={{ flex: 1, backgroundColor: 'lightblue', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
-    //         <Typography variant="h4" sx={{ mt: 2 }}>Top Container</Typography>
-    //     </Box>
-    //     <Box sx={{ flex: 1, backgroundColor: 'lightcoral', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
-    //         <Typography variant="h4" sx={{ mt: 2 }}>Bottom Container</Typography>
-    //     </Box>
-    // </Container>
-    
-
-    // )
 }
 
 export default Todolist
