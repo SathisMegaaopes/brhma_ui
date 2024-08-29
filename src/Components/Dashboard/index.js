@@ -44,7 +44,7 @@ import CandidateTable from "../CandidateTable";
 
 // import Sidebar from "./SidebarNaviagtion"
 import { ThemeContext } from "@emotion/react";
-import Todolist from "./Todolist";
+import Todolist from "../Todolist/Todolist";
 // import DatabaseIcon from '@mui/icons-material/Database';
 
 
@@ -267,7 +267,7 @@ export default function MOSDashboard() {
     const subtitle1 = 'subtitle1'
 
     return (
-        <Container style={{ display: 'flex', alignItems:'center', gap:'700px' }}>
+        <Container style={{ display: 'flex', alignItems:'center' }}>
         {/* // <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}> */}
             <Container maxWidth="lg" sx={{ marginTop: "0px" }}>
                 <Typography variant='h6' sx={{ margin: "8px" }}>
@@ -433,7 +433,57 @@ export default function MOSDashboard() {
                 {/* } */}
             </Container>
 
-            <Container maxWidth="lg" sx={{ marginTop: "20px" }} >
+            <Container>
+                                                
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+            <Container>
+
+            </Container>
+
+          
+            <Container maxWidth="lg" sx={{ marginTop: "20px" ,flex:'6' ,display:'flex',justifyContent:'flex-end' }} >
                 <Todolist />
             </Container>
 

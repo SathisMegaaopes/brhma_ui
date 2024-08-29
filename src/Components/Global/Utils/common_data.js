@@ -1,5 +1,7 @@
 import { } from "@mui/material";
 import { Star, StarBorder } from "@mui/icons-material"
+import dayjs from "dayjs";
+
 const interview_rounds = [
 { id: 1, name: "HR Round" },
 { id: 2, name: "Typing Test" },
@@ -36,6 +38,10 @@ const DateFormater = (val) => {
     let date = ("0" + new_date.getDate()).slice(-2);
 
     return date + "/" + month + "/" + year;
+}
+
+const formatDateTime = (dateTime) => {
+    return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
 }
 
 const NewDateFormater = (val) => {
@@ -82,4 +88,4 @@ const finalStatus = (data) => {
 const referred_by_data = ["Walk In", "Walk In HR", "Consultancy",
     "Job Portal", "Google Search", "Instagram", "Facebook", "Newspaper", "Employee Reference", "Name board","Posters","Others"];
 
-export { interview_rounds, interview_status, getStatusName, DateFormater,NewDateFormater, getRating, finalStatus, referred_by_data };
+export { interview_rounds, interview_status, getStatusName, DateFormater,NewDateFormater, getRating, finalStatus, referred_by_data , formatDateTime };

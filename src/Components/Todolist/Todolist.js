@@ -33,8 +33,9 @@ import AddTodo from './AddTodo';
 
 import TimelapseSharpIcon from '@mui/icons-material/TimelapseSharp';
 import { Description } from '@mui/icons-material';
-import SuccessFailureModal from './successfailuremodal';
-import ConfirmationModal from './confirmationModal';
+import SuccessFailureModal from '../ModalComponents/successfailuremodal';
+import ConfirmationModal from '../ModalComponents/confirmationModal';
+import { formatDateTime } from '../Global/Utils/common_data';
 
 const Todolist = () => {
 
@@ -50,13 +51,13 @@ const Todolist = () => {
 
     const [othertasks, setOthertasks] = useState([])
 
-    // console.log(mytodoList, 'othertasks')
 
     const [timeLeft, setTimeLeft] = useState(0);
 
     const [color, setColor] = useState('inherit');
 
-    const [select, setSelect] = React.useState('');
+    // const [select, setSelect] = React.useState('');
+    const [select, setSelect] = React.useState(null);
 
 
     const [open, setOpen] = useState(false);
@@ -71,7 +72,7 @@ const Todolist = () => {
 
     const [updateStatus, setUpdateStatus] = useState(null)
 
-    const [comment, setComment] = useState(null);
+    const [comment, setComment] = useState('');
 
 
 
@@ -122,21 +123,11 @@ const Todolist = () => {
     };
 
 
-    // if(selectedTask){
-    // if (selectedTask.task_assignee === userinfo.user_name) {
-    //     console.log('yes it issssssssssssssssssssssssssss')
-    // }
-    // }
-
-    // selectedTask ? selectedTask.task_assignee === userinfo.user_name ?  console.log('yes it issssssssssssssssssssssssssss') : console.log(' no it is not ') : console.log('not comming inside')
-
-
-    // selectedTask ? selectedTask.task_assignee.toString() === userinfo.user_name ?  console.log('yes it issssssssssssssssssssssssssss') : console.log(typeof(userinfo.user_name)) : console.log('not comming inside')
-
-
     const handleClose = () => {
         setOpen(false);
-        
+        setSelect(null);
+        setComment('')
+
     };
 
     const handleStatus = (status) => {
@@ -148,7 +139,7 @@ const Todolist = () => {
             case 2:
                 return <span style={{ color: '#83f28f' }}>Completed</span>;
             case 3:
-                return <span style={{ color: 'red' }}>On Hold</span>;
+                return <span style={{ color: 'red' }}>Pending</span>;
             case 4:
                 return <span style={{ color: '#008631' }}>Done</span>;
             default:
@@ -164,7 +155,7 @@ const Todolist = () => {
                 return 1
             case 'completed':
                 return 2
-            case 'onhold':
+            case 'pending':
                 return 3
             case 'done':
                 return 4
@@ -184,7 +175,6 @@ const Todolist = () => {
 
         try {
             const response = await axios.put(url, { id, status, username, comment })
-            console.log(response)
             setUpdateStatus(response.data.status)
         } catch (error) {
             console.log(`Error in updation on the client side`, error)
@@ -192,27 +182,51 @@ const Todolist = () => {
             setOpen(false)
             setRefresh(!referesh)
             setStsupdateml(open)
+            setSelect(null)
         }
 
     }
 
+    const Timer = ({ status, endDate }) => {
 
-    const Timer = ({ initialSeconds }) => {
-        const [timeRemaining, setTimeRemaining] = useState(initialSeconds);
+
+        const [timeRemaining, setTimeRemaining] = useState(0);
 
         useEffect(() => {
-            if (timeRemaining <= 0) return;
+            if (status !== 1 || !endDate) {
+                setTimeRemaining(0);
+                return;
+            }
+
+            const calculateTimeRemaining = () => {
+                const now = new Date();
+                const formattedEndDate = endDate.replace(' ', 'T');
+                const end = new Date(formattedEndDate);
+
+                if (isNaN(end.getTime())) {
+                    console.error('Invalid endDate format:', endDate);
+                    return 0;
+                }
+
+                const diffInSeconds = Math.floor((end - now) / 1000);
+                return Math.max(diffInSeconds, 0);
+            };
+
+            setTimeRemaining(calculateTimeRemaining());
 
             const timerId = setInterval(() => {
-                setTimeRemaining((prevTime) => Math.max(prevTime - 1, 0));
+                setTimeRemaining((prevTime) => {
+                    const newTimeRemaining = calculateTimeRemaining();
+                    return Math.max(newTimeRemaining, 0);
+                });
             }, 1000);
 
             return () => clearInterval(timerId);
-        }, [timeRemaining]);
+        }, [status, endDate]);
 
-
-        const percentageRemaining = (timeRemaining / initialSeconds) * 100;
-
+        const percentageRemaining = endDate && !isNaN(new Date(endDate).getTime())
+            ? (timeRemaining / ((new Date(endDate) - new Date()) / 1000)) * 100
+            : 0;
 
         let textColor = 'black';
         if (percentageRemaining <= 10) {
@@ -225,18 +239,26 @@ const Todolist = () => {
             textColor = 'black';
         }
 
+        const formatTimeFromSeconds = (seconds) => {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            // return `${hours}h ${minutes}m ${secs}s`;
+            return `${hours}h ${minutes}m ${secs}s`;
+        };
 
         return (
             <div style={{ color: textColor, marginLeft: '-12px' }}>
-                <span>{timeRemaining > 0 ? formatTimeFromSeconds(timeRemaining) : '- - -'}</span>
+                <span>{status !== 0 && timeRemaining > 0 ? formatTimeFromSeconds(timeRemaining) : '- - - - - - - '}</span>
             </div>
         );
     };
 
 
     return (
+
         // <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-        <Container sx={{ display: 'flex', flexDirection: 'column', height: '65vh', width: '60vh' }}>
+        <Container sx={{ display: 'flex', flexDirection: 'column', height: '65vh', width: '50vh' }}>
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
                 <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '0px auto', maxHeight: 350, padding: '0px' }} >
                     <Table stickyHeader >
@@ -340,13 +362,13 @@ const Todolist = () => {
                                                 whiteSpace: 'nowrap',
                                             }}>
 
-                                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', gap: 6 }}>
+                                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
                                                     <>
-                                                        <TimelapseSharpIcon />
+                                                        <TimelapseSharpIcon sx={{ marginRight: 'px' }} />
                                                     </>
                                                     <>
                                                         {/* {formatTimeFromSeconds(todo.tat)} */}
-                                                        <Timer initialSeconds={todo.tat} />
+                                                        <Timer status={todo.status} endDate={todo.end_dateTime} />
                                                     </>
                                                 </div>
 
@@ -372,7 +394,7 @@ const Todolist = () => {
                         <TableHead>
                             {userinfo.user_role === 1 ?
                                 <TableRow>
-                                    <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '95px' }} colSpan={2}>
+                                    <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '95px' }} colSpan={3}>
                                         <Typography variant="h6" sx={{ fontSize: '1rem' }}>
                                             Assigned Tasks
                                         </Typography>
@@ -514,7 +536,7 @@ const Todolist = () => {
                                                     </>
                                                     <>
                                                         {/* {formatTimeFromSeconds(todo.tat)} */}
-                                                        <Timer initialSeconds={todo.tat} />
+                                                        <Timer status={todo.status} endDate={todo.end_dateTime} />
                                                     </>
                                                 </div>
 
@@ -544,7 +566,7 @@ const Todolist = () => {
 
             />
 
-            
+
 
             <Modal
                 open={open}
@@ -598,6 +620,41 @@ const Todolist = () => {
 
                             <div style={{ display: 'flex', justifyContent: 'space-evenly', marginBottom: '16px' }}>
 
+                                <div style={{ flex: 1, alignItems: 'center', gap: '20px' }}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        style={{ color: '#28a745', fontWeight: 'bold' }}
+                                    >
+                                        Start Date & Time :
+                                    </Typography>
+                                    <Typography
+                                        variant="body1"
+                                        style={{ color: '#495057' }}
+                                    >
+                                        {formatDateTime(selectedTask.start_dateTime)}
+                                    </Typography>
+                                </div>
+
+                                <div style={{ flex: 1, alignItems: 'center', gap: '30px', textAlign: 'center' }}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        style={{ color: '#dc3545', fontWeight: 'bold' }}
+                                    >
+                                        End Date & Time :
+                                    </Typography>
+                                    <Typography
+                                        variant="body1"
+                                        style={{ color: '#495057' }}
+                                    >
+                                        {formatDateTime(selectedTask.end_dateTime)}
+                                        {/* <Timer initialSeconds={selectedTask.end_dateTime} /> */}
+                                    </Typography>
+                                </div>
+
+                            </div>
+
+                            <div style={{ display: 'flex', justifyContent: 'space-evenly', marginBottom: '16px' }}>
+
                                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '20px' }}>
                                     <Typography
                                         variant="subtitle1"
@@ -624,11 +681,12 @@ const Todolist = () => {
                                         variant="body1"
                                         style={{ color: '#495057' }}
                                     >
-                                        <Timer initialSeconds={selectedTask.tat} />
+                                        <Timer status={selectedTask.status} endDate={selectedTask.end_dateTime} />
                                     </Typography>
                                 </div>
 
                             </div>
+
 
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                 <Typography
@@ -658,7 +716,7 @@ const Todolist = () => {
                                                 <MenuItem value="open">Open</MenuItem>
                                                 <MenuItem value="in-progress">In Progress</MenuItem>
                                                 <MenuItem value="completed">Completed</MenuItem>
-                                                <MenuItem value="onhold">On hold</MenuItem>
+                                                <MenuItem value="pending">Pending</MenuItem>
                                                 <MenuItem value="done">Done</MenuItem>
                                             </Select>
                                         </FormControl>
@@ -680,7 +738,7 @@ const Todolist = () => {
                                                         backgroundColor: '#ffffff',
                                                     }}
                                                 >
-                                                    <MenuItem value="onhold">On hold</MenuItem>
+                                                    <MenuItem value="pending">Pending</MenuItem>
                                                     <MenuItem value="done">Done</MenuItem>
                                                 </Select>
                                             </FormControl>
@@ -706,13 +764,15 @@ const Todolist = () => {
 
                                         )}
                             </div>
-                            {selectedTask.status !== 0 ?
+
+
+                            {selectedTask.status !== 0 && (
                                 <div style={{ marginBottom: '16px' }}>
                                     <Typography
                                         variant="subtitle1"
                                         style={{ color: '#007bff', fontWeight: 'bold', marginBottom: '0px' }}
                                     >
-                                        Comments:
+                                        Add Comment :
                                     </Typography>
                                     <TextField
                                         label="Add a comment"
@@ -723,7 +783,42 @@ const Todolist = () => {
                                         style={{ marginTop: '8px' }}
                                         onChange={(e) => setComment(e.target.value)}
                                     />
-                                </div> : ''}
+                                </div>
+                            )}
+
+                            {selectedTask.complete_comments ?
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', maxHeight: '100px', overflowY: 'auto', marginBottom: '10px' }}>
+
+                                    <>
+                                        <Typography
+                                            variant="subtitle1"
+                                            style={{ color: '#dc3545', fontWeight: 'bold' }}
+                                        >
+                                            Comments :
+                                        </Typography>
+                                    </>
+                                    <>
+
+                                        <div style={{ maxWidth: '80%', alignSelf: 'flex-start', marginBottom: '16px' }}>
+                                            <span style={{ color: '#2a9d8f', fontWeight: 'bold' }}> Completed comments  :  </span>
+                                            {selectedTask.complete_comments}
+                                        </div>
+                                        {selectedTask.reopen_comments && (
+                                            <div style={{ maxWidth: '80%', alignSelf: 'flex-end', marginBottom: '16px' }}>
+                                                <span style={{ color: '#7161ef', fontWeight: 'bold' }}>Re-open comments: </span>
+                                                {selectedTask.reopen_comments}
+                                            </div>
+                                        )}
+                                        {selectedTask.done_comments ?
+                                            <div style={{ maxWidth: '80%', alignSelf: 'flex-start', marginBottom: '16px' }}>
+                                                <span style={{ color: '#2c0735', fontWeight: 'bold' }}>Done comments  : </span>
+                                                {selectedTask.done_comments}
+                                            </div>
+                                            : ''}
+                                    </>
+                                </div>
+                                : ''}
+
 
 
                             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
@@ -736,13 +831,21 @@ const Todolist = () => {
                                 </Button>
                                 <Button
                                     variant="contained"
-                                    style={{ backgroundColor: '#007bff', color: '#ffffff' }}
+                                    sx={{
+                                        backgroundColor: '#007bff',
+                                        color: '#ffffff',
+                                        '&:disabled': {
+                                            backgroundColor: '#A9A9A9',
+                                            color: '#FFFFFF80',
+                                        },
+                                    }}
+                                    disabled={selectedTask.status === 0 ? !Boolean(select) : (!Boolean(select) || !comment.trim())}
                                     onClick={(e) => {
-                                        e.preventDefault()
-                                        handleUpdate(selectedTask.id)
+                                        e.preventDefault();
+                                        handleUpdate(selectedTask.id);
                                     }}
                                 >
-                                    Submit
+                                    Update Task
                                 </Button>
                             </div>
                         </>

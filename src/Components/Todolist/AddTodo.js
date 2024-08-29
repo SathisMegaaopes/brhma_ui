@@ -2,16 +2,15 @@ import React, { useEffect, useState } from 'react';
 import {
     Drawer, TextField, MenuItem, Button, Typography, FormControl, InputLabel, Select, Box
 } from '@mui/material';
-import TaskTimingPicker from './time';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import URL from "../Global/Utils/url_route.js";
 import axios from "axios"
-import SuccessFailureModal from './successfailuremodal.js';
-import ConfirmationModal from './confirmationModal.js';
+import SuccessFailureModal from '../ModalComponents/successfailuremodal.js';
+import ConfirmationModal from '../ModalComponents/confirmationModal.js';
 import { formatMeridiem } from '@mui/x-date-pickers/internals';
-import { DateFormater } from '../Global/Utils/common_data.js';
+import { DateFormater, formatDateTime } from '../Global/Utils/common_data.js';
 import { VerticalAlignBottom } from '@mui/icons-material';
 
 const drawerWidth = 600;
@@ -138,6 +137,7 @@ const AddTodo = ({ value }) => {
 
     const handleCloseModal = () => {
         setOpenModal(!openModal)
+        window.location.reload()
     }
 
     const toggleDrawer = () => {
@@ -229,13 +229,6 @@ const AddTodo = ({ value }) => {
     };
 
 
-
-    const formatDateTime = (dateTime) => {
-        return dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
-    }
-
-
-
     const handleSend = async () => {
 
         let url = `${URL}todolist`;
@@ -249,16 +242,11 @@ const AddTodo = ({ value }) => {
         const startDate = formatDateTime(formState.startDateTime)
         const endDate = formatDateTime(formState.endDateTime)
 
-
-        console.log(startDate,'startDate')
-        console.log(endDate,'endDate')
-
         // const tatValue = calculateTotalDuration(formState.startDateTime, formState.endDateTime)
-        // console.log(tatValue, 'imoorttttttttttttttttttttt')
 
         try {
-            const response = await axios.post(url, { taskname , taskdes , departid , teamID , employeeID , status , startDate , endDate , userID });
-            // console.log(response.data.status,'response important')
+            const response = await axios.post(url, { taskname, taskdes, departid, teamID, employeeID, status, startDate, endDate, userID });
+
             setaddtaskstats(response.data.status)
             setOpenModal(true)
 
@@ -280,7 +268,6 @@ const AddTodo = ({ value }) => {
                 endDateTime: null,
             });
 
-
         }
         // task_name , task_description , task_dept , task_team , task_assignee , status , tat , created_by , created_at ;
 
@@ -299,114 +286,6 @@ const AddTodo = ({ value }) => {
 
             <Button variant="text" onClick={() => setOpen(true)} sx={{ fontSize: 'xs' }}>Add Task</Button>
 
-            {/* <Drawer
-                anchor="right"
-                open={open}
-                onClose={toggleDrawer}
-                sx={{ width: drawerWidth, flexShrink: 0 }}
-            >
-                <Box
-                    sx={{ width: drawerWidth, p: 5, marginTop: 4 }}
-                    role="presentation"
-                >
-                    <Typography variant="h6" gutterBottom sx={{ textAlign: 'center' }}>
-                        Task
-                    </Typography>
-                    <TextField
-                        fullWidth
-                        label="Name"
-                        name="name"
-                        value={formState.name}
-                        onChange={handleChange}
-                        margin="normal"
-                    />
-                    <TextField
-                        fullWidth
-                        label="Description"
-                        name="description"
-                        value={formState.description}
-                        onChange={handleChange}
-                        multiline
-                        rows={4}
-                        margin="normal"
-                    />
-                    {AuthorizedPerson === 1 && value === '2' ?
-                        <>
-                            <FormControl fullWidth margin="normal">
-                                <InputLabel>Department</InputLabel>
-                                <Select
-                                    name="department"
-                                    value={formState.department}
-                                    onChange={handleChange}
-                                    label="Department"
-                                >
-                                    {departments.map((item) => (
-                                        <MenuItem key={item.id} value={item.name}>{item.name}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-
-                            <FormControl fullWidth margin="normal">
-                                <InputLabel>Team</InputLabel>
-                                <Select
-                                    name="team"
-                                    value={formState.team}
-                                    onChange={handleChange}
-                                    label="Team"
-                                >
-                                    {Teams.map((items) => (
-                                        <MenuItem key={items.id} value={items.name}>{items.name}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-
-                            <FormControl fullWidth margin="normal">
-                                <InputLabel>Assignee</InputLabel>
-                                <Select
-                                    name="assignee"
-                                    value={formState.assignee}
-                                    onChange={handleChange}
-                                    label="Assignee"
-                                >
-                                    {employee.length > 0 ? (
-                                        employee.map((item) => (
-                                            <MenuItem key={item.id} value={item.f_name}>{item.f_name}</MenuItem>
-                                        ))
-                                    ) : (
-                                        <MenuItem disabled>No employees available</MenuItem>
-                                    )}
-                                </Select>
-                            </FormControl>
-                        </>
-                        : ' '}
-
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <Box sx={{ padding: 2, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 4 }}>
-                            <DateTimePicker
-                                label="Start Date & Time"
-                                value={formState.startDateTime}
-                                onChange={(newValue) => handleDateChange('startDateTime', newValue)}
-                                renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2 }} />}
-                            />
-                            <DateTimePicker
-                                label="End Date & Time"
-                                value={formState.endDateTime}
-                                onChange={(newValue) => handleDateChange('endDateTime', newValue)}
-                                renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2 }} />}
-                            />
-                        </Box>
-                    </LocalizationProvider>
-
-                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-                        <Button variant="outlined" onClick={toggleDrawer}>
-                            Cancel
-                        </Button>
-                        <Button variant="contained" onClick={handleSend} disabled={isFormIncomplete()}>
-                            Submit
-                        </Button>
-                    </Box>
-                </Box>
-            </Drawer> */}
 
             <ConfirmationModal open={confirmCancel} title={"Do you wish to cancel !"} description={"The Content will be lost "} onConfirm={handleConfirm} onClose={handleCloseConfirmationModal} />
 
@@ -525,8 +404,8 @@ const AddTodo = ({ value }) => {
                                     value={formState.endDateTime}
                                     onChange={(newValue) => handleDateChange('endDateTime', newValue)}
                                     renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2, flex: 1 }} />}
-                                    minDate={formState.startDateTime ? formState.startDateTime : dayjs()} // Ensure this is a Day.js object
-                                    minTime={formState.startDateTime && dayjs(formState.startDateTime).isSame(dayjs(), 'day') ? formState.startDateTime : null} // Ensure this is a Day.js object
+                                    minDate={formState.startDateTime ? formState.startDateTime : dayjs()}
+                                    minTime={formState.startDateTime && dayjs(formState.startDateTime).isSame(dayjs(), 'day') ? formState.startDateTime : null}
                                     sx={{ marginRight: '-15px' }}
                                 />
 
