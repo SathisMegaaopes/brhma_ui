@@ -267,7 +267,7 @@ export default function MOSDashboard() {
             Tabname: 'particularEmployee',
             TabUrl: `/dashboard/candidate-master/?employid=${id}&fromdate=${from_date}&todate=${to_date}`,
             active: 1,
-            backendUrl :`candidates/?employid=${id}&fromdate=${from_date}&todate=${to_date}`
+            backendUrl: `candidates/?employid=${id}&fromdate=${from_date}&todate=${to_date}`
 
         })
 

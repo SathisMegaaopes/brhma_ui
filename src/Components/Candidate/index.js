@@ -52,16 +52,7 @@ function MOSCandidate({emp_id,fromDate,toDate}) {
     const { sharedTab, setSharedTab } = useSharedContext();
 
 
-    // const [params] = useSearchParams()  //new
-
-    // const emp_id = params.get('employid')  //new
-
-    // const fromDate = params.get('fromdate')   //new
-
-    // const toDate = params.get('todate')    //new 
-
-
-    console.log(sharedTab,'importanttttttttttttttttttttttttttttt')
+    // console.log(sharedTab,'importanttttttttttttttttttttttttttttt')
 
 
     const [loader, setLoader] = React.useState(false);
@@ -88,16 +79,6 @@ function MOSCandidate({emp_id,fromDate,toDate}) {
             url = URL + "candidates"
 
         }
-
-        console.log(url)
-
-        // if (sharedTab.active === 1 ) {
-        //     // url = URL + `candidates/?employid=${emp_id}&fromdate=${fromDate}&todate=${toDate}`
-        //     url = URL + sharedTab.TabUrl
-        // } else {
-        //     url = URL + "candidates"
-
-        // }
 
 
         console.log(url)
