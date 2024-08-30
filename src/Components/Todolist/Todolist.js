@@ -56,15 +56,11 @@ const Todolist = () => {
 
     const [color, setColor] = useState('inherit');
 
-    // const [select, setSelect] = React.useState('');
     const [select, setSelect] = React.useState(null);
-
 
     const [open, setOpen] = useState(false);
 
     const [selectedTask, setSelectedTask] = useState(null);
-
-    console.log(selectedTask, 'this is the selected task..')
 
     const [referesh, setRefresh] = useState(false)
 
@@ -109,20 +105,6 @@ const Todolist = () => {
     }, [referesh])
 
 
-    const formatTimeFromSeconds = (seconds) => {
-
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
-
-        const formattedHours = hours.toString().padStart(2, '0');
-        const formattedMinutes = minutes.toString().padStart(2, '0');
-        const formattedSeconds = secs.toString().padStart(2, '0');
-
-        return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
-    };
-
-
     const handleClose = () => {
         setOpen(false);
         setSelect(null);
@@ -139,7 +121,7 @@ const Todolist = () => {
             case 2:
                 return <span style={{ color: '#83f28f' }}>Completed</span>;
             case 3:
-                return <span style={{ color: 'red' }}>Pending</span>;
+                return <span style={{ color: 'red' }}>Re-open</span>;
             case 4:
                 return <span style={{ color: '#008631' }}>Done</span>;
             default:
@@ -155,7 +137,7 @@ const Todolist = () => {
                 return 1
             case 'completed':
                 return 2
-            case 'pending':
+            case 'reopen':
                 return 3
             case 'done':
                 return 4
@@ -254,222 +236,91 @@ const Todolist = () => {
         );
     };
 
-
     return (
 
-        // <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-        <Container sx={{ display: 'flex', flexDirection: 'column', height: '65vh', width: '50vh' }}>
-            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
-                <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '0px auto', maxHeight: 350, padding: '0px' }} >
-                    <Table stickyHeader >
+        <>
 
-                        <TableHead>
-                            <TableRow>
-                                <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '100px' }} colSpan={2}>
-                                    <Typography variant="h6" sx={{ fontSize: '1rem' }}>
-                                        MyTasks
-                                    </Typography>
-                                </TableCell>
-                                <TableCell sx={{ padding: '0px', textAlign: 'right' }}>
-                                    <AddTodo value='1' />
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
+            <Container sx={{ display: 'flex', flexDirection: 'column', height: '80vh', width: '50vh', gap: '40px' }}>
+                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', height: 350, backgroundColor: 'white' }}>
+                    <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '0px auto', padding: '0px', }} >
+                        <Table stickyHeader >
 
-                        <TableHead >
-                            <TableRow>
-                                <TableCell align="center" sx={{ padding: '6px' }} colSpan={1} >
-                                    <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
-                                        Description
-                                    </Typography>
-                                </TableCell>
-                                <TableCell align="center" sx={{ padding: '6px' }} >
-                                    <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
-                                        Status
-                                    </Typography>
-                                </TableCell>
-                                <TableCell align="center" sx={{ padding: '6px' }} >
-                                    <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
-                                        Timer
-                                    </Typography>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {mytodoList.length > 0 ?
-                                (mytodoList.map((todo) => (
-                                    <TableRow
-                                        key={todo.id}
-                                        sx={{
-                                            '&:nth-of-type(even)': { backgroundColor: '#f5f5f5' },
-                                            '&:hover': { backgroundColor: '#e0f7fa' },
-
-                                        }}
-                                        onClick={() => {
-                                            const id = todo.id
-                                            const task = mytodoList.find((tdo) => tdo.id === id);
-                                            setSelectedTask(task);
-                                            setOpen(true);
-                                        }}
-                                    >
-                                        <TableCell align="center" sx={{ padding: '12px' }} colSpan={1}>
-                                            <Tooltip
-                                                TransitionComponent={Fade}
-                                                TransitionProps={{ timeout: 600 }}
-                                                arrow
-                                                placement="top"
-                                                title={<span style={{ fontSize: '17px' }}>{todo.task_name}</span>}
-                                            >
-                                                <Typography
-                                                    sx={{
-                                                        padding: 0.5,
-                                                        fontWeight: 'normal',
-                                                        color: '#3f51b5',
-                                                        fontSize: '0.9rem',
-                                                        overflow: 'hidden',
-                                                        whiteSpace: 'nowrap',
-                                                        textOverflow: 'ellipsis',
-                                                        cursor: 'pointer',
-                                                    }}
-                                                >
-                                                    <span>{todo.task_name.length > 30 ? `${todo.task_name.slice(0, 40)}...` : todo.task_name}</span>
-                                                </Typography>
-                                            </Tooltip>
-                                        </TableCell>
-
-                                        <TableCell align="center" sx={{ padding: '4px' }}>
-                                            <Typography
-                                                sx={{
-                                                    padding: 0.5,
-                                                    fontWeight: 'normal',
-                                                    color: '#3f51b5',
-                                                    fontSize: '0.9rem',
-                                                    overflow: 'hidden',
-                                                    whiteSpace: 'nowrap',
-                                                    // textOverflow: 'ellipsis',
-                                                    cursor: 'pointer',
-                                                }}
-                                            >
-                                                {handleStatus(todo.status)}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell align='justify' sx={{ padding: '4px' }}>
-                                            <Typography variant="subtitle2" color={color} sx={{
-                                                padding: 0.5,
-                                                fontSize: '0.9rem',
-                                                overflow: 'hidden',
-                                                whiteSpace: 'nowrap',
-                                            }}>
-
-                                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                                                    <>
-                                                        <TimelapseSharpIcon sx={{ marginRight: 'px' }} />
-                                                    </>
-                                                    <>
-                                                        {/* {formatTimeFromSeconds(todo.tat)} */}
-                                                        <Timer status={todo.status} endDate={todo.end_dateTime} />
-                                                    </>
-                                                </div>
-
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                ))) : (
-                                    <TableRow>
-                                        <TableCell colSpan={6} align="center" sx={{ py: 4, fontStyle: 'italic', color: 'gray', fontSize: '1.2rem' }}>
-                                            No tasks currently available
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Box>
-
-            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
-
-                <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '10px auto', maxHeight: 350, paddingTop: '0px' }} >
-                    <Table stickyHeader >
-                        <TableHead>
-                            {userinfo.user_role === 1 ?
-                                <TableRow>
-                                    <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '95px' }} colSpan={3}>
+                            <TableHead >
+                                <TableRow >
+                                    <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '100px' }} colSpan={2}>
                                         <Typography variant="h6" sx={{ fontSize: '1rem' }}>
-                                            Assigned Tasks
+                                            MyTasks
                                         </Typography>
                                     </TableCell>
-                                    <TableCell sx={{ padding: '0px', textAlign: 'right' }} colSpan={4}>
-                                        <AddTodo value='2' />
+                                    <TableCell sx={{ padding: '0px', textAlign: 'right' }}>
+                                        <AddTodo value='1' />
                                     </TableCell>
                                 </TableRow>
+                            </TableHead>
 
-                                :
+                            <TableHead >
                                 <TableRow>
-                                    <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '0px' }} colSpan={4}>
-                                        <Typography variant="h6" sx={{ fontSize: '1rem' }}>
-                                            Assigned Tasks
+                                    <TableCell align="center" sx={{ padding: '6px' }} colSpan={1} >
+                                        <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
+                                            Task Name
                                         </Typography>
                                     </TableCell>
-                                    <TableCell sx={{ padding: '0px', textAlign: 'right' }} colSpan={0}>
-                                    </TableCell>
-                                </TableRow>
-                            }
-                        </TableHead>
-
-                        <TableHead >
-                            <TableRow>
-                                <TableCell align="center" sx={{ padding: '6px' }} >
-                                    <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
-                                        Description
-                                    </Typography>
-                                </TableCell>
-                                {userinfo.user_role === 1 ?
                                     <TableCell align="center" sx={{ padding: '6px' }} >
                                         <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
-                                            Assignee
+                                            Status
                                         </Typography>
-                                    </TableCell> : ''}
-                                <TableCell align="center" sx={{ padding: '6px' }} >
-                                    <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
-                                        Status
-                                    </Typography>
-                                </TableCell>
-                                <TableCell align="center" sx={{ padding: '6px' }} >
-                                    <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
-                                        Timer
-                                    </Typography>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
+                                    </TableCell>
+                                    <TableCell align="center" sx={{ padding: '6px' }} >
+                                        <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
+                                            Timer
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
 
+                            <TableBody>
+                                {mytodoList.length > 0 ?
+                                    (mytodoList.map((todo) => (
+                                        <TableRow
+                                            key={todo.id}
+                                            sx={{
+                                                '&:nth-of-type(even)': { backgroundColor: '#f5f5f5' },
+                                                '&:hover': { backgroundColor: '#e0f7fa' },
 
-                        <TableBody>
-                            {othertasks.length > 0 ?
-                                (othertasks.map((todo) => (
-                                    <TableRow
-                                        key={todo.id}
-                                        sx={{
-                                            '&:nth-of-type(even)': { backgroundColor: '#f5f5f5' },
-                                            '&:hover': { backgroundColor: '#e0f7fa' },
-                                        }}
-                                        // onClick={handleOpen(todo.id)}
-                                        onClick={() => {
-                                            const id = todo.id
-                                            const task = othertasks.find((tdo) => tdo.id === id);
-                                            setSelectedTask(task);
-                                            setOpen(true);
-                                        }}
-                                    >
-                                        <TableCell align="center" sx={{ padding: '12px' }}>
+                                            }}
+                                            onClick={() => {
+                                                const id = todo.id
+                                                const task = mytodoList.find((tdo) => tdo.id === id);
+                                                setSelectedTask(task);
+                                                setOpen(true);
+                                            }}
+                                        >
+                                            <TableCell align="center" sx={{ padding: '12px' }} colSpan={1}>
+                                                <Tooltip
+                                                    TransitionComponent={Fade}
+                                                    TransitionProps={{ timeout: 600 }}
+                                                    arrow
+                                                    placement="top"
+                                                    title={<span style={{ fontSize: '17px' }}>{todo.task_name}</span>}
+                                                >
+                                                    <Typography
+                                                        sx={{
+                                                            padding: 0.5,
+                                                            fontWeight: 'normal',
+                                                            color: '#3f51b5',
+                                                            fontSize: '0.9rem',
+                                                            overflow: 'hidden',
+                                                            whiteSpace: 'nowrap',
+                                                            textOverflow: 'ellipsis',
+                                                            cursor: 'pointer',
+                                                        }}
+                                                    >
+                                                        <span>{todo.task_name.length > 10 ? `${todo.task_name.slice(0, 10)}...` : todo.task_name}</span>
+                                                    </Typography>
+                                                </Tooltip>
+                                            </TableCell>
 
-                                            <Tooltip
-                                                TransitionComponent={Fade}
-                                                TransitionProps={{ timeout: 600 }}
-                                                arrow
-                                                placement="top"
-                                                title={<span style={{ fontSize: '17px' }}>{todo.task_name}</span>}
-                                            >
+                                            <TableCell align="center" sx={{ padding: '4px' }}>
                                                 <Typography
                                                     sx={{
                                                         padding: 0.5,
@@ -478,83 +329,212 @@ const Todolist = () => {
                                                         fontSize: '0.9rem',
                                                         overflow: 'hidden',
                                                         whiteSpace: 'nowrap',
-                                                        textOverflow: 'ellipsis',
                                                         cursor: 'pointer',
                                                     }}
                                                 >
-                                                    <span>{todo.task_name.length > 16 ? `${todo.task_name.slice(0, 19)}...` : todo.task_name}</span>
+                                                    {handleStatus(todo.status)}
                                                 </Typography>
-                                            </Tooltip>
-                                        </TableCell>
+                                            </TableCell>
 
-                                        {userinfo.user_role === 1 ?
-                                            <TableCell align="justify" sx={{ padding: '4px' }}>
-                                                <Typography
-                                                    sx={{
-                                                        padding: 0.5,
-                                                        fontWeight: 'normal',
-                                                        color: '#3f51b5',
-                                                        fontSize: '0.9rem',
-                                                        overflow: 'hidden',
-                                                        whiteSpace: 'nowrap',
-                                                        // textOverflow: 'ellipsis',
-                                                        cursor: 'pointer',
-                                                    }}
-                                                >
-                                                    To : {todo.task_assignee.length > 7 ? `${todo.Asignee.slice(0, 9)}...` : todo.task_assignee}
-                                                </Typography>
-                                            </TableCell> : ''}
-
-                                        <TableCell align="center" sx={{ padding: '4px' }}>
-                                            <Typography
-                                                sx={{
+                                            <TableCell align='justify' sx={{ padding: '4px' }}>
+                                                <Typography variant="subtitle2" color={color} sx={{
                                                     padding: 0.5,
-                                                    fontWeight: 'normal',
-                                                    color: '#3f51b5',
                                                     fontSize: '0.9rem',
                                                     overflow: 'hidden',
                                                     whiteSpace: 'nowrap',
-                                                    // textOverflow: 'ellipsis',
-                                                    cursor: 'pointer',
-                                                }}
-                                            >
-                                                {handleStatus(todo.status)}
-                                            </Typography>
-                                        </TableCell>
+                                                }}>
 
-                                        <TableCell align='center' sx={{ padding: '4px' }}>
-                                            <Typography variant="subtitle2" color={color} sx={{
-                                                padding: 0.5,
-                                                fontSize: '0.9rem',
-                                                overflow: 'hidden',
-                                                whiteSpace: 'nowrap',
-                                            }}>
+                                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center',gap:6 }}>
+                                                        <>
+                                                            <TimelapseSharpIcon sx={{ marginRight: 'px' }} />
+                                                        </>
+                                                        <>
+                                                            <Timer status={todo.status} endDate={todo.end_dateTime} />
+                                                        </>
+                                                    </div>
 
-                                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', gap: 14 }}>
-                                                    <>
-                                                        <TimelapseSharpIcon sx={{ marginTop: '-2px' }} />
-                                                    </>
-                                                    <>
-                                                        {/* {formatTimeFromSeconds(todo.tat)} */}
-                                                        <Timer status={todo.status} endDate={todo.end_dateTime} />
-                                                    </>
-                                                </div>
+                                                </Typography>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))) : (
+                                        <TableRow>
+                                            <TableCell colSpan={6} align="center" sx={{ py: 14, fontStyle: 'italic', color: 'gray', fontSize: '1.2rem' }}>
+                                                No tasks currently available
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                            </TableBody>
 
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                ))) : (
+                        </Table>
+                    </TableContainer>
+                </Box>
+
+
+                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', backgroundColor: 'White' }}>
+                    <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '0px auto', maxHeight: 350, paddingTop: '0px' }} >
+                        <Table stickyHeader >
+
+                            <TableHead>
+                                {userinfo.user_role === 1 ?
                                     <TableRow>
-                                        <TableCell colSpan={6} align="center" sx={{ py: 4, fontStyle: 'italic', color: 'gray', fontSize: '1.2rem' }}>
-                                            No tasks currently available
+                                        <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '95px' }} colSpan={3}>
+                                            <Typography variant="h6" sx={{ fontSize: '1rem' }}>
+                                                Assigned Tasks
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell sx={{ padding: '0px', textAlign: 'right' }} colSpan={4}>
+                                            <AddTodo value='2' />
                                         </TableCell>
                                     </TableRow>
-                                )}
-                        </TableBody>
 
-                    </Table>
-                </TableContainer>
-            </Box>
+                                    :
+                                    <TableRow>
+                                        <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '0px' }} colSpan={4}>
+                                            <Typography variant="h6" sx={{ fontSize: '1rem' }}>
+                                                Assigned Tasks
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell sx={{ padding: '0px', textAlign: 'right' }} colSpan={0}>
+                                        </TableCell>
+                                    </TableRow>
+                                }
+                            </TableHead>
+
+                            <TableHead >
+                                <TableRow>
+                                    <TableCell align="center" sx={{ padding: '8px' }} >
+                                        <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
+                                            Task Name
+                                        </Typography>
+                                    </TableCell>
+                                    {userinfo.user_role === 1 ?
+                                        <TableCell align="center" sx={{ padding: '8px' }} >
+                                            <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
+                                                Assignee
+                                            </Typography>
+                                        </TableCell> : ''}
+                                    <TableCell align="center" sx={{ padding: '8px' }} >
+                                        <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
+                                            Status
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell align="center" sx={{ padding: '8px' }} >
+                                        <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
+                                            Timer
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+
+                            <TableBody>
+                                {othertasks.length > 0 ?
+                                    (othertasks.map((todo) => (
+                                        <TableRow
+                                            key={todo.id}
+                                            sx={{
+                                                '&:nth-of-type(even)': { backgroundColor: '#f5f5f5' },
+                                                '&:hover': { backgroundColor: '#e0f7fa' },
+                                            }}
+                                            onClick={() => {
+                                                const id = todo.id
+                                                const task = othertasks.find((tdo) => tdo.id === id);
+                                                setSelectedTask(task);
+                                                setOpen(true);
+                                            }}
+                                        >
+                                            <TableCell align="center" sx={{ padding: '12px' }}>
+
+                                                <Tooltip
+                                                    TransitionComponent={Fade}
+                                                    TransitionProps={{ timeout: 600 }}
+                                                    arrow
+                                                    placement="top"
+                                                    title={<span style={{ fontSize: '17px' }}>{todo.task_name}</span>}
+                                                >
+                                                    <Typography
+                                                        sx={{
+                                                            padding: 0.5,
+                                                            fontWeight: 'normal',
+                                                            color: '#3f51b5',
+                                                            fontSize: '0.9rem',
+                                                            overflow: 'hidden',
+                                                            whiteSpace: 'nowrap',
+                                                            textOverflow: 'ellipsis',
+                                                            cursor: 'pointer',
+                                                        }}
+                                                    >
+                                                        <span>{todo.task_name.length > 10 ? `${todo.task_name.slice(0, 10)}...` : todo.task_name}</span>
+                                                    </Typography>
+                                                </Tooltip>
+                                            </TableCell>
+
+                                            {userinfo.user_role === 1 ?
+                                                <TableCell align="justify" sx={{ padding: '4px' }}>
+                                                    <Typography
+                                                        sx={{
+                                                            padding: 0.5,
+                                                            fontWeight: 'normal',
+                                                            color: '#3f51b5',
+                                                            fontSize: '0.9rem',
+                                                            overflow: 'hidden',
+                                                            whiteSpace: 'nowrap',
+                                                            cursor: 'pointer',
+                                                        }}
+                                                    >
+                                                        To : {todo.task_assignee.length > 7 ? `${todo.Asignee.slice(0, 9)}...` : todo.task_assignee}
+                                                    </Typography>
+                                                </TableCell> : ''}
+
+                                            <TableCell align="center" sx={{ padding: '4px' }}>
+                                                <Typography
+                                                    sx={{
+                                                        padding: 0.5,
+                                                        fontWeight: 'normal',
+                                                        color: '#3f51b5',
+                                                        fontSize: '0.9rem',
+                                                        overflow: 'hidden',
+                                                        whiteSpace: 'nowrap',
+                                                        cursor: 'pointer',
+                                                    }}
+                                                >
+                                                    {handleStatus(todo.status)}
+                                                </Typography>
+                                            </TableCell>
+
+                                            <TableCell align='center' sx={{ padding: '4px' }}>
+                                                <Typography variant="subtitle2" color={color} sx={{
+                                                    padding: 0.5,
+                                                    fontSize: '0.9rem',
+                                                    overflow: 'hidden',
+                                                    whiteSpace: 'nowrap',
+                                                }}>
+
+                                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', gap: 14 }}>
+                                                        <>
+                                                            <TimelapseSharpIcon sx={{ marginTop: '-2px' }} />
+                                                        </>
+                                                        <>
+                                                            <Timer status={todo.status} endDate={todo.end_dateTime} />
+                                                        </>
+                                                    </div>
+
+                                                </Typography>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))) : (
+                                        <TableRow>
+                                            <TableCell colSpan={6} align="center" sx={{ py: 14, fontStyle: 'italic', color: 'gray', fontSize: '1.2rem' }}>
+                                                No tasks currently available
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                            </TableBody>
+
+                        </Table>
+                    </TableContainer>
+                </Box>
+            </Container >
+
 
 
             <SuccessFailureModal
@@ -563,7 +543,6 @@ const Todolist = () => {
                 status={updateStatus}
                 successmsg={"Task updated successfully"}
                 errormsg={"Something went wrong, Please try again !"}
-
             />
 
 
@@ -647,7 +626,6 @@ const Todolist = () => {
                                         style={{ color: '#495057' }}
                                     >
                                         {formatDateTime(selectedTask.end_dateTime)}
-                                        {/* <Timer initialSeconds={selectedTask.end_dateTime} /> */}
                                     </Typography>
                                 </div>
 
@@ -716,7 +694,7 @@ const Todolist = () => {
                                                 <MenuItem value="open">Open</MenuItem>
                                                 <MenuItem value="in-progress">In Progress</MenuItem>
                                                 <MenuItem value="completed">Completed</MenuItem>
-                                                <MenuItem value="pending">Pending</MenuItem>
+                                                <MenuItem value="reopen">Re-open</MenuItem>
                                                 <MenuItem value="done">Done</MenuItem>
                                             </Select>
                                         </FormControl>
@@ -738,7 +716,7 @@ const Todolist = () => {
                                                         backgroundColor: '#ffffff',
                                                     }}
                                                 >
-                                                    <MenuItem value="pending">Pending</MenuItem>
+                                                    <MenuItem value="reopen">Re-open</MenuItem>
                                                     <MenuItem value="done">Done</MenuItem>
                                                 </Select>
                                             </FormControl>
@@ -765,14 +743,13 @@ const Todolist = () => {
                                         )}
                             </div>
 
-
-                            {selectedTask.status !== 0 && (
+                            {(selectedTask.status !== 4 && selectedTask.status !== 0) && (
                                 <div style={{ marginBottom: '16px' }}>
                                     <Typography
                                         variant="subtitle1"
                                         style={{ color: '#007bff', fontWeight: 'bold', marginBottom: '0px' }}
                                     >
-                                        Add Comment :
+                                        Add Comment:
                                     </Typography>
                                     <TextField
                                         label="Add a comment"
@@ -785,6 +762,7 @@ const Todolist = () => {
                                     />
                                 </div>
                             )}
+
 
                             {selectedTask.complete_comments ?
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', maxHeight: '100px', overflowY: 'auto', marginBottom: '10px' }}>
@@ -820,40 +798,40 @@ const Todolist = () => {
                                 : ''}
 
 
-
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
-                                <Button
-                                    variant="contained"
-                                    onClick={handleClose}
-                                    style={{ backgroundColor: '#6c757d', color: '#ffffff' }}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        backgroundColor: '#007bff',
-                                        color: '#ffffff',
-                                        '&:disabled': {
-                                            backgroundColor: '#A9A9A9',
-                                            color: '#FFFFFF80',
-                                        },
-                                    }}
-                                    disabled={selectedTask.status === 0 ? !Boolean(select) : (!Boolean(select) || !comment.trim())}
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        handleUpdate(selectedTask.id);
-                                    }}
-                                >
-                                    Update Task
-                                </Button>
-                            </div>
+                            {selectedTask.status !== 4 ?
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleClose}
+                                        style={{ backgroundColor: '#6c757d', color: '#ffffff' }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            backgroundColor: '#007bff',
+                                            color: '#ffffff',
+                                            '&:disabled': {
+                                                backgroundColor: '#A9A9A9',
+                                                color: '#FFFFFF80',
+                                            },
+                                        }}
+                                        disabled={selectedTask.status === 0 ? !Boolean(select) : (!Boolean(select) || !comment.trim())}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleUpdate(selectedTask.id);
+                                        }}
+                                    >
+                                        Update Task
+                                    </Button>
+                                </div>
+                                : ''}
                         </>
                     )}
                 </div>
             </Modal >
-        </Container >
-
+        </>
     )
 
 }

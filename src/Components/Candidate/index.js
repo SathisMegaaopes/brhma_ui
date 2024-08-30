@@ -42,23 +42,32 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { useSharedContext } from '../../Context.js';
 
 
 
-function MOSCandidate() {
+function MOSCandidate({emp_id,fromDate,toDate}) {
 
-    const [params] = useSearchParams()  //new
 
-    const emp_id = params.get('employid')  //new
+    const { sharedTab, setSharedTab } = useSharedContext();
 
-    const fromDate = params.get('fromdate')   //new
 
-    const toDate = params.get('todate')    //new 
+    // const [params] = useSearchParams()  //new
 
-  
+    // const emp_id = params.get('employid')  //new
+
+    // const fromDate = params.get('fromdate')   //new
+
+    // const toDate = params.get('todate')    //new 
+
+
+    console.log(sharedTab,'importanttttttttttttttttttttttttttttt')
+
+
     const [loader, setLoader] = React.useState(false);
     const [candidates, setCandidates] = React.useState([]);
     const [emp_details, setEmp] = React.useState([]);
+
     const user_session = sessionStorage.getItem("user_info");
 
 
@@ -71,12 +80,28 @@ function MOSCandidate() {
         setLoader(true);
 
         let url;
-        if (emp_id) {
-            url = URL + `candidates/?employid=${emp_id}&fromdate=${fromDate}&todate=${toDate}`
+
+        if (sharedTab.active === 1) {
+            // url = URL + `candidates/?employid=${emp_id}&fromdate=${fromDate}&todate=${toDate}`
+            url = URL + sharedTab.backendUrl
         } else {
             url = URL + "candidates"
 
         }
+
+        console.log(url)
+
+        // if (sharedTab.active === 1 ) {
+        //     // url = URL + `candidates/?employid=${emp_id}&fromdate=${fromDate}&todate=${toDate}`
+        //     url = URL + sharedTab.TabUrl
+        // } else {
+        //     url = URL + "candidates"
+
+        // }
+
+
+        console.log(url)
+
         axios.get(url)
             .then((response) => {
                 if (response.data.status === 0) {
@@ -96,6 +121,7 @@ function MOSCandidate() {
 
 
     const [anchorEl, setAnchorEl] = React.useState(null);
+
     const [searchKey, setSearchKey] = React.useState("");
 
 

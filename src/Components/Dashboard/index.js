@@ -45,6 +45,7 @@ import CandidateTable from "../CandidateTable";
 // import Sidebar from "./SidebarNaviagtion"
 import { ThemeContext } from "@emotion/react";
 import Todolist from "../Todolist/Todolist";
+import { useSharedContext } from "../../Context";
 // import DatabaseIcon from '@mui/icons-material/Database';
 
 
@@ -52,14 +53,14 @@ import Todolist from "../Todolist/Todolist";
 export default function MOSDashboard() {
 
 
+    const { sharedTab, setSharedTab } = useSharedContext()
+
+
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
+
     const user_session = sessionStorage.getItem("user_info");
 
-    // console.log(typeof (userinfo.user_role), 'this is first one')
-
     const AuthorizedPerson = userinfo.user_role
-
-
 
     const history = useNavigate();
 
@@ -255,20 +256,26 @@ export default function MOSDashboard() {
         pb: 3,
     };
 
+
     const handleNext = (e, id) => {
 
-        history(
-            `/dashboard/candidate-master/?employid=${id}&fromdate=${from_date}&todate=${to_date}`
-        );
+        // history(
+        //     `/dashboard/candidate-master/?employid=${id}&fromdate=${from_date}&todate=${to_date}`
+        // );
+
+        setSharedTab({
+            Tabname: 'particularEmployee',
+            TabUrl: `/dashboard/candidate-master/?employid=${id}&fromdate=${from_date}&todate=${to_date}`,
+            active: 1,
+            backendUrl :`candidates/?employid=${id}&fromdate=${from_date}&todate=${to_date}`
+
+        })
+
     };
 
 
-    const Heading = 'h6'
-    const subtitle1 = 'subtitle1'
-
     return (
-        <Container style={{ display: 'flex', alignItems:'center' }}>
-        {/* // <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}> */}
+        <Container style={{ display: 'flex', alignItems: 'center' }}>
             <Container maxWidth="lg" sx={{ marginTop: "0px" }}>
                 <Typography variant='h6' sx={{ margin: "8px" }}>
                     Welcome {userinfo?.user_details?.emp_name} !
@@ -434,9 +441,6 @@ export default function MOSDashboard() {
             </Container>
 
             <Container>
-                                                
-            </Container>
-            <Container>
 
             </Container>
             <Container>
@@ -481,9 +485,12 @@ export default function MOSDashboard() {
             <Container>
 
             </Container>
+            <Container>
 
-          
-            <Container maxWidth="lg" sx={{ marginTop: "20px" ,flex:'6' ,display:'flex',justifyContent:'flex-end' }} >
+            </Container>
+
+
+            <Container maxWidth="lg" sx={{ marginTop: "20px", flex: '6', display: 'flex', justifyContent: 'flex-end' }} >
                 <Todolist />
             </Container>
 
@@ -492,8 +499,3 @@ export default function MOSDashboard() {
 
     );
 }
-
-
-// <Container maxWidth="lg" sx={{ marginTop: "20px" }}>
-
-// </Container>

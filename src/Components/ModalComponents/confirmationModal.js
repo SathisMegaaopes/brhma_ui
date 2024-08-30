@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Box, Typography, Button } from '@mui/material';
 
+
 const ConfirmationModal = ({ open, onClose, onConfirm, title, description }) => {
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="modal-title" aria-describedby="modal-description">
@@ -11,7 +12,7 @@ const ConfirmationModal = ({ open, onClose, onConfirm, title, description }) => 
           left: '50%',
           transform: 'translate(-50%, -50%)',
           width: 400,
-          bgcolor: '#F8F9FA', // Beautiful light gray for a clean background
+          bgcolor: '#F8F9FA',
           boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.25)',
           p: 4,
           borderRadius: 4,
@@ -28,8 +29,8 @@ const ConfirmationModal = ({ open, onClose, onConfirm, title, description }) => 
           <Button
             variant="contained"
             sx={{
-              background: 'linear-gradient(135deg, #56ab2f, #a8e063)', // Green gradient from forest green to lime green
-              '&:hover': { background: 'linear-gradient(135deg, #3b7a1e, #8bc34a)' }, // Slightly darker green gradient on hover
+              background: 'linear-gradient(135deg, #56ab2f, #a8e063)', 
+              '&:hover': { background: 'linear-gradient(135deg, #3b7a1e, #8bc34a)' }, 
               color: '#FFF',
               boxShadow: '0px 4px 12px rgba(88, 172, 53, 0.5)',
             }}
@@ -40,8 +41,8 @@ const ConfirmationModal = ({ open, onClose, onConfirm, title, description }) => 
           <Button
             variant="contained"
             sx={{
-              background: 'linear-gradient(135deg, #e52d27, #ff6a5f)', // Red gradient from crimson to coral
-              '&:hover': { background: 'linear-gradient(135deg, #c1271a, #ff5347)' }, // Slightly darker red gradient on hover
+              background: 'linear-gradient(135deg, #e52d27, #ff6a5f)',
+              '&:hover': { background: 'linear-gradient(135deg, #c1271a, #ff5347)' }, 
               color: '#FFF',
               boxShadow: '0px 4px 12px rgba(230, 45, 39, 0.5)',
             }}

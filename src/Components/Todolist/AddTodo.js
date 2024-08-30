@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Drawer, TextField, MenuItem, Button, Typography, FormControl, InputLabel, Select, Box
+    Drawer, TextField, MenuItem, Button, Typography, FormControl, InputLabel, Select, Box,
 } from '@mui/material';
-import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import URL from "../Global/Utils/url_route.js";
 import axios from "axios"
 import SuccessFailureModal from '../ModalComponents/successfailuremodal.js';
 import ConfirmationModal from '../ModalComponents/confirmationModal.js';
-import { formatMeridiem } from '@mui/x-date-pickers/internals';
 import { DateFormater, formatDateTime } from '../Global/Utils/common_data.js';
-import { VerticalAlignBottom } from '@mui/icons-material';
+
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
+
 
 const drawerWidth = 600;
 
@@ -43,19 +44,12 @@ const AddTodo = ({ value }) => {
     const [formState, setFormState] = useState({
         name: '',
         description: '',
-        // department: value === '1' ? userinfo.user_role : null,
-        // team: value === '1' ? userinfo.user_role : null ,
-        // assignee: value === '1' ? userinfo.user_name : null,
         department: null,
         team: null,
         assignee: null,
         startDateTime: null,
         endDateTime: null
     });
-
-
-    // console.log(formState)
-
 
 
     useEffect(() => {
@@ -100,13 +94,11 @@ const AddTodo = ({ value }) => {
                 const fetchedEmployees = response.data.data;
 
                 setEmployee(fetchedEmployees);
-                console.log(fetchedEmployees);
 
                 if (importantValue === '1') {
                     const getLoggedUserDetails = fetchedEmployees.find((item) => item["Emp ID"] === userinfo.user_details.emp_id);
 
                     if (getLoggedUserDetails) {
-                        console.log('this is executed');
 
                         setdepartid(getLoggedUserDetails.Department);
                         setteamID(getLoggedUserDetails.Team);
@@ -121,7 +113,6 @@ const AddTodo = ({ value }) => {
                     }
                 }
 
-                // console.log(formState);
             })
             .catch((error) => {
                 console.error('Error fetching employee data:', error);
@@ -139,11 +130,6 @@ const AddTodo = ({ value }) => {
         setOpenModal(!openModal)
         window.location.reload()
     }
-
-    const toggleDrawer = () => {
-        // setOpen(!open);
-
-    };
 
     const handleCloseConfirmationModal = () => {
         setConfirmCancel(false)
@@ -242,8 +228,6 @@ const AddTodo = ({ value }) => {
         const startDate = formatDateTime(formState.startDateTime)
         const endDate = formatDateTime(formState.endDateTime)
 
-        // const tatValue = calculateTotalDuration(formState.startDateTime, formState.endDateTime)
-
         try {
             const response = await axios.post(url, { taskname, taskdes, departid, teamID, employeeID, status, startDate, endDate, userID });
 
@@ -286,15 +270,15 @@ const AddTodo = ({ value }) => {
 
             <Button variant="text" onClick={() => setOpen(true)} sx={{ fontSize: 'xs' }}>Add Task</Button>
 
-
             <ConfirmationModal open={confirmCancel} title={"Do you wish to cancel !"} description={"The Content will be lost "} onConfirm={handleConfirm} onClose={handleCloseConfirmationModal} />
-
 
             <Drawer
                 anchor="right"
                 open={open}
-                // onClose={toggleDrawer}
-                sx={{ width: drawerWidth, flexShrink: 0 }}
+                sx={{
+                    width: drawerWidth, flexShrink: 0,
+
+                }}
             >
                 <Box
                     sx={{
@@ -304,125 +288,142 @@ const AddTodo = ({ value }) => {
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'space-between',
-                        height: '100%'
+                        height: '100%',
+                        backgroundImage:' linear-gradient(-225deg, #E3FDF5 0%, #FFE6FA 100%);'
                     }}
-                    role="presentation"
+                role="presentation"
                 >
-                    <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <Typography variant="h6" gutterBottom sx={{ textAlign: 'center' }}>
-                            Task
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            label={<span>Name<span style={{ color: 'red' }}> *</span></span>}
-                            name="name"
-                            value={formState.name}
-                            onChange={handleChange}
-                            margin="normal"
-                        />
-                        <TextField
-                            fullWidth
-                            // label="Description"
-                            label={<span>Description<span style={{ color: 'red' }}> *</span></span>}
-                            name="description"
-                            value={formState.description}
-                            onChange={handleChange}
-                            multiline
-                            rows={4}
-                            margin="normal"
-                        />
-                        {AuthorizedPerson === 1 && value === '2' && (
-                            <>
-                                <FormControl fullWidth margin="normal">
-                                    <InputLabel>Department <span style={{ color: 'red' }}> *</span></InputLabel>
-                                    <Select
-                                        name="department"
-                                        value={formState.department}
-                                        onChange={handleChange}
-                                        label="Department"
+                <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+                    <Typography variant="h6" gutterBottom sx={{ textAlign: 'center' }}>
+                        Task
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        label={<span>Name<span style={{ color: 'red' }}> *</span></span>}
+                        name="name"
+                        value={formState.name}
+                        onChange={handleChange}
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label={<span>Description<span style={{ color: 'red' }}> *</span></span>}
+                        name="description"
+                        value={formState.description}
+                        onChange={handleChange}
+                        multiline
+                        rows={4}
+                        margin="normal"
+                    />
+                    {AuthorizedPerson === 1 && value === '2' && (
+                        <>
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel>Department <span style={{ color: 'red' }}> *</span></InputLabel>
+                                <Select
+                                    name="department"
+                                    value={formState.department}
+                                    onChange={handleChange}
+                                    label="Department"
 
-                                    >
-                                        {departments.map((item) => (
-                                            <MenuItem key={item.id} value={item.name}>{item.name}</MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
+                                >
+                                    {departments.map((item) => (
+                                        <MenuItem key={item.id} value={item.name}>{item.name}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
 
-                                <FormControl fullWidth margin="normal">
-                                    <InputLabel>Team <span style={{ color: 'red' }}> *</span></InputLabel>
-                                    <Select
-                                        name="team"
-                                        value={formState.team}
-                                        onChange={handleChange}
-                                        label="Team"
-                                        disabled={!Boolean(formState.department)}
-                                    >
-                                        {Teams.map((items) => (
-                                            <MenuItem key={items.id} value={items.name}>{items.name}</MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel>Team <span style={{ color: 'red' }}> *</span></InputLabel>
+                                <Select
+                                    name="team"
+                                    value={formState.team}
+                                    onChange={handleChange}
+                                    label="Team"
+                                    disabled={!Boolean(formState.department)}
+                                >
+                                    {Teams.map((items) => (
+                                        <MenuItem key={items.id} value={items.name}>{items.name}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
 
-                                <FormControl fullWidth margin="normal">
-                                    <InputLabel>Assignee <span style={{ color: 'red' }}> *</span></InputLabel>
-                                    <Select
-                                        name="assignee"
-                                        value={formState.assignee}
-                                        onChange={handleChange}
-                                        label="Assignee"
-                                        disabled={!Boolean(formState.team)}
-                                    >
-                                        {employee.length > 0 ? (
-                                            employee.map((item) => (
-                                                <MenuItem key={item.id} value={item.f_name}>{item.f_name}</MenuItem>
-                                            ))
-                                        ) : (
-                                            <MenuItem disabled>No employees available</MenuItem>
-                                        )}
-                                    </Select>
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel>Assignee <span style={{ color: 'red' }}> *</span></InputLabel>
+                                <Select
+                                    name="assignee"
+                                    value={formState.assignee}
+                                    onChange={handleChange}
+                                    label="Assignee"
+                                    disabled={!Boolean(formState.team)}
+                                >
+                                    {employee.length > 0 ? (
+                                        employee.map((item) => (
+                                            <MenuItem key={item.id} value={item.f_name}>{item.f_name}</MenuItem>
+                                        ))
+                                    ) : (
+                                        <MenuItem disabled>No employees available</MenuItem>
+                                    )}
+                                </Select>
 
-                                </FormControl>
+                            </FormControl>
 
-                            </>
-                        )}
+                        </>
+                    )}
 
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <Box sx={{ padding: 2, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 4 }}>
-                                <DateTimePicker
-                                    // label="Start Date & Time"
-                                    label={<span>Start Date & Time<span style={{ color: 'red' }}> *</span></span>}
-                                    value={formState.startDateTime}
-                                    onChange={(newValue) => handleDateChange('startDateTime', newValue)}
-                                    renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2, flex: 1 }} />}
-                                    minDate={dayjs()} // Ensure this is a Day.js object
-                                    minTime={formState.startDateTime ? formState.startDateTime : dayjs()}
-                                    sx={{ marginLeft: '-15px' }} // Ensure this is a Day.js object
-                                />
-                                <DateTimePicker
-                                    // label="End Date & Time"
-                                    label={<span>End Date & Time<span style={{ color: 'red' }}> *</span></span>}
-                                    value={formState.endDateTime}
-                                    onChange={(newValue) => handleDateChange('endDateTime', newValue)}
-                                    renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2, flex: 1 }} />}
-                                    minDate={formState.startDateTime ? formState.startDateTime : dayjs()}
-                                    minTime={formState.startDateTime && dayjs(formState.startDateTime).isSame(dayjs(), 'day') ? formState.startDateTime : null}
-                                    sx={{ marginRight: '-15px' }}
-                                />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Box sx={{ padding: 2, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 4 }}>
 
-                            </Box>
-                        </LocalizationProvider>
-                    </Box>
+                            <MobileDateTimePicker
+                                label={<span>Start Date & Time<span style={{ color: 'red' }}> *</span></span>}
+                                value={formState.startDateTime}
+                                onChange={(newValue) => handleDateChange('startDateTime', newValue)}
+                                renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2, flex: 1 }} />}
+                                minDate={dayjs()}
+                                // minTime={formState.startDateTime ? formState.startDateTime : dayjs()}
+                                minTime={dayjs()}
+                                sx={{ marginLeft: '-15px' }}
+                            />
 
-                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-                        <Button variant="outlined" onClick={() => setConfirmCancel(!confirmCancel)}>
-                            Cancel
-                        </Button>
-                        <Button variant="contained" onClick={handleSend} disabled={isFormIncomplete()}>
-                            Create
-                        </Button>
-                    </Box>
+                            <MobileDateTimePicker
+                                label={<span>End Date & Time<span style={{ color: 'red' }}> *</span></span>}
+                                value={formState.endDateTime}
+                                onChange={(newValue) => handleDateChange('endDateTime', newValue)}
+                                renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2, flex: 1 }} />}
+                                minDate={formState.startDateTime ? formState.startDateTime : dayjs()}
+                                minTime={formState.startDateTime && dayjs(formState.startDateTime).isSame(dayjs(), 'day') ? formState.startDateTime : null}
+                                sx={{ marginRight: '-15px' }}
+                            />
+
+                        </Box>
+                    </LocalizationProvider>
                 </Box>
-            </Drawer>
+
+                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+                    <Button variant="outlined" onClick={() => setConfirmCancel(!confirmCancel)}
+                        sx={{
+                            backgroundImage: 'linear-gradient(to top, #f77062 0%, #fe5196 100%)',
+                            color: 'white'
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button variant="contained" onClick={handleSend} disabled={isFormIncomplete()}
+                        sx={{
+                            background: 'gray',
+                            color: '#fff',
+                            '&:not(:disabled)': {
+                                background: 'rgb(34,193,195)',
+                                // backgroundImage: 'linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)',
+                                backgroundImage: 'linear-gradient(to top, #30cfd0 0%, #330867 100%)'
+                            },
+                        }}
+
+                    >
+                        Create
+                    </Button>
+                </Box>
+            </Box>
+        </Drawer >
         </>
     );
 

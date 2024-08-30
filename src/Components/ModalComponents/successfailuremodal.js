@@ -68,12 +68,9 @@ const SuccessFailureModal = ({ open, handleClose, status, successmsg, errormsg }
                             mb: 2,
                             animation: 'pulse 1.5s infinite',
                             '@keyframes pulse': {
-                                // '0%': { transform: 'scale(1)', boxShadow: '0 0 10px rgba(0, 255, 0, 0.7)' },
-                                // '50%': { transform: 'scale(1.1)', boxShadow: '0 0 20px rgba(0, 255, 0, 1)' },
-                                // '100%': { transform: 'scale(1)', boxShadow: '0 0 10px rgba(0, 255, 0, 0.7)' },
                                 '0%': { transform: 'scale(1)' },
                                 '50%': { transform: 'scale(1.1)' },
-                                '100%': { transform: 'scale(1)'},
+                                '100%': { transform: 'scale(1)' },
                             },
                         }}
                     />
@@ -84,12 +81,9 @@ const SuccessFailureModal = ({ open, handleClose, status, successmsg, errormsg }
                             mb: 2,
                             animation: 'pulse 1.5s infinite',
                             '@keyframes pulse': {
-                                '0%': { transform: 'scale(1)'},
-                                '50%': { transform: 'scale(1.1)'},
+                                '0%': { transform: 'scale(1)' },
+                                '50%': { transform: 'scale(1.1)' },
                                 '100%': { transform: 'scale(1)' },
-                                // '0%': { transform: 'scale(1)', boxShadow: '0 0 10px rgba(255, 0, 0, 0.7)' },
-                                // '50%': { transform: 'scale(1.1)', boxShadow: '0 0 20px rgba(255, 0, 0, 1)' },
-                                // '100%': { transform: 'scale(1)', boxShadow: '0 0 10px rgba(255, 0, 0, 0.7)' },
                             },
                         }}
                     />

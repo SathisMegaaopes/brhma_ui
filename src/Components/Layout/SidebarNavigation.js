@@ -3,17 +3,18 @@ import React, { useContext, useEffect, useState } from "react";
 import { styled } from "@mui/system";
 import IconButton from "@mui/material/IconButton";
 
-
+import { useLocation } from 'react-router-dom';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import { Outlet, useNavigate } from "react-router-dom";
 import CandidateInterview from "../CandidateInterview";
-import MOSDashboard from ".";
+import MOSDashboard from "../Dashboard";
 import MOSCandidate from "../Candidate";
 
 import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
 
 import PersonSearchSharpIcon from '@mui/icons-material/PersonSearchSharp';
+import { useSharedContext } from "../../Context";
 
 
 const SidebarContainer = styled('div')(({ isOpen, isActive }) => ({
@@ -51,19 +52,35 @@ const SidebarIcon = styled(IconButton)(({ theme, isOpen, isActive }) => ({
 
 
 function Sidebar() {
+
+
+    const { sharedTab, setSharedTab } = useSharedContext();
+
+    console.log(sharedTab, 'sharedTab')
+
+    const { search } = useLocation();
+    const queryParams = new URLSearchParams(search);
+
+
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('tasks');
     const navigate = useNavigate();
 
-    React.useEffect(() => {
-        const savedTab = localStorage.getItem('activeTab');
-        if (savedTab) {
-            setActiveTab(savedTab);
-        }
-    }, []);
+    const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
+
+    const AuthorizedPerson = userinfo.user_role
+
 
     React.useEffect(() => {
-        localStorage.setItem('activeTab', activeTab);
+        if (sharedTab.active === 1) {
+            setActiveTab('particularEmployee')
+        } else {
+            setActiveTab('tasks')
+        }
+    }, [sharedTab.active])
+
+    React.useEffect(() => {
+        // localStorage.setItem('activeTab', activeTab);
         switch (activeTab) {
             case 'tasks':
                 navigate("/dashboard");
@@ -74,9 +91,8 @@ function Sidebar() {
             case 'CandidateDatabase':
                 navigate("/dashboard/candidate-master");
                 break;
-            case 'inprogress-3':
-                // Add a route for this case if necessary
-                // navigate("/dashboard");
+            case 'particularEmployee':
+                navigate(sharedTab.TabUrl);
                 break;
             default:
                 navigate("/");
@@ -93,6 +109,13 @@ function Sidebar() {
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
+        setSharedTab({
+            Tabname: null,
+            TabUrl: null,
+            active: 0,
+            backendUrl:null
+        })
+
     };
 
     const renderContent = () => {
@@ -103,15 +126,19 @@ function Sidebar() {
                 return <CandidateInterview />;
             case 'CandidateDatabase':
                 return <MOSCandidate />;
-            case 'inprogress-3':
-                return <div>
-                    <h2>Feature Under Development</h2>
-                    <p>This feature is currently under development.</p>
-                </div>;
+            case 'particularEmployee':
+
+
+                const employid = queryParams.get('employid');
+                const fromdate = queryParams.get('fromdate');
+                const todate = queryParams.get('todate');
+
+                return <MOSCandidate  emp_id={employid} fromDate={fromdate} toDate={todate} />;
             default:
                 return <MOSDashboard />;
         }
     };
+
 
     return (
         <>
@@ -122,21 +149,19 @@ function Sidebar() {
             >
                 <SidebarIcon disableRipple aria-label="tasks" isOpen={isOpen} onClick={() => handleTabChange('tasks')} isActive={activeTab === 'tasks'} >
                     <AddTaskIcon sx={{ fontSize: 30 }} />
-                    {isOpen && <span>&nbsp;&nbsp;&nbsp;Tasks</span>}
+                    {isOpen && <span>&nbsp;&nbsp;&nbsp;Dashboard</span>}
                 </SidebarIcon>
                 <SidebarIcon disableRipple aria-label="CandidateEvaluation" isOpen={isOpen} onClick={() => handleTabChange('CandidateEvaluation')} isActive={activeTab === 'CandidateEvaluation'} >
                     {/* <HourglassEmptyIcon /> */}
                     <PersonSearchSharpIcon sx={{ fontSize: 35 }} />
                     {isOpen && <span>&nbsp;&nbsp;&nbsp;Candidate Evaluation</span>}
                 </SidebarIcon>
-                <SidebarIcon disableRipple aria-label="CandidateDatabase" isOpen={isOpen} onClick={() => handleTabChange('CandidateDatabase')} isActive={activeTab === 'CandidateDatabase'} >
-                    <StorageRoundedIcon sx={{ fontSize: 30 }} />
-                    {isOpen && <span>&nbsp;&nbsp;&nbsp;Candidate Database</span>}
-                </SidebarIcon>
-                <SidebarIcon disableRipple aria-label="inprogress-3" isOpen={isOpen} onClick={() => handleTabChange('inprogress-3')} isActive={activeTab === 'inprogress-3'} >
-                    <HourglassEmptyIcon sx={{ fontSize: 30 }} />
-                    {isOpen && <span>&nbsp;&nbsp;&nbsp;In Progress 3</span>}
-                </SidebarIcon>
+                {AuthorizedPerson === 1 ?
+                    <SidebarIcon disableRipple aria-label="CandidateDatabase" isOpen={isOpen} onClick={() => handleTabChange('CandidateDatabase')} isActive={activeTab === 'CandidateDatabase'} >
+                        <StorageRoundedIcon sx={{ fontSize: 30 }} />
+                        {isOpen && <span>&nbsp;&nbsp;&nbsp;Candidate Database</span>}
+                    </SidebarIcon> : ''}
+
             </SidebarContainer>
             <MainContainer>
                 {renderContent()}
