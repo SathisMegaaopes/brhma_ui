@@ -7,22 +7,16 @@ import {
     TableHead,
     TableRow,
     Paper,
-    Checkbox,
-    IconButton,
     Typography,
     Button,
     Box,
-    Grid,
-    Stack,
     Container,
     FormControl,
     InputLabel,
     MenuItem,
     Select,
     Modal,
-    Tooltip,
-    tooltipClasses,
-    styled,
+    Tooltip,    
     TextField,
 } from '@mui/material';
 import URL from '../Global/Utils/url_route';
@@ -32,9 +26,7 @@ import axios from 'axios';
 import AddTodo from './AddTodo';
 
 import TimelapseSharpIcon from '@mui/icons-material/TimelapseSharp';
-import { Description } from '@mui/icons-material';
 import SuccessFailureModal from '../ModalComponents/successfailuremodal';
-import ConfirmationModal from '../ModalComponents/confirmationModal';
 import { formatDateTime } from '../Global/Utils/common_data';
 
 const Todolist = () => {

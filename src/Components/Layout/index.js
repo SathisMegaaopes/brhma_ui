@@ -7,7 +7,6 @@ import IconButton from '@mui/material/IconButton';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import { Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import logo1 from "../../images/logo_1.png";
 import Sidebar from './SidebarNavigation';

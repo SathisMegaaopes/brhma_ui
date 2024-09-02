@@ -1,59 +1,24 @@
-import React, { createContext, useState, useContext } from "react";
-import {
-    Grid,
-    Typography,
-    Container,
-    Card,
-    CardContent,
-    CardHeader,
-    Divider,
-    Paper,
-    Box,
-    TextField,
-    Button,
-    Modal,
-} from "@mui/material";
-import { useNavigate, Link } from "react-router-dom";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import {
-    TableContainer,
-    Table,
-    TableRow,
-    TableHead,
-    TableCell,
-    TableBody,
-} from "@mui/material";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import React, { useState } from "react";
+import { Grid, Typography, Container, Paper, Box, Button, Modal } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { TableContainer, Table, TableRow, TableHead, TableCell, TableBody } from "@mui/material";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-import { addDays } from "date-fns";
-
 import URL from "../Global/Utils/url_route";
 import axios from "axios";
 import { referred_by_data } from "../Global/Utils/common_data";
-import { NewDateFormater } from "../Global/Utils/common_data";
-
 import RotateLeftRoundedIcon from "@mui/icons-material/RotateLeftRounded";
-
-import CandidateTable from "../CandidateTable";
-
-// import Sidebar from "./SidebarNaviagtion"
-import { ThemeContext } from "@emotion/react";
 import Todolist from "../Todolist/Todolist";
 import { useSharedContext } from "../../Context";
-// import DatabaseIcon from '@mui/icons-material/Database';
 
 
 
 export default function MOSDashboard() {
 
 
-    const { sharedTab, setSharedTab } = useSharedContext()
+    const { setSharedTab } = useSharedContext()
 
 
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
@@ -110,15 +75,10 @@ export default function MOSDashboard() {
     let currentDisplayDate;
 
     if (fromdate === todate) {
-
-        // console.log(fromdate, todate);
         currentDisplayDate = fromdate;
     } else {
         currentDisplayDate = `${fromdate} / ${todate}`;
     }
-
-    // console.log(currentDisplayDate, "currentDisplayDate");
-    // console.log(currentDate);
 
     const handleReset = () => {
 
@@ -159,7 +119,6 @@ export default function MOSDashboard() {
             })
             .catch()
             .finally(() => {
-                // setLoader(false);
             });
     }, [startnewDate, endnewDate]);
 
@@ -203,12 +162,6 @@ export default function MOSDashboard() {
                 item.ref_by_basic === ref && parseInt(item.result) === parseInt(status)
         );
         return data.length;
-
-        // }
-        // console.log("Current Status : "+status+" >> "+JSON.stringify(data));
-        // debugger;
-        //if(ref!==null)
-        //   {
     };
 
     const fnFilterCandidateByRound = (data, status, emp_id, round = 0) => {
@@ -248,7 +201,6 @@ export default function MOSDashboard() {
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        // width: 400,
         bgcolor: "background.paper",
         boxShadow: 24,
         pt: 2,

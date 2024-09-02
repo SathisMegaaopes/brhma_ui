@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 import {
     Card, CardContent, CardHeader, Avatar,
     Table, TableBody, TableRow, TableCell, Tooltip,
@@ -7,7 +6,6 @@ import {
     CardMedia, IconButton
 } from "@mui/material";
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
-
 import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded';
 import ThumbDownAltRoundedIcon from '@mui/icons-material/ThumbDownAltRounded';
 import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
@@ -15,16 +13,9 @@ import PendingRoundedIcon from '@mui/icons-material/PendingRounded';
 import ReportRoundedIcon from '@mui/icons-material/ReportRounded';
 import Box from '@mui/material/Box';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-
-import { Visibility } from '@mui/icons-material';
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-
 import URL from '../Global/Utils/url_route.js';
-
 import axios from 'axios';
 import CandidateEvaludationCard from '../CandidateEvaluationCard/index.js';
-// import { Star, StarBorder } from "@mui/icons-material"
-
 import { interview_rounds, interview_status, finalStatus } from "../Global/Utils/common_data.js";
 
 
@@ -151,7 +142,7 @@ function CandidateReportCard(props) {
     let full_url = `${personal_url}/${candidate_id}`;
 
 
-    console.log(distance,'this is distances')
+    console.log(distance, 'this is distances')
 
     useEffect(() => {
         const handleFetchImageUrl = async () => {
@@ -206,9 +197,9 @@ function CandidateReportCard(props) {
     const resumeUrl = `${URL}${formatImageUrl(resumePathUrl)}`;
 
 
-    
-    console.log(resumeUrl,'url')
-    console.log(resumePathUrl,'url2')
+
+    console.log(resumeUrl, 'url')
+    console.log(resumePathUrl, 'url2')
 
     return (<Card variant='outlined'>
         <Box sx={{ position: 'relative' }}>
@@ -286,21 +277,12 @@ function CandidateReportCard(props) {
                             <TableCell>Total Experience</TableCell>
                             <TableCell>{total_exp}</TableCell>
                         </TableRow>
-                        {/* {distance !== "" ? <TableRow> */}
 
-                        {Boolean(distance) ?<TableRow>
+                        {Boolean(distance) ? <TableRow>
                             <TableCell>Distance from Office</TableCell>
                             <TableCell>{distance} kms</TableCell>
                         </TableRow> : ''}
-                        
-                        {/* {interview_rounds.codeBase/megaaopes_ui/src/Components/ReportCard/index.jsmap(item =>{
-                                return(
-                                <TableRow>
-                                    <TableCell>{item.name}</TableCell>
-                                    <TableCell>{InterviewResult(item.id,props.candidate)}</TableCell>
-                                </TableRow>
-                                )
-                            })} */}
+
                         <TableRow>
                             <TableCell colSpan={2}>
                                 {
@@ -314,7 +296,6 @@ function CandidateReportCard(props) {
 
                                                     <Typography variant='body2' sx={{ paddingRight: "4px" }}>  {InterviewResult(item.id, props.candidate)} </Typography>
                                                     <Typography variant='caption'> ( {InterviewerName(item.id, props.candidate)} )</Typography>
-                                                    {/* <Typography variant='body2'>{results[0].final_total}</Typography> */}
                                                 </AccordionSummary>
 
                                                 <AccordionDetails sx={{ borderLeft: "1px solid rgb(241 230 219)", borderRight: "1px solid rgb(241 230 219)" }}>
@@ -341,13 +322,8 @@ function CandidateReportCard(props) {
                         </TableRow>
 
                     </TableBody>
-
                 </Table>
-
-
-
             </CardContent>
-
         </Box >
     </Card>
 

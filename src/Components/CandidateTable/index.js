@@ -1,38 +1,18 @@
-import React, { useState } from "react";
-import {
-    Container, Grid,
-    Table, TableRow, TableHead, TableCell, TableBody,
-    Dialog, DialogTitle, Tooltip, IconButton, Menu, MenuItem,
-    TableContainer, Paper,
-    Button,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
-    Snackbar,
-    Alert
-} from "@mui/material";
-
-import {
-    ThumbUpAltRounded, ThumbDownAltRounded, PendingRounded, VerifiedRounded, ReportRounded,
-    CheckCircleRounded, CancelRounded, ErrorRounded, MoreVertOutlined, Visibility,
-    ModeEdit, DeleteForever,
-    CleanHands
-} from "@mui/icons-material";
-
-import { interview_status, getStatusName, DateFormater, finalStatus } from "../../Components/Global/Utils/common_data.js";
-import { useHistory, useNavigate } from 'react-router-dom';
-
+import React from "react";
+import { Container, Grid, Table, TableRow, TableHead, TableCell, TableBody,  Dialog, DialogTitle, Tooltip,  TableContainer, Paper,  Button,  DialogContent,  DialogContentText, DialogActions, Snackbar,  Alert } from "@mui/material";
+import { ThumbUpAltRounded, ThumbDownAltRounded, PendingRounded, VerifiedRounded, ReportRounded } from "@mui/icons-material";
+import { DateFormater, finalStatus } from "../../Components/Global/Utils/common_data.js";
+import { useNavigate } from 'react-router-dom';
 import CandidateReportCard from '../ReportCard';
 import DeleteIcon from '@mui/icons-material/Delete';
-import DeleteDialog from "./deleteDialog.js";
 import axios from 'axios';
-import { convertLength } from "@mui/material/styles/cssUtils.js";
 import URL from "../Global/Utils/url_route.js";
+import { useSharedContext } from "../../Context.js";
 
 
 function MOSCandiateTable(props) {
 
-
+    const { rerender, setRerender } = useSharedContext();
 
     const [candidate, setCandidate] = React.useState([]);
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -85,11 +65,9 @@ function MOSCandiateTable(props) {
             console.log('User get deleted successfully', response)
 
             setDeleteStatusVal(response.data.status)
-            setnotification(true)
+            setnotification(true)   
+            setRerender(!rerender)
 
-            // setTimeout(() => {
-            //     window.location.reload();
-            // }, 2000);
 
         } catch (err) {
 
@@ -151,6 +129,7 @@ function MOSCandiateTable(props) {
                                                                 item.result == 0 ? <Tooltip title="Pending" arrow><ReportRounded fontSize='small' sx={{ color: "#ffbf00" }} /></Tooltip> : null}
 
                                             </TableCell>
+
                                             <TableCell align="center" onClick={() => {
                                                 setcandidateid(item.candidate_id)
                                                 setDeletemodal(true)
@@ -167,7 +146,6 @@ function MOSCandiateTable(props) {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                {/* { deletemodal ? <DeleteDialog /> : '' } */}
             </Grid>
 
 
@@ -195,12 +173,6 @@ function MOSCandiateTable(props) {
             <Snackbar
                 open={notification}
                 autoHideDuration={3000}
-                //  sx={{
-                //     position:'fixed',
-                //     top:'10%',
-                //     left:'50%',
-                //     transform:'translate(-50%,-50%)'
-                //  }}
                 anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
                 onClose={handlenotification}
             >

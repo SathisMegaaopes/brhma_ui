@@ -9,7 +9,6 @@ import ThankYou from "./Components/Global/ThankYou";
 import MOSLogin from "./Components/Login";
 import MOSLayout from "./Components/Layout";
 import MOSDashboard from "./Components/Dashboard";
-import { useState } from "react"
 import { SharedProvider } from "./Context";
 
 function App() {
@@ -47,8 +46,6 @@ function App() {
     </div>
   );
 }
-
-{/* //new code */ }
 
 
 export default App;

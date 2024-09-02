@@ -1,18 +1,13 @@
-
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/system";
 import IconButton from "@mui/material/IconButton";
-
 import { useLocation } from 'react-router-dom';
 import AddTaskIcon from '@mui/icons-material/AddTask';
-import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CandidateInterview from "../CandidateInterview";
 import MOSDashboard from "../Dashboard";
 import MOSCandidate from "../Candidate";
-
 import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
-
 import PersonSearchSharpIcon from '@mui/icons-material/PersonSearchSharp';
 import { useSharedContext } from "../../Context";
 
@@ -113,7 +108,7 @@ function Sidebar() {
             Tabname: null,
             TabUrl: null,
             active: 0,
-            backendUrl:null
+            backendUrl: null
         })
 
     };
@@ -133,7 +128,7 @@ function Sidebar() {
                 const fromdate = queryParams.get('fromdate');
                 const todate = queryParams.get('todate');
 
-                return <MOSCandidate  emp_id={employid} fromDate={fromdate} toDate={todate} />;
+                return <MOSCandidate emp_id={employid} fromDate={fromdate} toDate={todate} />;
             default:
                 return <MOSDashboard />;
         }
@@ -152,7 +147,6 @@ function Sidebar() {
                     {isOpen && <span>&nbsp;&nbsp;&nbsp;Dashboard</span>}
                 </SidebarIcon>
                 <SidebarIcon disableRipple aria-label="CandidateEvaluation" isOpen={isOpen} onClick={() => handleTabChange('CandidateEvaluation')} isActive={activeTab === 'CandidateEvaluation'} >
-                    {/* <HourglassEmptyIcon /> */}
                     <PersonSearchSharpIcon sx={{ fontSize: 35 }} />
                     {isOpen && <span>&nbsp;&nbsp;&nbsp;Candidate Evaluation</span>}
                 </SidebarIcon>

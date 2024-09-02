@@ -1,58 +1,26 @@
 import * as React from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-
-import {
-    Container, Grid, Typography, IconButton,
-    Menu, MenuItem, TextField, Box, Dialog, DialogTitle, Breadcrumbs, Link
-} from "@mui/material";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import Tooltip from '@mui/material/Tooltip';
+import { Container, Grid, Typography, IconButton, TextField, Breadcrumbs, Link } from "@mui/material";
 import Skeleton from '@mui/material/Skeleton';
-import Modal from '@mui/material/Modal';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
-import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
-import ReportRoundedIcon from '@mui/icons-material/ReportRounded';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded';
-import ThumbDownAltRoundedIcon from '@mui/icons-material/ThumbDownAltRounded';
-import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
-import PendingRoundedIcon from '@mui/icons-material/PendingRounded';
-import { ModeEditOutline } from '@mui/icons-material';
-
-
-import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-
-import MOSLogo from '../Global/Logo';
 import MOSFooter from '../Global/Footer';
-import CandidateReportCard from '../ReportCard';
 import MOSCandiateTable from '../CandidateTable/index.js';
 import axios from 'axios';
-import { interview_status, getStatusName, DateFormater, finalStatus } from "../../Components/Global/Utils/common_data.js";
+import { DateFormater } from "../../Components/Global/Utils/common_data.js";
 import URL from "../Global/Utils/url_route";
-import { useNavigate, useSearchParams } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { useSharedContext } from '../../Context.js';
 
 
 
-function MOSCandidate({emp_id,fromDate,toDate}) {
+function MOSCandidate({ emp_id, fromDate, toDate }) {
 
 
-    const { sharedTab, setSharedTab } = useSharedContext();
+    const { sharedTab, setSharedTab, rerender } = useSharedContext();
 
 
-    // console.log(sharedTab,'importanttttttttttttttttttttttttttttt')
+    console.log(rerender, 'importanttttttttttttttttttttttttttttt')
 
 
     const [loader, setLoader] = React.useState(false);
@@ -98,7 +66,7 @@ function MOSCandidate({emp_id,fromDate,toDate}) {
                 setLoader(false);
             });
 
-    }, []);   //new
+    }, [rerender]);   //new
 
 
     const [anchorEl, setAnchorEl] = React.useState(null);

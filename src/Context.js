@@ -9,11 +9,13 @@ export function SharedProvider({ children }) {
         Tabname: null,
         TabUrl: null,
         active: 0,
-        backendUrl : null
+        backendUrl: null
     });
 
+    const [rerender, setRerender] = useState(false)
+
     return (
-        <SharedContext.Provider value={{ sharedTab, setSharedTab }}>
+        <SharedContext.Provider value={{ sharedTab, setSharedTab, rerender, setRerender }}>
             {children}
         </SharedContext.Provider>
     );
