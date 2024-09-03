@@ -90,7 +90,6 @@ function MOSCandiateTable(props) {
     };
 
     return (
-        // <Container >
         <>
             <Grid item sx={12} sm={12} md={12} lg={12} xl={12}>
                 <TableContainer component={Paper} >
@@ -190,7 +189,6 @@ function MOSCandiateTable(props) {
                     <CandidateReportCard candidate={candidate} emp_details={props.emp_details} />
                 </DialogTitle>
             </Dialog>
-        {/* </Container> */}
         </>
     )
 }

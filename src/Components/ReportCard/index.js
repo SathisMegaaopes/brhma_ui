@@ -197,10 +197,6 @@ function CandidateReportCard(props) {
     const resumeUrl = `${URL}${formatImageUrl(resumePathUrl)}`;
 
 
-
-    console.log(resumeUrl, 'url')
-    console.log(resumePathUrl, 'url2')
-
     return (<Card variant='outlined'>
         <Box sx={{ position: 'relative' }}>
 

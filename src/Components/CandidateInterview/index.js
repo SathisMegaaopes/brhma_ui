@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Grid, TextField, Typography,
+import {
+    Grid, TextField, Typography,
     Card, CardContent, CardHeader, Avatar, IconButton,
     Select, MenuItem, FormControl, InputLabel, Breadcrumbs, Link
 } from "@mui/material";
@@ -10,10 +11,7 @@ import TypingTest from '../TypingTest';
 import WritingTest from '../WritingTest';
 import FinalRound from '../Finalround';
 import CandidateReportCard from '../ReportCard';
-
 import URL from "../Global/Utils/url_route";
-
-
 import { useNavigate } from 'react-router-dom';
 
 
@@ -114,11 +112,8 @@ function CandidateInterview() {
 
     }
     return (
-        // <Container sx={{ marginTop: "24px", height: "100vh", maxWidth: "100%", width: '100%', padding: 0 }}>
-
         <>
-
-            <Grid container spacing={2}  sx={{paddingX : 6 }}>
+            <Grid container spacing={2} sx={{ paddingX: 6 }}>
                 <Grid item xs={12} md={12} lg={12}>
                     <Breadcrumbs aria-label="breadcrumb">
                         <Link underline="hover" color="inherit" href="/dashboard">
@@ -143,7 +138,7 @@ function CandidateInterview() {
             </Grid>
 
 
-            <Grid container spacing={2} sx={{ marginTop: "24px", overflowX: 'hidden' , paddingX : 6  }} >
+            <Grid container spacing={2} sx={{ marginTop: "24px", overflowX: 'hidden', paddingX: 6 }} >
                 {candidate_result.length > 0 && client === null ?
                     <Grid item sx={12} sm={12} md={12}  >
                         <Typography variant='body1'>
@@ -175,8 +170,6 @@ function CandidateInterview() {
                                         <Typography variant='body2'>Designation : {candidate.job_profile_basic}</Typography>
                                         <Typography variant='body2'>Mobile : {candidate.mobile_basic}</Typography>
                                         <Typography variant='body2'>eMail : {candidate.email_basic}</Typography>
-                                        {/* //new code */}
-                                        {/* <Typography variant='body2'> {candidate.distance !== "" && candidate.distance !== null ? `Distance from Office : ${candidate.distance}` : ''}</Typography>   */}
                                         <Typography variant='body2'> {Boolean(candidate.distance) ? `Distance from Office : ${candidate.distance}` + " " + "kms" : ''}</Typography>
                                     </Grid>
                                 </CardContent>
@@ -187,10 +180,8 @@ function CandidateInterview() {
                 })}
 
 
-
                 {client !== null ? <>
-
-                    <Grid container spacing={2} sx={{ marginTop: "24px" , paddingX : 12 }} >
+                    <Grid container spacing={2} sx={{ marginTop: "24px", paddingX: 12 }} >
                         <Grid item sx={12} sm={12} md={12}>
                             <Typography variant='body1'>
                                 Scores & Description
@@ -228,7 +219,6 @@ function CandidateInterview() {
                 </> : null}
 
 
-
                 {interviewName !== "" && (currentRound === 1 || currentRound === 4 || currentRound === 5) ?
                     <CandidateEvaluation client={client} interviewName={interviewName} interviewRound={currentRound} />
                     : interviewName !== "" && currentRound === 2 ?
@@ -239,9 +229,7 @@ function CandidateInterview() {
                                 <FinalRound client={client} interviewName={interviewName} interviewRound={currentRound} /> : ""}
             </Grid>
 
-         </>
-
-
+        </>
     )
 }
 
