@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Container, Grid, Typography, IconButton, TextField, Breadcrumbs, Link } from "@mui/material";
+import { Grid, Typography, IconButton, TextField, Breadcrumbs, Link } from "@mui/material";
 import Skeleton from '@mui/material/Skeleton';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import MOSFooter from '../Global/Footer';
@@ -16,12 +16,7 @@ import { useSharedContext } from '../../Context.js';
 
 function MOSCandidate({ emp_id, fromDate, toDate }) {
 
-
     const { sharedTab, setSharedTab, rerender } = useSharedContext();
-
-
-    console.log(rerender, 'importanttttttttttttttttttttttttttttt')
-
 
     const [loader, setLoader] = React.useState(false);
     const [candidates, setCandidates] = React.useState([]);
@@ -66,7 +61,8 @@ function MOSCandidate({ emp_id, fromDate, toDate }) {
                 setLoader(false);
             });
 
-    }, [rerender]);   //new
+    }, [rerender]);
+
 
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -101,7 +97,7 @@ function MOSCandidate({ emp_id, fromDate, toDate }) {
     }
 
 
-    const downloadExcel = () => {   //new
+    const downloadExcel = () => {
 
         let firstpartname;
         let secondpartname;
@@ -148,9 +144,9 @@ function MOSCandidate({ emp_id, fromDate, toDate }) {
 
 
     return (
-        <Container sx={{ marginTop: "24px", height: "100vh" }}>
-            <Grid container spacing={2} >
-                <Grid item xs={12} md={12} lg={12}>
+        <>
+            <Grid container spacing={2} sx={{ paddingY: 3, paddingX: 12 }} >
+                <Grid item xs={12} md={12} lg={4} xl={4}>
                     <Breadcrumbs aria-label="breadcrumb">
                         <Link underline="hover" color="inherit" href="/dashboard">
                             Dashboard
@@ -159,26 +155,26 @@ function MOSCandidate({ emp_id, fromDate, toDate }) {
                         <Typography color="text.primary" variant='h5'>Candidate Database</Typography>
                     </Breadcrumbs>
                 </Grid>
-                <Grid item xs={6} sm={6} md={6}>
+                <Grid item xs={6} sm={6} md={6} lg={2} xl={3}>
                     {" "}
                 </Grid>
-                <Grid item sx={6} sm={4} md={4}>
+                <Grid item sx={6} sm={4} md={4} lg={4} xl={4}>
                     <TextField variant='outlined' label="Search Candidate" size='small'
                         fullWidth placeholder='Search By Name or ID' onKeyUp={e => searchCandidate(e)} onChange={e => setSearchKey(e.target.value)} />
                 </Grid>
 
-                {/* //new */}
-                <Grid item sx={2} sm={2} md={2} alignItems='center' justifyContent='center'>
+                <Grid item sx={2} sm={2} md={2} lg={2} xl={1} alignItems='center' justifyContent='center'>
                     <IconButton onClick={downloadExcel} style={{ marginTop: '-5px' }}>
                         <CloudDownloadIcon fontSize="large" color="primary" />
                     </IconButton>
                 </Grid>
 
 
-                <Grid item sx={12} sm={12} md={12}>
+                <Grid item sx={12} sm={12} md={12} lg={12} xl={12}>
                     {candidates.length === 0 ? "" : <MOSCandiateTable data={candidates} emp_details={emp_details} />}
                 </Grid>
             </Grid>
+
             {loader ? <>
                 <Skeleton />
                 <Skeleton />
@@ -189,7 +185,7 @@ function MOSCandidate({ emp_id, fromDate, toDate }) {
                 : null}
             <MOSFooter />
 
-        </Container>
+        </>
     )
 }
 

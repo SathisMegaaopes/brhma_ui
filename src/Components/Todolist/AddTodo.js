@@ -43,9 +43,9 @@ const AddTodo = ({ value }) => {
     const [formState, setFormState] = useState({
         name: '',
         description: '',
-        department: null,
-        team: null,
-        assignee: null,
+        department: value === '1' ? userinfo.user_role : null,
+        team: value === '1' ? userinfo.user_role : null,
+        assignee: value === '1' ? userinfo.user_name : null,
         startDateTime: null,
         endDateTime: null
     });
@@ -242,9 +242,9 @@ const AddTodo = ({ value }) => {
             setFormState({
                 name: '',
                 description: '',
-                department: value === '1' ? userinfo.user_role : '',
-                team: value === '1' ? userinfo.user_role : '',
-                assignee: value === '1' ? userinfo.user_name : '',
+                department: value === '1' ? userinfo.user_role : null,
+                team: value === '1' ? userinfo.user_role : null,
+                assignee: value === '1' ? userinfo.user_name : null,
                 startDateTime: null,
                 endDateTime: null,
             });
@@ -253,6 +253,9 @@ const AddTodo = ({ value }) => {
         // task_name , task_description , task_dept , task_team , task_assignee , status , tat , created_by , created_at ;
 
     };
+
+    console.log(formState)
+
 
     return (
         <>
@@ -375,9 +378,12 @@ const AddTodo = ({ value }) => {
                                     value={formState.startDateTime}
                                     onChange={(newValue) => handleDateChange('startDateTime', newValue)}
                                     renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2, flex: 1 }} />}
-                                    minDate={dayjs()}
-                                    // minTime={formState.startDateTime ? formState.startDateTime : dayjs()}
-                                    minTime={dayjs()}
+                                    minDate={dayjs().startOf('day')}
+                                    minTime={
+                                        formState.startDateTime && dayjs(formState.startDateTime).isSame(dayjs(), 'day')
+                                            ? dayjs()
+                                            : undefined
+                                    }
                                     sx={{ marginLeft: '-15px' }}
                                 />
 
@@ -386,14 +392,24 @@ const AddTodo = ({ value }) => {
                                     value={formState.endDateTime}
                                     onChange={(newValue) => handleDateChange('endDateTime', newValue)}
                                     renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2, flex: 1 }} />}
-                                    minDate={formState.startDateTime ? formState.startDateTime : dayjs()}
-                                    minTime={formState.startDateTime && dayjs(formState.startDateTime).isSame(dayjs(), 'day') ? formState.startDateTime : null}
+                                    minDate={
+                                        formState.startDateTime
+                                            ? dayjs(formState.startDateTime).startOf('day')
+                                            : dayjs().startOf('day')
+                                    }
+                                    minTime={
+                                        formState.startDateTime && dayjs(formState.startDateTime).isSame(dayjs(), 'day') && dayjs(formState.endDateTime) && dayjs(formState.endDateTime).isSame(dayjs(), 'day')
+                                            ? dayjs(formState.startDateTime)
+                                            : undefined
+                                    }
                                     sx={{ marginRight: '-15px' }}
                                 />
 
                             </Box>
                         </LocalizationProvider>
                     </Box>
+
+                    {/* // minTime={formState.startDateTime ? formState.startDateTime : dayjs()} */}
 
                     <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
                         <Button variant="outlined" onClick={() => setConfirmCancel(!confirmCancel)}

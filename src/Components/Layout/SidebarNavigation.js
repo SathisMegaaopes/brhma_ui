@@ -18,7 +18,7 @@ const SidebarContainer = styled('div')(({ isOpen, isActive }) => ({
     position: "fixed",
     zIndex: 1,
     left: 0,
-    backgroundColor: isOpen ? "#76b5c5" : "#1e81b0",
+    backgroundColor: isOpen ? "#808080" : "#272727",
     overflowX: "hidden",
     overflowY: "auto",
     transition: "width 0.5s, background-color 0.5s",
@@ -32,30 +32,25 @@ const MainContainer = styled('div')(() => ({
 }));
 
 const SidebarIcon = styled(IconButton)(({ theme, isOpen, isActive }) => ({
-    color: isActive ? 'black' : isOpen ? "#f1f1f1" : "#eeeee4",
+    color: isActive ? 'White' : isOpen ? "#B6B6B4" : "#B6B6B4",
     display: "flex",
     justifyContent: "flex-start",
     alignContent: 'center',
     padding: "25px 15px",
-    // marginTop:'10px',
     fontSize: "20px",
     transition: "color 0.3s",
     "&:hover": {
-        color: isOpen ? "#343640" : "#f1f1f1",
+        color: isOpen ? "white" : "#f1f1f1",
     },
 }));
 
 
 function Sidebar() {
 
-
     const { sharedTab, setSharedTab } = useSharedContext();
-
-    console.log(sharedTab, 'sharedTab')
 
     const { search } = useLocation();
     const queryParams = new URLSearchParams(search);
-
 
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('tasks');
@@ -64,7 +59,6 @@ function Sidebar() {
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
 
     const AuthorizedPerson = userinfo.user_role
-
 
     React.useEffect(() => {
         if (sharedTab.active === 1) {
@@ -94,13 +88,16 @@ function Sidebar() {
         }
     }, [activeTab, navigate]);
 
+
     const handleMouseEnter = () => {
         setIsOpen(true);
     };
 
+
     const handleMouseLeave = () => {
         setIsOpen(false);
     };
+
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -113,6 +110,7 @@ function Sidebar() {
 
     };
 
+
     const renderContent = () => {
         switch (activeTab) {
             case 'tasks':
@@ -122,7 +120,6 @@ function Sidebar() {
             case 'CandidateDatabase':
                 return <MOSCandidate />;
             case 'particularEmployee':
-
 
                 const employid = queryParams.get('employid');
                 const fromdate = queryParams.get('fromdate');

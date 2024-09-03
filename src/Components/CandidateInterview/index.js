@@ -1,36 +1,14 @@
 import * as React from 'react';
-import {
-    Container, Grid,
-    Button, TextField, Typography,
-    Card, CardActions, CardContent, CardHeader, Avatar, IconButton,
-    Select, MenuItem, FormControl, FormLabel, FormControlLabel,
-    Radio, RadioGroup, CardActionArea, InputLabel, Autocomplete, Breadcrumbs, Link,
-    Box,
-    CardMedia
+import { Grid, TextField, Typography,
+    Card, CardContent, CardHeader, Avatar, IconButton,
+    Select, MenuItem, FormControl, InputLabel, Breadcrumbs, Link
 } from "@mui/material";
-import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-
-
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-
-
 import axios from 'axios';
-
-import MOSFooter from '../Global/Footer';
-import MOSLogo from '../Global/Logo';
-
 import CandidateEvaluation from '../CandidateEvaluation';
 import TypingTest from '../TypingTest';
 import WritingTest from '../WritingTest';
 import FinalRound from '../Finalround';
-import { HdrEnhancedSelectOutlined } from '@mui/icons-material';
 import CandidateReportCard from '../ReportCard';
 
 import URL from "../Global/Utils/url_route";
@@ -136,8 +114,11 @@ function CandidateInterview() {
 
     }
     return (
-        <Container sx={{ marginTop: "24px", height: "100vh" }}>
-            <Grid container spacing={2} >
+        // <Container sx={{ marginTop: "24px", height: "100vh", maxWidth: "100%", width: '100%', padding: 0 }}>
+
+        <>
+
+            <Grid container spacing={2}  sx={{paddingX : 6 }}>
                 <Grid item xs={12} md={12} lg={12}>
                     <Breadcrumbs aria-label="breadcrumb">
                         <Link underline="hover" color="inherit" href="/dashboard">
@@ -147,8 +128,8 @@ function CandidateInterview() {
                         <Typography color="text.primary" variant='h5'>Candidate Evaluation</Typography>
                     </Breadcrumbs>
                 </Grid>
-                <Grid item sx={4} sm={4} md={4}>
-                    <TextField sx={{zIndex:0}} variant='outlined' label="Search Candidate" size='small'
+                <Grid item sx={4} sm={4} md={3} >
+                    <TextField sx={{ zIndex: 0 }} variant='outlined' label="Search Candidate" size='small'
                         fullWidth placeholder='Search By Candidate Name or ID or Mobile'
                         onChange={e => setSearchKey(e.target.value)}
                         value={searchKey}
@@ -160,9 +141,11 @@ function CandidateInterview() {
                     />
                 </Grid>
             </Grid>
-            <Grid container spacing={2} sx={{ marginTop: "24px" }} >
+
+
+            <Grid container spacing={2} sx={{ marginTop: "24px", overflowX: 'hidden' , paddingX : 6  }} >
                 {candidate_result.length > 0 && client === null ?
-                    <Grid item sx={12} sm={12} md={12}>
+                    <Grid item sx={12} sm={12} md={12}  >
                         <Typography variant='body1'>
                             Search Results
                         </Typography>
@@ -170,7 +153,7 @@ function CandidateInterview() {
                     : null}
                 {client === null && candidate_result.length > 0 && candidate_result.map(candidate => {
                     return (
-                        <Grid item sx={6} sm={6} md={6}>
+                        <Grid item sx={6} sm={6} md={6} lg={4}>
                             <Card>
                                 <CardHeader
                                     avatar={
@@ -207,7 +190,7 @@ function CandidateInterview() {
 
                 {client !== null ? <>
 
-                    <Grid container spacing={2} sx={{ marginTop: "24px" }} >
+                    <Grid container spacing={2} sx={{ marginTop: "24px" , paddingX : 12 }} >
                         <Grid item sx={12} sm={12} md={12}>
                             <Typography variant='body1'>
                                 Scores & Description
@@ -255,7 +238,10 @@ function CandidateInterview() {
                             interviewName !== "" && currentRound === 6 ?
                                 <FinalRound client={client} interviewName={interviewName} interviewRound={currentRound} /> : ""}
             </Grid>
-        </Container>
+
+         </>
+
+
     )
 }
 

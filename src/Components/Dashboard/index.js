@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, Typography, Container, Paper, Box, Button, Modal } from "@mui/material";
+import { Grid, Typography, Paper, Box, Button, Modal } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { TableContainer, Table, TableRow, TableHead, TableCell, TableBody } from "@mui/material";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
@@ -17,9 +17,7 @@ import { useSharedContext } from "../../Context";
 
 export default function MOSDashboard() {
 
-
     const { setSharedTab } = useSharedContext()
-
 
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
 
@@ -227,10 +225,11 @@ export default function MOSDashboard() {
 
 
     return (
-        <Container style={{ display: 'flex', alignItems: 'center' }}>
-            <Container maxWidth="lg" sx={{ marginTop: "0px" }}>
+
+        <Grid container spacing={2} sx={{ paddingLeft: 6, paddingY: 4 }}>
+            <Grid item xs={12} md={5} lg={5} xl={4} >
                 <Typography variant='h6' sx={{ margin: "8px" }}>
-                    Welcome {userinfo?.user_details?.emp_name} !
+                    Welcome {userinfo?.user_details?.emp_name}!
                 </Typography>
                 <Grid>
                     <React.Fragment>
@@ -252,7 +251,7 @@ export default function MOSDashboard() {
                                     sx={{ position: "relative", left: "75%" }}
                                     onClick={handleClose}
                                 >
-                                    Close Calender
+                                    Close Calendar
                                 </Button>
                             </Box>
                         </Modal>
@@ -263,7 +262,6 @@ export default function MOSDashboard() {
                         <Grid item>
                             <Typography variant="h5">Today's Overview!!</Typography>
                         </Grid>
-                        {/* new */}
                         <Grid
                             sx={{ marginTop: "-15px" }}
                             sm={{ marginTop: "-20px" }}
@@ -274,7 +272,7 @@ export default function MOSDashboard() {
                         >
                             <Grid item>
                                 <Typography variant="h6" sx={{ margin: "0px" }}>
-                                    Date : {currentDisplayDate}
+                                    Date: {currentDisplayDate}
                                 </Typography>
                             </Grid>
                             <Grid item>
@@ -284,7 +282,7 @@ export default function MOSDashboard() {
                                     />
                                 </Button>
                             </Grid>
-                            {currentDisplayDate !== currentDate ? (
+                            {currentDisplayDate !== currentDate && (
                                 <Grid sx={{ marginLeft: "-20px" }}>
                                     <Button onClick={handleReset}>
                                         <RotateLeftRoundedIcon
@@ -292,16 +290,14 @@ export default function MOSDashboard() {
                                         />
                                     </Button>
                                 </Grid>
-                            ) : (
-                                ""
                             )}
                         </Grid>
                     </Grid>
 
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6} md={6} lg={6}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
                             <TableContainer component={Paper} sx={{ border: "1px solid grey" }}>
-                                <Typography variant="body" sx={{ padding: "2px" }}>
+                                <Typography variant="body1" sx={{ padding: "2px" }}>
                                     Daily Status Count By Referrals
                                 </Typography>
                                 <Table size="small">
@@ -316,26 +312,24 @@ export default function MOSDashboard() {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {referred_by_data.map((item) => {
-                                            return (
-                                                <TableRow>
-                                                    <TableCell>{item}</TableCell>
-                                                    <TableCell>{fnGetCount(item, 0)}</TableCell>
-                                                    <TableCell>{fnGetCount(item, 1)}</TableCell>
-                                                    <TableCell>{fnGetCount(item, 2)}</TableCell>
-                                                    <TableCell>{fnGetCount(item, 3)}</TableCell>
-                                                    <TableCell>{fnGetCount(item, 4)}</TableCell>
-                                                </TableRow>
-                                            );
-                                        })}
+                                        {referred_by_data.map((item) => (
+                                            <TableRow key={item}>
+                                                <TableCell>{item}</TableCell>
+                                                <TableCell>{fnGetCount(item, 0)}</TableCell>
+                                                <TableCell>{fnGetCount(item, 1)}</TableCell>
+                                                <TableCell>{fnGetCount(item, 2)}</TableCell>
+                                                <TableCell>{fnGetCount(item, 3)}</TableCell>
+                                                <TableCell>{fnGetCount(item, 4)}</TableCell>
+                                            </TableRow>
+                                        ))}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={6} lg={6}>
+                        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
                             <TableContainer component={Paper} sx={{ border: "1px solid grey" }}>
                                 <Typography variant="body1" sx={{ padding: "2px" }}>
-                                    Daily Status Count By Recruiter{" "}
+                                    Daily Status Count By Recruiter
                                 </Typography>
                                 <Table size="small">
                                     <TableHead sx={{ background: "#FEFAE0" }}>
@@ -350,18 +344,15 @@ export default function MOSDashboard() {
                                     </TableHead>
                                     <TableBody>
                                         {emp_details.map((item) => {
-                                            let hide =
+                                            const hide =
                                                 fnGetCountById(item.emp_id, 0) === 0 &&
-                                                    fnGetCountById(item.emp_id, 1) === 0 &&
-                                                    fnGetCountById(item.emp_id, 2) === 0 &&
-                                                    fnGetCountById(item.emp_id, 3) === 0 &&
-                                                    fnGetCountById(item.emp_id, 4) === 0
-                                                    ? true
-                                                    : false;
+                                                fnGetCountById(item.emp_id, 1) === 0 &&
+                                                fnGetCountById(item.emp_id, 2) === 0 &&
+                                                fnGetCountById(item.emp_id, 3) === 0 &&
+                                                fnGetCountById(item.emp_id, 4) === 0;
 
                                             return !hide ? (
-                                                <TableRow>
-                                                    {/*  */}
+                                                <TableRow key={item.emp_id}>
                                                     <TableCell>
                                                         <Typography
                                                             sx={{
@@ -388,66 +379,16 @@ export default function MOSDashboard() {
                         </Grid>
                     </Grid>
                 </Paper>
-                {/* </div>  */}
-                {/* } */}
-            </Container>
+            </Grid>
 
-            <Container>
+            <Grid item xs={0} md={2} lg={3} xl={5} ></Grid>
 
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-            <Container>
-
-            </Container>
-
-
-            <Container maxWidth="lg" sx={{ marginTop: "20px", flex: '6', display: 'flex', justifyContent: 'flex-end' }} >
+            <Grid item xs={12} md={5} lg={4} xl={3} >
                 <Todolist />
-            </Container>
+            </Grid>
+        </Grid>
 
 
-        </Container>
 
     );
 }

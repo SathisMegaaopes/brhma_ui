@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Grid, Table, TableRow, TableHead, TableCell, TableBody,  Dialog, DialogTitle, Tooltip,  TableContainer, Paper,  Button,  DialogContent,  DialogContentText, DialogActions, Snackbar,  Alert } from "@mui/material";
+import { Container, Grid, Table, TableRow, TableHead, TableCell, TableBody, Dialog, DialogTitle, Tooltip, TableContainer, Paper, Button, DialogContent, DialogContentText, DialogActions, Snackbar, Alert, Box } from "@mui/material";
 import { ThumbUpAltRounded, ThumbDownAltRounded, PendingRounded, VerifiedRounded, ReportRounded } from "@mui/icons-material";
 import { DateFormater, finalStatus } from "../../Components/Global/Utils/common_data.js";
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +15,7 @@ function MOSCandiateTable(props) {
     const { rerender, setRerender } = useSharedContext();
 
     const [candidate, setCandidate] = React.useState([]);
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = React.useState(null);   
     const [openModal, setOpen] = React.useState(false);
 
     const [deletemodal, setDeletemodal] = React.useState(false)
@@ -65,7 +65,7 @@ function MOSCandiateTable(props) {
             console.log('User get deleted successfully', response)
 
             setDeleteStatusVal(response.data.status)
-            setnotification(true)   
+            setnotification(true)
             setRerender(!rerender)
 
 
@@ -90,11 +90,10 @@ function MOSCandiateTable(props) {
     };
 
     return (
-        <Container >
-
-            <Grid item sx={12} sm={12} md={12}>
+        // <Container >
+        <>
+            <Grid item sx={12} sm={12} md={12} lg={12} xl={12}>
                 <TableContainer component={Paper} >
-
                     <Table size='small'>
                         <TableHead >
                             <TableRow>
@@ -106,7 +105,6 @@ function MOSCandiateTable(props) {
                                 <TableCell>eMail</TableCell>
                                 <TableCell>Status</TableCell>
                                 <TableCell align="center">Delete</TableCell>
-                                {/* <TableCell>{" "}</TableCell> */}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -147,6 +145,7 @@ function MOSCandiateTable(props) {
                     </Table>
                 </TableContainer>
             </Grid>
+           
 
 
             <Dialog
@@ -191,7 +190,8 @@ function MOSCandiateTable(props) {
                     <CandidateReportCard candidate={candidate} emp_details={props.emp_details} />
                 </DialogTitle>
             </Dialog>
-        </Container>
+        {/* </Container> */}
+        </>
     )
 }
 

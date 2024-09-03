@@ -29,7 +29,7 @@ export default function MOSNavigation() {
   }
 
   return (
-    <Box sx={{ display: 'flex'}}>
+    <Box >
       <AppBar position="fixed" sx={{ background: "#272727", zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <IconButton

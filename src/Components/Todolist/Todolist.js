@@ -10,14 +10,14 @@ import {
     Typography,
     Button,
     Box,
-    Container,
     FormControl,
     InputLabel,
     MenuItem,
     Select,
     Modal,
-    Tooltip,    
+    Tooltip,
     TextField,
+    Grid,
 } from '@mui/material';
 import URL from '../Global/Utils/url_route';
 import Fade from '@mui/material/Fade';
@@ -231,10 +231,9 @@ const Todolist = () => {
     return (
 
         <>
-
-            <Container sx={{ display: 'flex', flexDirection: 'column', height: '80vh', width: '50vh', gap: '40px' }}>
-                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', height: 350, backgroundColor: 'white' }}>
-                    <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '0px auto', padding: '0px', }} >
+            <Grid container sx={{ height: '100%',gap: 2 , height:'100%'}}>               
+                <Box sx={{ backgroundColor: 'white' , width:'100%',height:'48%' }}>
+                    <TableContainer component={Paper}  >
                         <Table stickyHeader >
 
                             <TableHead >
@@ -361,9 +360,8 @@ const Todolist = () => {
                     </TableContainer>
                 </Box>
 
-
-                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', backgroundColor: 'White' }}>
-                    <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '0px auto', maxHeight: 350, paddingTop: '0px' }} >
+                <Box sx={{ backgroundColor: 'White' , width:'100%',height:'48%'  }}>
+                    <TableContainer component={Paper}  >
                         <Table stickyHeader >
 
                             <TableHead>
@@ -525,8 +523,8 @@ const Todolist = () => {
                         </Table>
                     </TableContainer>
                 </Box>
-            </Container >
 
+            </Grid >
 
 
             <SuccessFailureModal
@@ -536,7 +534,6 @@ const Todolist = () => {
                 successmsg={"Task updated successfully"}
                 errormsg={"Something went wrong, Please try again !"}
             />
-
 
 
             <Modal
@@ -774,7 +771,7 @@ const Todolist = () => {
                                             {selectedTask.complete_comments}
                                         </div>
                                         {selectedTask.reopen_comments && (
-                                            <div style={{ maxWidth: '80%', alignSelf: 'flex-end', marginBottom: '16px' }}>
+                                            <div style={{ maxWidth: '80%', alignSelf: 'flex-start', marginBottom: '16px' }}>
                                                 <span style={{ color: '#7161ef', fontWeight: 'bold' }}>Re-open comments: </span>
                                                 {selectedTask.reopen_comments}
                                             </div>
