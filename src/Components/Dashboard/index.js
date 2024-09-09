@@ -110,6 +110,7 @@ export default function MOSDashboard() {
                 if (response.data.status === 0) {
                     setCandidates(response.data.data);
                     setCandidatelist(response.data.data);
+                    console.log(response.data.emp_details)
                     setEmp(response.data.emp_details);
                 } else {
                     console.log("ERROR : ", JSON.stringify(response.data));
@@ -223,13 +224,14 @@ export default function MOSDashboard() {
 
     };
 
+    // console.log(userinfo?.user_details?.emp_name,'this is very very very important in the ui')
 
     return (
 
-        <Grid container spacing={2} sx={{ paddingLeft: 6, paddingY: 4 }}>
+        <Grid container spacing={2} sx={{ paddingLeft: 6, paddingY: 0 }}>
             <Grid item xs={12} md={5} lg={5} xl={4} >
                 <Typography variant='h6' sx={{ margin: "8px" }}>
-                    Welcome {userinfo?.user_details?.emp_name}!
+                    Welcome {userinfo?.user_details?.emp_name} !
                 </Typography>
                 <Grid>
                     <React.Fragment>

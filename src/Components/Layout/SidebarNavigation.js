@@ -38,7 +38,7 @@ const SidebarIcon = styled(IconButton)(({ theme, isOpen, isActive }) => ({
     alignContent: 'center',
     padding: "25px 15px",
     fontSize: "20px",
-    transition: "color 0.3s",
+    transition: "color 0.5s",
     "&:hover": {
         color: isOpen ? "white" : "#f1f1f1",
     },
@@ -48,12 +48,11 @@ const SidebarIcon = styled(IconButton)(({ theme, isOpen, isActive }) => ({
 function Sidebar() {
 
     const { sharedTab, setSharedTab } = useSharedContext();
-
     const { search } = useLocation();
     const queryParams = new URLSearchParams(search);
-
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('tasks');
+
     const navigate = useNavigate();
 
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
@@ -98,7 +97,6 @@ function Sidebar() {
         setIsOpen(false);
     };
 
-
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSharedTab({
@@ -107,7 +105,6 @@ function Sidebar() {
             active: 0,
             backendUrl: null
         })
-
     };
 
 
@@ -126,6 +123,9 @@ function Sidebar() {
                 const todate = queryParams.get('todate');
 
                 return <MOSCandidate emp_id={employid} fromDate={fromdate} toDate={todate} />;
+            case 'Employeetable' :
+                return <CandidateInterview/>
+            
             default:
                 return <MOSDashboard />;
         }
@@ -153,6 +153,11 @@ function Sidebar() {
                         {isOpen && <span>&nbsp;&nbsp;&nbsp;Candidate Database</span>}
                     </SidebarIcon> : ''}
 
+                <SidebarIcon disableRipple aria-label="Employeetable" isOpen={isOpen} onClick={() => handleTabChange('Employeetable')} isActive={activeTab === 'Employeetable'} >
+                    <StorageRoundedIcon sx={{ fontSize: 30 }} />
+                    {isOpen && <span>&nbsp;&nbsp;&nbsp;Employee Table</span>}
+                </SidebarIcon>
+
             </SidebarContainer>
             <MainContainer>
                 {renderContent()}
@@ -160,6 +165,8 @@ function Sidebar() {
         </>
     );
 }
+
+
 
 
 export default Sidebar;

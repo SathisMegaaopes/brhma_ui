@@ -1,29 +1,21 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
-
 import axios from 'axios';
-
 import { Container, Grid, Typography, Tabs, Tab, Box, Button } from "@mui/material";
-
 import BasicDetails from './BasicDetails';
 import EduDetails from './EduDetails';
 import WorkDetails from './Work';
 import PersonalDetails from './Personal';
 import ReferDetails from './Refer';
-
-import UploadDetails from './UploadDetails'; //new
-
-
+import UploadDetails from './UploadDetails';
 import MOSLogo from "../Global/Logo";
 import MOSFooter from '../Global/Footer';
-
 import URL from "../Global/Utils/url_route";
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-
-
 
   return (
     <div
@@ -116,24 +108,22 @@ function MegaOpesCandidateRegistration() {
     guardName: "", guardAge: "", guardOccu: "", guardMob: "", profile_pic: "", address: ""
   };
 
-  let uploadData = {     //new
+  let uploadData = {
     type: "",
   }
 
   let referData = { name1: "", mobile1: "", name2: "", mobile2: "", name3: "", mobile3: "", name4: "", mobile4: "", }
 
+
+
   const [basicdata, setBasicdata] = React.useState(basicdetails);
   const [edudata, setEdudata] = React.useState(eduDetails);
   const [workdata, setWorkdata] = React.useState(workDetails);
   const [personaldata, setPersonaldata] = React.useState(personalData);
-
-  const [uploads, setuploads] = React.useState(uploadData)   //new
-
-
+  const [uploads, setuploads] = React.useState(uploadData)
   const [referdata, setReferdata] = React.useState(referData);
   const [record_id, setRecordId] = React.useState(0);
   const [candidate_id, setCandidateId] = React.useState(0);
-
   const [mobExists, setMobExists] = React.useState(null);
 
 
@@ -164,8 +154,6 @@ function MegaOpesCandidateRegistration() {
     if (record_id === 0) {
       setBasicdata(data);
       let request = data;
-
-      console.log(request)
 
       let basic_url = URL + "candidates";
       axios.post(basic_url, request)
@@ -259,28 +247,6 @@ function MegaOpesCandidateRegistration() {
   }
 
 
-  // const handleUpload = (data) => {   //new
-  //   console.log(data, 'this is the data inside the handleupdate')
-  //   let personal_url = URL + "candidateupload/sendingFiles";
-  //   console.log(personal_url,'this is the url')
-  // axios.post(personal_url, data)
-  //   .then((response) => {
-  //     if (response.data.status === 0) {
-  //       // handleNext();
-  //       console.log(response.data.status)
-  //     }
-  //     else {
-  //       console.log("ERROR", response);
-  //     }
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-  //   });
-  // }
-
-
-
-
   const handleRefer = (data) => {
     setReferdata(data);
     let request = data;
@@ -320,9 +286,6 @@ function MegaOpesCandidateRegistration() {
 
     sessionStorage.setItem("candidate_id", candidate_id)
 
-
-    // setuploads(uploadData);   //new 
-
     history("/thankyou");
   }
   return (
@@ -334,15 +297,13 @@ function MegaOpesCandidateRegistration() {
             Candidate ID : {candidate_id}
           </Typography>}
 
-          <Tabs value={value} aria-label="basic tabs example"> {/*onChange={handleChange} */}
+          <Tabs value={value} aria-label="basic tabs example">
             <Tab label="Basic Info" {...a11yProps(0)} />
             <Tab label="Educational Info" {...a11yProps(1)} />
             <Tab label="Work Experience" {...a11yProps(2)} />
             <Tab label="Personal Info" {...a11yProps(2)} />
             <Tab label="Uploads" {...a11yProps(2)} />
             <Tab label="Refer a Friend" {...a11yProps(2)} />
-
-            {/* //my code */}
 
           </Tabs>
 
@@ -359,21 +320,13 @@ function MegaOpesCandidateRegistration() {
           <TabPanel value={value} index={3}>
             <PersonalDetails data={personaldata} handlePersonal={(data) => handlePersonal(data)} handleNext={handleNext} handlePrev={handlePrev} />
           </TabPanel>
-
-
           <TabPanel value={value} index={4}>
             <UploadDetails id={candidate_id} handleNext={handleNext} handlePrev={handlePrev} />
           </TabPanel>
-
-          {/* //handleUpload={(data) => handleUpload(data)} */}
-
           <TabPanel value={value} index={5}>
             <ReferDetails data={referdata} handleRefer={(data) => handleRefer(data)} handleSubmit={handleSubmit} handlePrev={handlePrev} />
           </TabPanel>
         </Grid>
-
-
-
 
       </Grid>
       <MOSFooter />
@@ -384,21 +337,3 @@ function MegaOpesCandidateRegistration() {
 
 
 export default MegaOpesCandidateRegistration
-
-
-
-{/* // this is not added  */ }
-
-{/* <Grid container  spacing={2} >
-        <Grid item xs={6} sm={6} md={6}>
-          {parseInt(value)!=0 ? 
-                <Button variant='contained' color='primary' disableElevation fullWidth onClick={handlePrev}>
-                    Previous 
-                </Button> : ""}
-            </Grid>
-            <Grid item xs={6} sm={6} md={6}>
-                <Button variant='contained' color='success' disableElevation fullWidth onClick={handleNext}>
-                {parseInt(value)===4 ? "SUBMIT" : "NEXT"}
-                </Button>
-            </Grid>
-        </Grid> */}

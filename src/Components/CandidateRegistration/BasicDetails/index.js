@@ -3,44 +3,33 @@ import {
     Container, Grid, Button, TextField, FormControl,
     InputLabel, MenuItem, Select, InputAdornment, CircularProgress, FormLabel
 } from "@mui/material";
-
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
-import Alert from '@mui/material/Alert';
-import CheckIcon from '@mui/icons-material/Check';
-
 import { DateFormater, referred_by_data } from "../../Global/Utils/common_data.js";
 import axios from 'axios';
 import URL from "../../Global/Utils/url_route.js";
-
-//new code 
 import pincode from "pincode-distance";
-
-import dayjs, { isDayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 function BasicDetails(props) {
 
 
     const [images, setImages] = React.useState([]);
+
     const maxNumber = 1;
 
     const onChangeImage = (imageList, addUpdateIndex) => {
-        // data for submit
-
         setImages(imageList);
     };
 
     const ref_data = referred_by_data;
 
     const profile_data = ["Customer Service Representative", "Sr Customer Service Representative",
-        "Customer Sales Representative", "Sr Customer Sales Representative", "HR Recruiter", "HR Executive",
+        "Customer Sales Representative", "Sr Customer Sales Representative","Business Development Executive","Business Development Manager","HR Recruiter", "HR Executive",
         "HR Manager", "Front Desk Executive", "IT Support Administration ", "Quality Analyst",
         "Sr Quality Analyst", "Subject Matter Expert", "Team Leader", "Vice President",
         "Operations Manager", "Sr Operations Manager", "Group Manager", "Assistant Manager",
@@ -59,33 +48,24 @@ function BasicDetails(props) {
     const [others, setOthers] = React.useState(props.data.ref_others === "" ? false : true);
     const [othersVal, setOthersVal] = React.useState(props.data.ref_others);
     const [dob, setDob] = React.useState(props.data.dob !== "" ? props.data.dob : dayjs(''));
-    // const [dob, setDob] = React.useState( dayjs(''));  // new one
     const [years, setYears] = React.useState(props.data.years !== undefined ? props.data.years : "");
     const [months, setMonths] = React.useState(props.data.months !== undefined ? props.data.months : "");
     const [address, setAddress] = React.useState(props.data.address !== undefined ? props.data.address : "");
-
     const [showSpinner, setSpinner] = React.useState(false);
     const [empWalkIn, setempWalkIn] = React.useState(false);
     const [disableNext, setdisableNext] = React.useState(true);
-
-
     const [emp, setEmp] = React.useState(null);
     const [hrBy, setHrby] = React.useState("");
     const [checkMobile, setCheckMobile] = React.useState(null);
-
-
     const [error, setError] = React.useState(true);
     const [helperText, setHelperText] = React.useState('');
-
     const [numErr, setnumErr] = React.useState(false)
-
-    //new code 
     const [zipCode, setZipCode] = React.useState('');
     const [ziperrortext, setziperrortext] = React.useState('')
     const [distance, setDistance] = React.useState('')
     const [dobpresent, setDobPresent] = React.useState(false);
 
-    //new code 
+
     const handleClick = () => {
         let Others = othersVal !== "" ? othersVal : "";
 
@@ -111,7 +91,6 @@ function BasicDetails(props) {
         };
 
         props.handleBasic(basicdetails);
-        // props.handleNext();
     }
 
 
@@ -144,7 +123,6 @@ function BasicDetails(props) {
             email === "" ||
             gender === "" ||
             referred === "" ||
-            // dob === dayjs('') ||
             designation === "" ||
             checkMobile === "" ||
             checkMobile === null ||
@@ -184,7 +162,6 @@ function BasicDetails(props) {
         const value = e.target.value;
         setEmail(value);
 
-
         const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z0-9]+$/;
 
         if (!emailRegex.test(value)) {
@@ -206,14 +183,12 @@ function BasicDetails(props) {
         }
     }, [dob]);
 
-    //new code 
     const parseFormattedDate = (formattedDate) => {
         const [day, month, year] = formattedDate.split('/').map(Number);
         return new Date(year, month - 1, day);
     };
 
 
-    //new code 
     const checkMobileExists = () => {
         if (mobile.length < 10 || mobile.length > 10) {
             setnumErr(true)
@@ -346,14 +321,12 @@ function BasicDetails(props) {
                         placeholder='Enter Your Mobile Number'
                         error={mobile === "" || checkMobile ? true : false || numErr ? true : false}
                         type='number'
-                        // onChange={e => setMobile(e.target.value)}
                         onChange={handleNumber}
                         onFocus={clearError}
                         onBlur={checkMobileExists}
                         helperText={checkMobile !== null && checkMobile ? "Mobile Number Already Exists." : "" || numErr ? " Only ten digits are allowed" : ""}
                         inputProps={{
                             maxLength: 10,
-                            // minLength: 10
                         }}
                         InputProps={{
                             endAdornment: <InputAdornment position="end">
@@ -374,15 +347,6 @@ function BasicDetails(props) {
                                 format='DD/MM/YYYY'
                                 value={dob}
                                 onChange={(newValue) => setDob(newValue)}
-                                // slotProps={{
-                                //     textField: {
-                                //         size: 'small',
-                                //         helperText: dobtext,
-                                //         FormHelperTextProps: {
-                                //             sx: { color: 'red' },
-                                //         },
-                                //     },
-                                // }}
                             />
                         </DemoContainer>
                     </LocalizationProvider>
@@ -400,7 +364,6 @@ function BasicDetails(props) {
                         error={first_name === "" ? true : false}
                         value={first_name}
                         onChange={handleName}
-                    //  onChange={e => setFirst(e.target.value)}
                     />
                 </Grid>
 
@@ -441,9 +404,8 @@ function BasicDetails(props) {
                     />
                 </Grid>
 
-                {/* //new */}
+                {/* pin code*/}
                 <Grid item xs={12} sm={12} md={12}>
-                    {/* pin code*/}
                     <Grid>
                         <TextField
                             size='small'

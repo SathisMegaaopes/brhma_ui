@@ -32,37 +32,23 @@ import { formatDateTime } from '../Global/Utils/common_data';
 const Todolist = () => {
 
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
-
     const username = userinfo.user_name;
-
     const user_role = userinfo.user_role;
-
     const tat = 2;
-
     const [mytodoList, setMyTodoList] = useState([])
-
     const [othertasks, setOthertasks] = useState([])
-
-
     const [timeLeft, setTimeLeft] = useState(0);
-
     const [color, setColor] = useState('inherit');
-
     const [select, setSelect] = React.useState(null);
-
     const [open, setOpen] = useState(false);
-
     const [selectedTask, setSelectedTask] = useState(null);
-
     const [referesh, setRefresh] = useState(false)
-
     const [stsupdateml, setStsupdateml] = useState(false)
-
     const [updateStatus, setUpdateStatus] = useState(null)
-
     const [comment, setComment] = useState('');
 
 
+    console.log(othertasks, 'othertasks')
 
     const handleChange = (event, id) => {
         setSelect(event.target.value);
@@ -228,17 +214,20 @@ const Todolist = () => {
         );
     };
 
+
+
     return (
 
         <>
-            <Grid container sx={{ height: '100%',gap: 2 , height:'100%'}}>               
-                <Box sx={{ backgroundColor: 'white' , width:'100%',height:'48%' }}>
-                    <TableContainer component={Paper}  >
+            <Grid container sx={{ gap: 2, height: '80vh' }}>
+                {/* <Box sx={{ backgroundColor: 'white', width: '100%', maxHeight: '0vh' }}> */}
+                <Box sx={{ backgroundColor: 'white', width: '100%', height: '50%', overflow: 'auto' }}>
+                    <TableContainer component={Paper} >
                         <Table stickyHeader >
 
                             <TableHead >
                                 <TableRow >
-                                    <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '100px' }} colSpan={2}>
+                                    <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '100px', zIndex: 0 }} colSpan={2}>
                                         <Typography variant="h6" sx={{ fontSize: '1rem' }}>
                                             MyTasks
                                         </Typography>
@@ -251,7 +240,7 @@ const Todolist = () => {
 
                             <TableHead >
                                 <TableRow>
-                                    <TableCell align="center" sx={{ padding: '6px' }} colSpan={1} >
+                                    <TableCell align="center" sx={{ padding: '6px', zIndex: 0 }} colSpan={1} >
                                         <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
                                             Task Name
                                         </Typography>
@@ -335,7 +324,7 @@ const Todolist = () => {
                                                     whiteSpace: 'nowrap',
                                                 }}>
 
-                                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center',gap:6 }}>
+                                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center', gap: 6 }}>
                                                         <>
                                                             <TimelapseSharpIcon sx={{ marginRight: 'px' }} />
                                                         </>
@@ -349,7 +338,7 @@ const Todolist = () => {
                                         </TableRow>
                                     ))) : (
                                         <TableRow>
-                                            <TableCell colSpan={6} align="center" sx={{ py: 14, fontStyle: 'italic', color: 'gray', fontSize: '1.2rem' }}>
+                                            <TableCell colSpan={6} align="center" sx={{ py: 15, fontStyle: 'italic', color: 'gray', fontSize: '1.2rem' }}>
                                                 No tasks currently available
                                             </TableCell>
                                         </TableRow>
@@ -360,14 +349,15 @@ const Todolist = () => {
                     </TableContainer>
                 </Box>
 
-                <Box sx={{ backgroundColor: 'White' , width:'100%',height:'48%'  }}>
+                {/* <Box sx={{ backgroundColor: 'White', width: '100%', maxHeight: '0vh' }}> */}
+                <Box sx={{ backgroundColor: 'white', width: '100%', height: '50%', overflow: 'auto' }}>
                     <TableContainer component={Paper}  >
                         <Table stickyHeader >
 
                             <TableHead>
                                 {userinfo.user_role === 1 ?
                                     <TableRow>
-                                        <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '95px' }} colSpan={3}>
+                                        <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '95px', zIndex: 0 }} colSpan={3}>
                                             <Typography variant="h6" sx={{ fontSize: '1rem' }}>
                                                 Assigned Tasks
                                             </Typography>
@@ -379,7 +369,7 @@ const Todolist = () => {
 
                                     :
                                     <TableRow>
-                                        <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '0px' }} colSpan={4}>
+                                        <TableCell sx={{ padding: '12px', textAlign: 'center', paddingLeft: '0px', zIndex: 0 }} colSpan={4}>
                                             <Typography variant="h6" sx={{ fontSize: '1rem' }}>
                                                 Assigned Tasks
                                             </Typography>
@@ -392,23 +382,28 @@ const Todolist = () => {
 
                             <TableHead >
                                 <TableRow>
-                                    <TableCell align="center" sx={{ padding: '8px' }} >
+                                    <TableCell align="center" sx={{ padding: '8px', zIndex: 0 }} >
                                         <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
                                             Task Name
                                         </Typography>
                                     </TableCell>
                                     {userinfo.user_role === 1 ?
-                                        <TableCell align="center" sx={{ padding: '8px' }} >
+                                        <TableCell align="center" sx={{ padding: '8px', zIndex: 0 }} >
                                             <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
                                                 Assignee
                                             </Typography>
-                                        </TableCell> : ''}
-                                    <TableCell align="center" sx={{ padding: '8px' }} >
+                                        </TableCell> :
+                                        <TableCell align="center" sx={{ padding: '8px', zIndex: 0 }} >
+                                            <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
+                                                Assigned By
+                                            </Typography>
+                                        </TableCell>}
+                                    <TableCell align="center" sx={{ padding: '8px', zIndex: 0 }} >
                                         <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
                                             Status
                                         </Typography>
                                     </TableCell>
-                                    <TableCell align="center" sx={{ padding: '8px' }} >
+                                    <TableCell align="center" sx={{ padding: '8px', zIndex: 0 }} >
                                         <Typography variant="body1" sx={{ fontWeight: 'normal', color: '#1F3F49' }}>
                                             Timer
                                         </Typography>
@@ -459,7 +454,7 @@ const Todolist = () => {
                                             </TableCell>
 
                                             {userinfo.user_role === 1 ?
-                                                <TableCell align="justify" sx={{ padding: '4px' }}>
+                                                <TableCell align="center" sx={{ padding: '4px' }}>
                                                     <Typography
                                                         sx={{
                                                             padding: 0.5,
@@ -471,9 +466,27 @@ const Todolist = () => {
                                                             cursor: 'pointer',
                                                         }}
                                                     >
-                                                        To : {todo.task_assignee.length > 7 ? `${todo.Asignee.slice(0, 9)}...` : todo.task_assignee}
+                                                        To : {todo.task_assignee.length > 9 ? `${todo.task_assignee.slice(0, 9)}...` : todo.task_assignee}
                                                     </Typography>
-                                                </TableCell> : ''}
+                                                </TableCell> :
+
+                                                <TableCell align="center" sx={{ padding: '4px' }}>
+                                                    <Typography
+                                                        sx={{
+                                                            padding: 0.5,
+                                                            fontWeight: 'normal',
+                                                            color: '#3f51b5',
+                                                            fontSize: '0.9rem',
+                                                            overflow: 'hidden',
+                                                            whiteSpace: 'nowrap',
+                                                            cursor: 'pointer',
+                                                        }}
+                                                    >
+                                                        {todo.created_by.length > 9 ? `${todo.created_by.slice(0, 9)}...` : todo.created_by}
+                                                    </Typography>
+                                                </TableCell>
+
+                                            }
 
                                             <TableCell align="center" sx={{ padding: '4px' }}>
                                                 <Typography
@@ -513,7 +526,7 @@ const Todolist = () => {
                                         </TableRow>
                                     ))) : (
                                         <TableRow>
-                                            <TableCell colSpan={6} align="center" sx={{ py: 14, fontStyle: 'italic', color: 'gray', fontSize: '1.2rem' }}>
+                                            <TableCell colSpan={6} align="center" sx={{ py: 14.8, fontStyle: 'italic', color: 'gray', fontSize: '1.2rem', height: '100%' }}>
                                                 No tasks currently available
                                             </TableCell>
                                         </TableRow>
@@ -654,43 +667,18 @@ const Todolist = () => {
 
                             </div>
 
+                            {selectedTask.status !== 4 ?
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        style={{ color: '#007bff', fontWeight: 'bold' }}
+                                    >
+                                        Status: {handleStatus(selectedTask.status)}
+                                    </Typography>
 
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                <Typography
-                                    variant="subtitle1"
-                                    style={{ color: '#007bff', fontWeight: 'bold' }}
-                                >
-                                    Status: {handleStatus(selectedTask.status)}
-                                </Typography>
 
-
-                                {selectedTask.task_assignee.toString() === userinfo.user_name &&
-                                    selectedTask.created_by.toString() === userinfo.user_name
-                                    ? (
-                                        <FormControl variant="outlined" size="small">
-                                            <InputLabel>Status</InputLabel>
-                                            <Select
-                                                label="Status"
-                                                value={select}
-                                                onChange={(e) => handleChange(e, selectedTask.id)}
-                                                style={{
-                                                    width: '150px',
-                                                    fontSize: '0.875rem',
-                                                    height: '35px',
-                                                    backgroundColor: '#ffffff',
-                                                }}
-                                            >
-                                                <MenuItem value="open">Open</MenuItem>
-                                                <MenuItem value="in-progress">In Progress</MenuItem>
-                                                <MenuItem value="completed">Completed</MenuItem>
-                                                <MenuItem value="reopen">Re-open</MenuItem>
-                                                <MenuItem value="done">Done</MenuItem>
-                                            </Select>
-                                        </FormControl>
-
-                                    ) : (userinfo.user_role === 1 &&
-                                        selectedTask.task_assignee.toString() !== userinfo.user_name &&
-                                        selectedTask.created_by.toString() === userinfo.user_name)
+                                    {selectedTask.task_assignee.toString() === userinfo.user_name &&
+                                        selectedTask.created_by.toString() === userinfo.user_name
                                         ? (
                                             <FormControl variant="outlined" size="small">
                                                 <InputLabel>Status</InputLabel>
@@ -705,32 +693,65 @@ const Todolist = () => {
                                                         backgroundColor: '#ffffff',
                                                     }}
                                                 >
-                                                    <MenuItem value="reopen">Re-open</MenuItem>
-                                                    <MenuItem value="done">Done</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        ) : (
-
-                                            <FormControl variant="outlined" size="small">
-                                                <InputLabel>Status</InputLabel>
-                                                <Select
-                                                    label="Status"
-                                                    value={select}
-                                                    onChange={(e) => handleChange(e, selectedTask.id)}
-                                                    style={{
-                                                        width: '150px',
-                                                        fontSize: '0.875rem',
-                                                        height: '35px',
-                                                        backgroundColor: '#ffffff',
-                                                    }}
-                                                >
-                                                    <MenuItem value="in-progress">In Progress</MenuItem>
-                                                    <MenuItem value="completed">Completed</MenuItem>
+                                                    {selectedTask.status === 0 && <MenuItem value="in-progress">In Progress</MenuItem>}
+                                                    {selectedTask.status === 1 || selectedTask.status === 3 ? <MenuItem value="completed">Completed</MenuItem> : null}
+                                                    {selectedTask.status === 2 && <MenuItem value="reopen">Re-open</MenuItem>}
+                                                    {selectedTask.status === 2 && <MenuItem value="done">Done</MenuItem>}
+                                                    {![0, 1, 2, 3].includes(selectedTask.status) && <MenuItem value="" disabled>No Status Available</MenuItem>}
                                                 </Select>
                                             </FormControl>
 
-                                        )}
-                            </div>
+
+                                        ) : (userinfo.user_role === 1 &&
+                                            selectedTask.task_assignee.toString() !== userinfo.user_name &&
+                                            selectedTask.created_by.toString() === userinfo.user_name)
+                                            ? (
+                                                <FormControl variant="outlined" size="small">
+                                                    <InputLabel>Status</InputLabel>
+                                                    <Select
+                                                        label="Status"
+                                                        value={select}
+                                                        onChange={(e) => handleChange(e, selectedTask.id)}
+                                                        style={{
+                                                            width: '150px',
+                                                            fontSize: '0.875rem',
+                                                            height: '35px',
+                                                            backgroundColor: '#ffffff',
+                                                        }}
+                                                    >
+                                                        {selectedTask.status === 2 && <MenuItem value="reopen">Re-open</MenuItem>}
+                                                        {selectedTask.status === 2 && <MenuItem value="done">Done</MenuItem>}
+                                                        {![2].includes(selectedTask.status) && <MenuItem value="" disabled>No Status Available</MenuItem>}
+                                                        {/* <MenuItem value="reopen">Re-open</MenuItem> */}
+                                                        {/* <MenuItem value="done">Done</MenuItem> */}
+                                                    </Select>
+                                                </FormControl>
+                                            ) : (
+
+                                                <FormControl variant="outlined" size="small">
+                                                    <InputLabel>Status</InputLabel>
+                                                    <Select
+                                                        label="Status"
+                                                        value={select}
+                                                        onChange={(e) => handleChange(e, selectedTask.id)}
+                                                        style={{
+                                                            width: '150px',
+                                                            fontSize: '0.875rem',
+                                                            height: '35px',
+                                                            backgroundColor: '#ffffff',
+                                                        }}
+                                                    >
+                                                        {selectedTask.status === 0 && <MenuItem value="in-progress">In Progress</MenuItem>}
+                                                        {selectedTask.status === 1 && <MenuItem value="completed">Completed</MenuItem>}
+                                                        {selectedTask.status === 3 && <MenuItem value="completed">Completed</MenuItem>}
+
+                                                        {![0, 1, 3].includes(selectedTask.status) && <MenuItem value="" disabled>No Status Available</MenuItem>}
+                                                    </Select>
+                                                </FormControl>
+
+                                            )}
+                                </div>
+                                : ''}
 
                             {(selectedTask.status !== 4 && selectedTask.status !== 0) && (
                                 <div style={{ marginBottom: '16px' }}>

@@ -34,7 +34,8 @@ function CandidateInterview() {
 
     const user_session = JSON.parse(sessionStorage.getItem("user_info"));
     const emp_id = user_session.user_details.emp_id.toString();
-    const emp_name = user_session.user_details.emp_name.toString();
+    // const emp_name = user_session.user_details.emp_name.toString();
+    const emp_name = user_session.user_details.emp_name;
     const [currentRound, setCurrentRound] = React.useState(0);
     const [interviewName, setInterviewerName] = React.useState(emp_id);
     React.useEffect(() => {

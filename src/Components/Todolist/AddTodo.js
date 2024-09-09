@@ -30,6 +30,8 @@ const AddTodo = ({ value }) => {
 
     const [employee, setEmployee] = useState([])
 
+    console.log(employee)
+
     const [employeeID, setEmployeeID] = useState(null)
 
     const [openModal, setOpenModal] = useState(false)
@@ -91,19 +93,19 @@ const AddTodo = ({ value }) => {
                 setEmployee(fetchedEmployees);
 
                 if (importantValue === '1') {
-                    const getLoggedUserDetails = fetchedEmployees.find((item) => item["Emp ID"] === userinfo.user_details.emp_id);
+                    const getLoggedUserDetails = fetchedEmployees.find((item) => item["emp_id"] === userinfo.user_details.emp_id);
 
                     if (getLoggedUserDetails) {
 
-                        setdepartid(getLoggedUserDetails.Department);
-                        setteamID(getLoggedUserDetails.Team);
-                        setEmployeeID(getLoggedUserDetails["Emp ID"]);
+                        setdepartid(getLoggedUserDetails.department);
+                        setteamID(getLoggedUserDetails.team);
+                        setEmployeeID(getLoggedUserDetails["emp_id"]);
 
                         setFormState((prevState) => ({
                             ...prevState,
-                            department: getLoggedUserDetails.Department,
-                            team: getLoggedUserDetails.Team,
-                            assignee: getLoggedUserDetails["Emp ID"]
+                            department: getLoggedUserDetails.department,
+                            team: getLoggedUserDetails.team,
+                            assignee: getLoggedUserDetails["emp_id"]
                         }));
                     }
                 }
@@ -168,7 +170,7 @@ const AddTodo = ({ value }) => {
 
         if (name === 'assignee') {
             const employeelist = employee.filter((item) => item.f_name === value)
-            setEmployeeID(employeelist[0]["Emp ID"])
+            setEmployeeID(employeelist[0]["emp_id"])
         }
 
     };
@@ -358,7 +360,7 @@ const AddTodo = ({ value }) => {
                                     >
                                         {employee.length > 0 ? (
                                             employee.map((item) => (
-                                                <MenuItem key={item.id} value={item.f_name}>{item.f_name}</MenuItem>
+                                                <MenuItem key={item.id} value={item.f_name}>{item.f_name} {item.l_name}</MenuItem>
                                             ))
                                         ) : (
                                             <MenuItem disabled>No employees available</MenuItem>
@@ -409,28 +411,12 @@ const AddTodo = ({ value }) => {
                         </LocalizationProvider>
                     </Box>
 
-                    {/* // minTime={formState.startDateTime ? formState.startDateTime : dayjs()} */}
-
                     <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-                        <Button variant="outlined" onClick={() => setConfirmCancel(!confirmCancel)}
-                            sx={{
-                                backgroundImage: 'linear-gradient(to top, #f77062 0%, #fe5196 100%)',
-                                color: 'white'
-                            }}
+                        <Button variant="contained" onClick={() => setConfirmCancel(!confirmCancel)} color='error'
                         >
                             Cancel
                         </Button>
-                        <Button variant="contained" onClick={handleSend} disabled={isFormIncomplete()}
-                            sx={{
-                                background: 'gray',
-                                color: '#fff',
-                                '&:not(:disabled)': {
-                                    background: 'rgb(34,193,195)',
-                                    backgroundImage: 'linear-gradient(to top, #30cfd0 0%, #330867 100%)'
-                                },
-                            }}
-
-                        >
+                        <Button variant="contained" onClick={handleSend} disabled={isFormIncomplete()} color='success'>
                             Create
                         </Button>
                     </Box>
