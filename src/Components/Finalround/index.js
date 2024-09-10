@@ -45,7 +45,7 @@ function FinalRound(props) {
     const [selectedBonus, setSelectedBonus] = React.useState("No");
     const [selectedBonusVal, setSelectedBonusVal] = React.useState("");
     const [selectedDOJ, setSelectedDOJ] = React.useState(dayjs());
-    // const [selectedDOJ, setSelectedDOJ] = React.useState("");
+    // const [selectedDOJ, setSelectedDOJ] = React.useState("09/10/2024");
     const [selectedCTC, setSelectedCTC] = React.useState("");
     const [selectedNet, setSelectedNet] = React.useState("");
     const [selectedDesi, setSelectedDesi] = React.useState("");

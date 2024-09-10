@@ -9,6 +9,7 @@ import ThankYou from "./Components/Global/ThankYou";
 import MOSLogin from "./Components/Login";
 import MOSLayout from "./Components/Layout";
 import MOSDashboard from "./Components/Dashboard";
+import EmployeeTable from "./Components/EmployeeTable";
 import { SharedProvider } from "./Context";
 
 
@@ -40,6 +41,10 @@ function App() {
               <Route
                 path="/dashboard/candidate-master"
                 element={<MOSCandidate />}
+              />
+              <Route
+                path = "/dashboard/employee-master"
+                element={<EmployeeTable />}
               />
 
             </Route>

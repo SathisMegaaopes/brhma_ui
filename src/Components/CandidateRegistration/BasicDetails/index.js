@@ -66,6 +66,7 @@ function BasicDetails(props) {
     const [dobpresent, setDobPresent] = React.useState(false);
 
 
+
     const handleClick = () => {
         let Others = othersVal !== "" ? othersVal : "";
 
@@ -202,6 +203,7 @@ function BasicDetails(props) {
                     .then((response) => {
                         let res = response.data;
                         setEmp(res.emp_details);
+                        console.log(res.emp_details)
                         if (res.status === 0) {
                             setCheckMobile(false);
 

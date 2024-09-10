@@ -12,6 +12,7 @@ import { referred_by_data } from "../Global/Utils/common_data";
 import RotateLeftRoundedIcon from "@mui/icons-material/RotateLeftRounded";
 import Todolist from "../Todolist/Todolist";
 import { useSharedContext } from "../../Context";
+import UserSession from "../SessionComponent";
 
 
 
@@ -229,7 +230,7 @@ export default function MOSDashboard() {
     return (
 
         <Grid container spacing={2} sx={{ paddingLeft: 6, paddingY: 0 }}>
-            <Grid item xs={12} md={5} lg={5} xl={4} >
+            <Grid item xs={12} md={6} lg={4} xl={4} >
                 <Typography variant='h6' sx={{ margin: "8px" }}>
                     Welcome {userinfo?.user_details?.emp_name} !
                 </Typography>
@@ -383,9 +384,11 @@ export default function MOSDashboard() {
                 </Paper>
             </Grid>
 
-            <Grid item xs={0} md={2} lg={3} xl={5} ></Grid>
+            <Grid item xs={12} md={6} lg={4.5} xl={5} >
+                <UserSession/>
+            </Grid>
 
-            <Grid item xs={12} md={5} lg={4} xl={3} >
+            <Grid item xs={12} md={12} lg={3.5} xl={3} >
                 <Todolist />
             </Grid>
         </Grid>
