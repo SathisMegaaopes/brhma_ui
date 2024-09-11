@@ -48,7 +48,10 @@ const Todolist = () => {
     const [comment, setComment] = useState('');
 
 
-    console.log(othertasks, 'othertasks')
+
+    // console.log(selectedTask)
+    // console.log(![2].includes(selectedTask.status))
+
 
     const handleChange = (event, id) => {
         setSelect(event.target.value);
@@ -482,7 +485,7 @@ const Todolist = () => {
                                                             cursor: 'pointer',
                                                         }}
                                                     >
-                                                        {todo.created_by.length > 9 ? `${todo.created_by.slice(0, 9)}...` : todo.created_by}
+                                                        {todo.created_by_new.length > 9 ? `${todo.created_by_new.slice(0, 9)}...` : todo.created_by_new}
                                                     </Typography>
                                                 </TableCell>
 

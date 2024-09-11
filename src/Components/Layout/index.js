@@ -10,10 +10,15 @@ import Menu from '@mui/material/Menu';
 import { useNavigate } from 'react-router-dom';
 import logo1 from "../../images/logo_1.png";
 import Sidebar from './SidebarNavigation';
+import URL from '../Global/Utils/url_route';
+import axios from 'axios'
 
 export default function MOSNavigation() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const history = useNavigate();
+  const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
+
+  const url = URL + "logout"
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -23,9 +28,17 @@ export default function MOSNavigation() {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    sessionStorage.clear();
-    history("/");
+  const handleLogout = async () => {
+    try {
+      const response = await axios.put(url, { data: userinfo.emp_id })
+      if (response.data.status === 1) {
+        sessionStorage.clear();
+        history("/");
+      }
+    } catch (err) {
+      console.log(err)
+    }
+
   }
 
   return (

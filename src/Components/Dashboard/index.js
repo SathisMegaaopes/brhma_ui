@@ -13,6 +13,7 @@ import RotateLeftRoundedIcon from "@mui/icons-material/RotateLeftRounded";
 import Todolist from "../Todolist/Todolist";
 import { useSharedContext } from "../../Context";
 import UserSession from "../SessionComponent";
+import CalenderComponent from "../CalenderComponent";
 
 
 
@@ -111,7 +112,6 @@ export default function MOSDashboard() {
                 if (response.data.status === 0) {
                     setCandidates(response.data.data);
                     setCandidatelist(response.data.data);
-                    console.log(response.data.emp_details)
                     setEmp(response.data.emp_details);
                 } else {
                     console.log("ERROR : ", JSON.stringify(response.data));
@@ -230,7 +230,21 @@ export default function MOSDashboard() {
     return (
 
         <Grid container spacing={2} sx={{ paddingLeft: 6, paddingY: 0 }}>
-            <Grid item xs={12} md={6} lg={4} xl={4} >
+            
+            <Grid item xs={12} md={6} lg={4} xl={4}>
+                <CalenderComponent />
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={4.5} xl={5} >
+                <UserSession />
+            </Grid>
+
+            <Grid item xs={12} md={12} lg={3.5} xl={3} >
+                <Todolist />
+            </Grid>
+
+            {/* <Grid item xs={12} md={6} lg={4} xl={4} > */}
+            <Grid item xs={12}  >
                 <Typography variant='h6' sx={{ margin: "8px" }}>
                     Welcome {userinfo?.user_details?.emp_name} !
                 </Typography>
@@ -267,7 +281,7 @@ export default function MOSDashboard() {
                         </Grid>
                         <Grid
                             sx={{ marginTop: "-15px" }}
-                            sm={{ marginTop: "-20px" }}
+                            // sm={{ marginTop: "-20px" }}
                             container
                             direction="row"
                             justifyContent="flex-end"
@@ -384,13 +398,6 @@ export default function MOSDashboard() {
                 </Paper>
             </Grid>
 
-            <Grid item xs={12} md={6} lg={4.5} xl={5} >
-                <UserSession/>
-            </Grid>
-
-            <Grid item xs={12} md={12} lg={3.5} xl={3} >
-                <Todolist />
-            </Grid>
         </Grid>
 
 

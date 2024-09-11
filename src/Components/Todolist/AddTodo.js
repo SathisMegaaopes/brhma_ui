@@ -30,8 +30,6 @@ const AddTodo = ({ value }) => {
 
     const [employee, setEmployee] = useState([])
 
-    console.log(employee)
-
     const [employeeID, setEmployeeID] = useState(null)
 
     const [openModal, setOpenModal] = useState(false)
@@ -255,8 +253,6 @@ const AddTodo = ({ value }) => {
         // task_name , task_description , task_dept , task_team , task_assignee , status , tat , created_by , created_at ;
 
     };
-
-    console.log(formState)
 
 
     return (

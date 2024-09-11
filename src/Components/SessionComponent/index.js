@@ -1,17 +1,22 @@
-import { Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Modal, Select, Typography, useScrollTrigger } from '@mui/material'
-import React, { useState } from 'react'
+import { Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Modal, Select, Switch, switchClasses, Typography, useScrollTrigger } from '@mui/material'
+import React, { useState, useEffect } from 'react'
 
 const UserSession = () => {
-    const [openBreakModal, setOpenBreakModal] = useState(false)
-    const [breakType, setBreakType] = useState('')
-    const [onBreak, setOnBreak] = useState(false)
 
+    const [openBreakModal, setOpenBreakModal] = useState(localStorage.getItem('isBreakOpen') === 'true' || false)
+    const [breakType, setBreakType] = useState(localStorage.getItem('breakType') || '')
+    const [onBreak, setOnBreak] = useState(localStorage.getItem('onBreak') === 'true' || false)
+
+    React.useEffect(() => {
+        localStorage.setItem('isBreakOpen', openBreakModal);
+        localStorage.setItem('breakType', breakType)
+        localStorage.setItem('onBreak', onBreak)
+    }, [openBreakModal, breakType, onBreak]);
 
     const handleClose = () => setOpenBreakModal(!openBreakModal)
     const handleOpen = () => setOpenBreakModal(!openBreakModal)
 
     const handleBreak = (e) => {
-        console.log(e.target)
         setBreakType(e.target.value)
     }
 
@@ -31,7 +36,7 @@ const UserSession = () => {
 
     return (
         <>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
                 <Grid item xs={6}> <CardComponent cardTime='06h 39m' cardContent='Logged Hours' /> </Grid>
                 <Grid item xs={6}> <CardComponent cardTime='03h 41m' cardContent='Non-Productive Hours' /> </Grid>
                 <Grid item xs={6}> <CardComponent cardTime='00h 44m' cardContent='Break Time' /> </Grid>
@@ -42,7 +47,7 @@ const UserSession = () => {
                         variant='contained'
                         onClick={handleOpen}
                     >
-                        Button
+                        Break
                     </Button>
                 </Grid>
             </Grid>
@@ -62,7 +67,32 @@ const UserSession = () => {
 
 export default UserSession
 
-function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfirmBreak, onBreak , handleCloseBreak}) {
+function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfirmBreak, onBreak, handleCloseBreak }) {
+
+    const StatusValue = (value) => {
+        let StatusName ; 
+        switch(value){
+            case 0 : 
+               StatusName = "Short Break 1"
+               break;
+            case 1 :
+                StatusName = "Short Break 2"
+                break;
+            case 2 :
+                StatusName = " Long Break "
+                break;
+            case 3 :
+                StatusName = " Meeting Session Break "
+                break;
+            case 4 : 
+                StatusName = " Feedback Session Break"
+                break;
+            default:
+                StatusName = "Unkown Session Break"
+        }
+        return StatusName;
+    }
+
 
     return (
 
@@ -95,46 +125,51 @@ function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfi
                             variant="subtitle1"
                             style={{ color: '#007bff', fontWeight: 'bold' }}
                         >
-                            {onBreak ? `Your'e on ${breakType} Break` : 'Select the type of break , you are taking ...'}
+                            {onBreak ? `Your'e on ${StatusValue(breakType)} ` : ''}
                         </Typography>
 
 
-                        { !onBreak && 
-                        <FormControl variant="outlined" size="small" sx={{ marginTop: '20px' }}>
-                            <InputLabel>Status</InputLabel>
-                            <Select
-                                label="Status"
-                                value={breakType}
-                                // name={breakType} 
-                                onChange={handleBreak}
-                                style={{
-                                    width: '200px',
-                                    fontSize: '0.875rem',
-                                    height: '35px',
-                                    backgroundColor: '#ffffff',
+                        {!onBreak &&
+                            <FormControl variant="outlined" size="small" sx={{ marginTop: '20px' }}>
+                                <InputLabel>Status</InputLabel>
+                                <Select
+                                    label="Status"
+                                    value={breakType}
+                                    name={breakType}
+                                    onChange={handleBreak}
+                                    style={{
+                                        width: '200px',
+                                        fontSize: '0.875rem',
+                                        height: '35px',
+                                        backgroundColor: '#ffffff',
 
-                                }}
-                            >
-                                <MenuItem value="15minsbreak1" >15 Mins Break 1</MenuItem>
-                                <MenuItem value="15minsbreak2" >15 Mins Break 2</MenuItem>
-                                <MenuItem value="30minsbreak" >30 Mins Break</MenuItem>
-                                <MenuItem value="Meetings" >Meeting Session</MenuItem>
-                                <MenuItem value="Feedbacks" >Feedback Session</MenuItem>
-                            </Select>
-                        </FormControl> }
+                                    }}
+                                >
+                                    {/* <MenuItem value="15minsbreak1" >15 Mins Break 1</MenuItem>
+                                    <MenuItem value="15minsbreak2" >15 Mins Break 2</MenuItem>
+                                    <MenuItem value="30minsbreak" >30 Mins Break</MenuItem>
+                                    <MenuItem value="Meetings" >Meeting Session</MenuItem>
+                                    <MenuItem value="Feedbacks" >Feedback Session</MenuItem> */}
+                                    <MenuItem value={0} >15 Mins Break 1</MenuItem>
+                                    <MenuItem value={1} >15 Mins Break 2</MenuItem>
+                                    <MenuItem value={2} >30 Mins Break</MenuItem>
+                                    <MenuItem value={3}>Meeting Session</MenuItem>
+                                    <MenuItem value={4} >Feedback Session</MenuItem>
+                                </Select>
+                            </FormControl>}
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
 
-                        { !onBreak && 
-                        <Button
-                            variant="contained"
-                            onClick={handleClose}
-                            style={{ backgroundColor: '#6c757d', color: '#ffffff' }}
-                            disabled={onBreak === true ? true : false}
-                        >
-                            Cancel
-                        </Button> }
+                        {!onBreak &&
+                            <Button
+                                variant="contained"
+                                onClick={handleClose}
+                                style={{ backgroundColor: '#6c757d', color: '#ffffff' }}
+                                disabled={onBreak === true ? true : false}
+                            >
+                                Cancel
+                            </Button>}
 
                         {onBreak ?
 
@@ -150,7 +185,7 @@ function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfi
                                 }}
                                 onClick={handleCloseBreak}
                             >
-                                Done
+                                I'm Back
                             </Button>
 
 
@@ -181,10 +216,9 @@ function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfi
 function CardComponent({ cardTime, cardContent }) {
 
     return (
-        <Card sx={{
-            // height:'20vh'
-        }} >
-            <CardContent>
+
+        <Card sx={{ height: '193px' }}>
+            <CardContent sx={{ flexGrow: 1 }}>
                 <Typography gutterBottom variant="h5" align='center' sx={{ mt: 4 }}>
                     {cardTime}
                 </Typography>
@@ -193,5 +227,6 @@ function CardComponent({ cardTime, cardContent }) {
                 </Typography>
             </CardContent>
         </Card>
+
     )
 }

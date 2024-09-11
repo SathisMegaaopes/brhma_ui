@@ -13,6 +13,8 @@ function MOSLogin() {
   const [user_pwd, setUser_pwd] = React.useState("");
   const [errorMsg, setError] = React.useState("");
   const history = useNavigate();
+
+  
   const handleValidate = () => {
     let request = { "user_name": user_name, "user_pwd": user_pwd };
 
