@@ -225,7 +225,7 @@ const Todolist = () => {
             <Grid container sx={{ gap: 2, height: '80vh' }}>
                 {/* <Box sx={{ backgroundColor: 'white', width: '100%', maxHeight: '0vh' }}> */}
                 <Box sx={{ backgroundColor: 'white', width: '100%', height: '50%', overflow: 'auto' }}>
-                    <TableContainer component={Paper} >
+                    <TableContainer component={Paper} variant='outlined'>
                         <Table stickyHeader >
 
                             <TableHead >
@@ -353,8 +353,8 @@ const Todolist = () => {
                 </Box>
 
                 {/* <Box sx={{ backgroundColor: 'White', width: '100%', maxHeight: '0vh' }}> */}
-                <Box sx={{ backgroundColor: 'white', width: '100%', height: '50%', overflow: 'auto' }}>
-                    <TableContainer component={Paper}  >
+                <Box  sx={{ backgroundColor: 'white', width: '100%', height: '50%', overflow: 'auto' }}>
+                    <TableContainer component={Paper}  variant='outlined' >
                         <Table stickyHeader >
 
                             <TableHead>
@@ -812,24 +812,17 @@ const Todolist = () => {
 
 
                             {selectedTask.status !== 4 ?
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' , paddingTop:'5px' }}>
                                     <Button
-                                        variant="contained"
+                                        variant="outlined"
                                         onClick={handleClose}
-                                        style={{ backgroundColor: '#6c757d', color: '#ffffff' }}
+                                        color='error'
                                     >
                                         Cancel
                                     </Button>
                                     <Button
-                                        variant="contained"
-                                        sx={{
-                                            backgroundColor: '#007bff',
-                                            color: '#ffffff',
-                                            '&:disabled': {
-                                                backgroundColor: '#A9A9A9',
-                                                color: '#FFFFFF80',
-                                            },
-                                        }}
+                                        variant="outlined"
+                                        color='primary'
                                         disabled={selectedTask.status === 0 ? !Boolean(select) : (!Boolean(select) || !comment.trim())}
                                         onClick={(e) => {
                                             e.preventDefault();

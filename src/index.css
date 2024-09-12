@@ -1,0 +1,19 @@
+.rs-calendar-panel .rs-calendar-table-cell-selected .rs-calendar-table-cell-content {
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
+
+.rs-calendar-table-cell-content {
+  line-height: 2.6 !important;
+}
+
+.rs-calendar-panel .rs-calendar-table-cell-is-today .rs-calendar-table-cell-day {
+  background-color: #3498ff !important;
+  border-radius: 50% !important;
+  color: #fff !important;
+  height: 40px !important;
+  width: 40px !important;
+  line-height: 40px !important;
+  text-align: center !important;
+}
+

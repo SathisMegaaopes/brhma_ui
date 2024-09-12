@@ -225,29 +225,31 @@ export default function MOSDashboard() {
 
     };
 
-    // console.log(userinfo?.user_details?.emp_name,'this is very very very important in the ui')
-
     return (
 
         <Grid container spacing={2} sx={{ paddingLeft: 6, paddingY: 0 }}>
-            
-            <Grid item xs={12} md={6} lg={4} xl={4}>
+
+            <Grid item xs={12} >
+                <Typography variant='h6' >
+                    Welcome {userinfo?.user_details?.emp_name} !
+                </Typography>
+            </Grid>
+
+
+            <Grid item xs={12} md={3} lg={3} xl={3}>
                 <CalenderComponent />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={4.5} xl={5} >
+            <Grid item xs={12} md={5} lg={5} xl={5}>
                 <UserSession />
             </Grid>
 
-            <Grid item xs={12} md={12} lg={3.5} xl={3} >
+            <Grid item xs={12} md={4} lg={4} xl={4}>
                 <Todolist />
             </Grid>
 
             {/* <Grid item xs={12} md={6} lg={4} xl={4} > */}
             <Grid item xs={12}  >
-                <Typography variant='h6' sx={{ margin: "8px" }}>
-                    Welcome {userinfo?.user_details?.emp_name} !
-                </Typography>
                 <Grid>
                     <React.Fragment>
                         <Modal
@@ -274,6 +276,8 @@ export default function MOSDashboard() {
                         </Modal>
                     </React.Fragment>
                 </Grid>
+                {/* <Paper sx={{ padding: "8px", margin: "4px" }}> */}
+
                 <Paper sx={{ padding: "8px", margin: "4px" }}>
                     <Grid>
                         <Grid item>
@@ -281,7 +285,6 @@ export default function MOSDashboard() {
                         </Grid>
                         <Grid
                             sx={{ marginTop: "-15px" }}
-                            // sm={{ marginTop: "-20px" }}
                             container
                             direction="row"
                             justifyContent="flex-end"

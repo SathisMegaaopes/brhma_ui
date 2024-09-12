@@ -408,11 +408,11 @@ const AddTodo = ({ value }) => {
                     </Box>
 
                     <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-                        <Button variant="contained" onClick={() => setConfirmCancel(!confirmCancel)} color='error'
+                        <Button variant="outlined" onClick={() => setConfirmCancel(!confirmCancel)} color='error'
                         >
                             Cancel
                         </Button>
-                        <Button variant="contained" onClick={handleSend} disabled={isFormIncomplete()} color='success'>
+                        <Button variant="outlined" onClick={handleSend} disabled={isFormIncomplete()} color='success'>
                             Create
                         </Button>
                     </Box>

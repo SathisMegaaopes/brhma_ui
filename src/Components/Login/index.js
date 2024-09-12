@@ -6,17 +6,15 @@ import logo1 from "../../images/logo_3.png";
 import { useNavigate } from 'react-router-dom';
 
 
-
-
 function MOSLogin() {
   const [user_name, setUser_name] = React.useState("");
   const [user_pwd, setUser_pwd] = React.useState("");
   const [errorMsg, setError] = React.useState("");
   const history = useNavigate();
 
-  
+
   const handleValidate = () => {
-    let request = { "user_name": user_name, "user_pwd": user_pwd };
+    let request = { "user_name": user_name, "user_pwd": user_pwd , "type" : "login" };
 
     let url = URL + "login/validateUser";
     axios.post(url, request)
@@ -74,7 +72,8 @@ function MOSLogin() {
                   fullWidth
                   disabled={user_name === "" || user_pwd === ""}
                   onClick={handleValidate}
-                  sx={{ backgroundColor: "#272727" }}>
+                  sx={{ backgroundColor: "#272727" }}
+                >
                   LOGIN
                 </Button>
               </Box>

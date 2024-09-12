@@ -2,26 +2,29 @@ import React, { useState } from 'react';
 import { Calendar } from 'rsuite';
 import { Card } from '@mui/material';
 import 'rsuite/dist/rsuite.min.css';
-import dayjs from 'dayjs';
+import dayjs from 'dayjs';  
 
 const CalendarComponent = () => {
     const [hoveredDate, setHoveredDate] = useState(null);
 
     const coloredDates = {
-        '2024-09-11': '#FF0000',
+        '2024-09-12': '#FF0000',
         '2024-09-18': '#008000',
         '2024-09-20': '#808080',
     };
 
     const pointsData = {
-        '2024-09-11': ['Event A', 'Meeting'],
+        '2024-09-12': ['Event A', 'Meeting'],
         '2024-09-18': ['Holiday', 'Reminder'],
         '2024-09-20': ['Task Deadline', 'Conference'],
     };
 
     const handleMouseEnter = (date) => {
         const dateStr = dayjs(date).format('YYYY-MM-DD');
-        setHoveredDate(dateStr);
+
+        if (coloredDates.hasOwnProperty(dateStr)) {
+            setHoveredDate(dateStr);
+        }
     };
 
     const handleMouseLeave = () => {
@@ -62,8 +65,8 @@ const CalendarComponent = () => {
                 {`
                     .calendar-cell {
                         // position: relative;
-                        width: 100%;
-                        height: 100%;
+                        // width: 100%;
+                        // height: 100%;
                         display: flex;
                         flex-direction: column;
                         justify-content: center;
@@ -91,6 +94,18 @@ const CalendarComponent = () => {
                     .calendar-cell.hovered .points {
                         display: block;
                     }
+                    
+                    .rs-calendar *:focus {
+                        outline: none !important;
+                        box-shadow: none !important;
+                    }
+
+
+                    .rs-calendar {
+                        box-shadow: none !important;
+                    }
+
+
                 `}
             </style>
             <Card>
@@ -98,7 +113,7 @@ const CalendarComponent = () => {
                     compact
                     isoWeek={false}
                     renderCell={renderCell}
-                    onMouseEnter={(date) => handleMouseEnter(date)}
+                    onSelect={(date)=>handleMouseEnter(date)}
                 />
             </Card>
         </>

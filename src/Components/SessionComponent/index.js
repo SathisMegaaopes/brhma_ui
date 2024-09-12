@@ -7,6 +7,10 @@ const UserSession = () => {
     const [breakType, setBreakType] = useState(localStorage.getItem('breakType') || '')
     const [onBreak, setOnBreak] = useState(localStorage.getItem('onBreak') === 'true' || false)
 
+
+    console.log(breakType,'This is the breakType')
+
+
     React.useEffect(() => {
         localStorage.setItem('isBreakOpen', openBreakModal);
         localStorage.setItem('breakType', breakType)
@@ -44,8 +48,11 @@ const UserSession = () => {
                 <Grid item xs={12}>
                     <Button
                         fullWidth
-                        variant='contained'
+                        variant='outlined'
                         onClick={handleOpen}
+                        // sx={{
+                        //     backgroundColor:'#'
+                        // }}
                     >
                         Break
                     </Button>
@@ -145,11 +152,6 @@ function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfi
 
                                     }}
                                 >
-                                    {/* <MenuItem value="15minsbreak1" >15 Mins Break 1</MenuItem>
-                                    <MenuItem value="15minsbreak2" >15 Mins Break 2</MenuItem>
-                                    <MenuItem value="30minsbreak" >30 Mins Break</MenuItem>
-                                    <MenuItem value="Meetings" >Meeting Session</MenuItem>
-                                    <MenuItem value="Feedbacks" >Feedback Session</MenuItem> */}
                                     <MenuItem value={0} >15 Mins Break 1</MenuItem>
                                     <MenuItem value={1} >15 Mins Break 2</MenuItem>
                                     <MenuItem value={2} >30 Mins Break</MenuItem>
@@ -217,12 +219,17 @@ function CardComponent({ cardTime, cardContent }) {
 
     return (
 
-        <Card sx={{ height: '193px' }}>
-            <CardContent sx={{ flexGrow: 1 }}>
-                <Typography gutterBottom variant="h5" align='center' sx={{ mt: 4 }}>
+        <Card variant='outlined' >
+            <CardContent >
+                <Typography gutterBottom variant="h3" align='center'
+                sx={{
+                    color:'#545454'
+                }}>
                     {cardTime}
                 </Typography>
-                <Typography align='center' sx={{ mb: 4, mt: 2, fontSize: '20px' }}>
+                <Typography align='center' variant='h5' sx={{
+                    color:'#737373'
+                }} >
                     {cardContent}
                 </Typography>
             </CardContent>

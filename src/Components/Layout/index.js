@@ -18,7 +18,7 @@ export default function MOSNavigation() {
   const history = useNavigate();
   const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
 
-  const url = URL + "logout"
+  let url = URL + "login/validateUser";
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -30,7 +30,10 @@ export default function MOSNavigation() {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.put(url, { data: userinfo.emp_id })
+
+      let request = { "user_name": userinfo.user_name , "type" : "logout" };
+
+      const response = await axios.post(url,request)
       if (response.data.status === 1) {
         sessionStorage.clear();
         history("/");

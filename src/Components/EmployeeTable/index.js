@@ -339,12 +339,12 @@ function DrawerComponent({ open, name, data, handleValueChange, handleUpdate, ad
         </Box>
 
         <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-          <Button variant="contained" color='error'
+          <Button variant="outlined" color='error'
             onClick={handleClose}
           >
             Cancel
           </Button>
-          <Button variant="contained" color='success' onClick={handleUpdate} disabled={isFormIncomplete()} >
+          <Button variant="outlined" color='success' onClick={handleUpdate} disabled={isFormIncomplete()} >
            {addorUpdate === 0 ? 'Update' : 'Create'} 
           </Button>
         </Box>
