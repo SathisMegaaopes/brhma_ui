@@ -172,7 +172,7 @@ export default function EmployeeTable() {
         </Grid> */}
       </Grid>
       <Grid item xs={12}>
-        <TableContainer component={Paper} >
+        <TableContainer component={Paper} sx={{padding:2}}>
           <Table size='small'>
             <TableHead >
               <TableRow>

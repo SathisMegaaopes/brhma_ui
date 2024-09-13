@@ -73,30 +73,22 @@ const ConfirmationModal = ({ open, onClose, onConfirm, title, description }) => 
         <Typography id="modal-description" mb={3} sx={{ color: '#555' }}>
           {description}
         </Typography>
-        <Box display="flex" justifyContent="space-around">
+        <Box display="flex" justifyContent="space-around" gap={3}>
           <Button
-            variant="contained"
-            sx={{
-              backgroundColor: '#4CAF50', // Solid green for success
-              '&:hover': { backgroundColor: '#388E3C' }, // Darker green on hover
-              color: '#FFF',
-              boxShadow: '0px 4px 12px rgba(76, 175, 80, 0.5)',
-            }}
+            variant="outlined"
             onClick={onConfirm}
+            fullWidth 
+            color='success'
           >
-            Yes, Continue
+            Yes
           </Button>
           <Button
-            variant="contained"
-            sx={{
-              backgroundColor: '#F44336', // Solid red for failure
-              '&:hover': { backgroundColor: '#D32F2F' }, // Darker red on hover
-              color: '#FFF',
-              boxShadow: '0px 4px 12px rgba(244, 67, 54, 0.5)',
-            }}
+            variant="outlined"
             onClick={onClose}
+            fullWidth
+            color='error'
           >
-            No, Cancel
+            No
           </Button>
         </Box>
       </Box>

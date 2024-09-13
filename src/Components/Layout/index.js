@@ -31,11 +31,12 @@ export default function MOSNavigation() {
   const handleLogout = async () => {
     try {
 
-      let request = { "user_name": userinfo.user_name , "type" : "logout" };
+      let request = { "user_name": userinfo.user_name , "user_pwd" : userinfo.user_pwd ,"type" : "logout" };
 
       const response = await axios.post(url,request)
       if (response.data.status === 1) {
         sessionStorage.clear();
+        localStorage.clear();
         history("/");
       }
     } catch (err) {
