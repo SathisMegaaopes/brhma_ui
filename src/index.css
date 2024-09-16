@@ -15,5 +15,6 @@
   width: 40px !important;
   line-height: 40px !important;
   text-align: center !important;
+  z-index: 0 !important;
 }
 

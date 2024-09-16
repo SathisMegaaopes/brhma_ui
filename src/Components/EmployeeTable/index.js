@@ -11,6 +11,8 @@ import axios from 'axios';
 import URL from '../Global/Utils/url_route';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
 import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 
 export default function EmployeeTable() {
@@ -27,8 +29,9 @@ export default function EmployeeTable() {
   const [open, setOpen] = React.useState(false)
   const [addorUpdate, setaddorUpdate] = React.useState(null)
   const [rerender, serRerender] = React.useState(false)
-  const [responseModal , setResponseModal ] = React.useState(false)
-  const [apiStatus , setApiStatus ] = React.useState(null)
+  const [responseModal, setResponseModal] = React.useState(false)
+  const [apiStatus, setApiStatus] = React.useState(null)
+  const [showPassword, setShowPassword] = React.useState({});
 
 
   const url = URL + "employeemaster"
@@ -76,7 +79,7 @@ export default function EmployeeTable() {
 
       axios.put(url, data)
         .then((response) => {
-          setApiStatus(response?.data?.status === 1 ? 1 : 0 )
+          setApiStatus(response?.data?.status === 1 ? 1 : 0)
           setResponseModal(!responseModal)
         })
         .catch((err) => {
@@ -147,8 +150,16 @@ export default function EmployeeTable() {
   }
 
   const handleSnackbarClose = () => {
-      setResponseModal(!responseModal)
+    setResponseModal(!responseModal)
   }
+
+
+  const togglePasswordVisibility = (index) => {
+    setShowPassword((prevState) => ({
+      ...prevState,
+      [index]: !prevState[index] // Toggle visibility for the specific index
+    }));
+  };
 
 
   return (
@@ -172,34 +183,43 @@ export default function EmployeeTable() {
         </Grid> */}
       </Grid>
       <Grid item xs={12}>
-        <TableContainer component={Paper} sx={{padding:2}}>
+        <TableContainer component={Paper}>
           <Table size='small'>
             <TableHead >
               <TableRow>
                 <TableCell>Employee ID </TableCell>
                 <TableCell>Username</TableCell>
                 <TableCell>Password</TableCell>
+                <TableCell align='center' >View</TableCell>
                 <TableCell align='center'>User Role</TableCell>
                 <TableCell align='center'>Update</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {employeeData.map((item) => (
-                <TableRow >
-                  <TableCell align='left'>{item.emp_id}</TableCell>
-                  <TableCell align='left'>{item.user_name}</TableCell>
-
-                  <TableCell align="left">
-                    <Tooltip
-                      TransitionProps={{ timeout: 600 }}
-                      arrow
-                      placement="top"
-                      title={<span style={{ fontSize: '17px' }}>{item.user_pwd}</span>}
-                    >
-                      {changeintohalf(item.user_pwd)}
-                    </Tooltip>
+              {/* <TableCell align="left">
+                <Tooltip
+                  TransitionProps={{ timeout: 600 }}
+                  arrow
+                  placement="top"
+                  title={<span style={{ fontSize: '17px' }}>{item.user_pwd}</span>}
+                >
+                  {changeintohalf(item.user_pwd)}
+                </Tooltip>
+              </TableCell> */}
+              {employeeData.map((item, index) => (
+                <TableRow key={item.emp_id}>
+                  <TableCell align='left' style={{ whiteSpace: 'nowrap' }}>{item.emp_id}</TableCell>
+                  <TableCell align='left' style={{ whiteSpace: 'nowrap' }}>{item.user_name}</TableCell>
+                  <TableCell align="left" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {showPassword[index] ? item.user_pwd : changeintohalf(item.user_pwd)}
                   </TableCell>
-
+                  <TableCell align="center">
+                    <IconButton
+                      onClick={() => togglePasswordVisibility(index)}
+                    >
+                      {showPassword[index] ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                    </IconButton>
+                  </TableCell>
 
                   <TableCell align='center' >{item.user_role}</TableCell>
                   <TableCell align='center' >
@@ -218,19 +238,19 @@ export default function EmployeeTable() {
 
       <DrawerComponent open={open} name={drawername} data={data} handleValueChange={handleValueChange} setOpen={setOpen} handleUpdate={handleUpdate} addorUpdate={addorUpdate} isFormIncomplete={isFormIncomplete} handleClose={handleClose} />
 
-      <Snackbar  
+      <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={responseModal} 
-        autoHideDuration={3000} 
+        open={responseModal}
+        autoHideDuration={3000}
         onClose={handleSnackbarClose}>
         <Alert
-         
+
           onClose={handleSnackbarClose}
-          severity= {apiStatus === 1  || apiStatus === 2 ? "success" : "error"}
+          severity={apiStatus === 1 || apiStatus === 2 ? "success" : "error"}
           variant="filled"
           sx={{ width: '100%' }}
         >
-        {apiStatus === 1 ? 'Password updated Successfully' : apiStatus === 2 ? ' User Created Successfully ' : 'Something went wrong !' }
+          {apiStatus === 1 ? 'Password updated Successfully' : apiStatus === 2 ? ' User Created Successfully ' : 'Something went wrong !'}
         </Alert>
       </Snackbar>
 
@@ -345,7 +365,7 @@ function DrawerComponent({ open, name, data, handleValueChange, handleUpdate, ad
             Cancel
           </Button>
           <Button variant="outlined" color='success' onClick={handleUpdate} disabled={isFormIncomplete()} >
-           {addorUpdate === 0 ? 'Update' : 'Create'} 
+            {addorUpdate === 0 ? 'Update' : 'Create'}
           </Button>
         </Box>
       </Box>
