@@ -9,38 +9,62 @@ const UserSession = () => {
     //import change pannanum , athu enna na , select la kamikura data va backend la irunthu fetch pannitu vanthu kamikanum , ithu than antha task , marantharatha da Sathis uhhhhhhhhh..............
 
 
-    const [openBreakModal, setOpenBreakModal] = useState(localStorage.getItem('isBreakOpen') === 'true' || false)
-    const [breakType, setBreakType] = useState(localStorage.getItem('breakType') || '')
-    const [onBreak, setOnBreak] = useState(localStorage.getItem('onBreak') === 'true' || false)
+    // const [openBreakModal, setOpenBreakModal] = useState(localStorage.getItem('isBreakOpen') === 'true' || false)
+    // const [breakType, setBreakType] = useState(localStorage.getItem('breakType') || '')
+    // const [onBreak, setOnBreak] = useState(localStorage.getItem('onBreak') === 'true' || false)
+
+
+    const [openBreakModal, setOpenBreakModal] = useState(false)
+    const [breakType, setBreakType] = useState('')
+    const [onBreak, setOnBreak] = useState(false)
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
+    const [SessionData, setSessionData] = useState([])
+    const [breaksName, setBreaksName] = useState([])
+    const [breakStatus, setBreakStatus] = useState([])
 
-    const breakData = JSON.parse(localStorage.getItem('BreakData'))
-
-    const [disableSelection, setDisableSelection] = useState(breakData || {})
-
-
-
-    React.useEffect(() => {
-        localStorage.setItem('isBreakOpen', openBreakModal);
-        localStorage.setItem('breakType', breakType)
-        localStorage.setItem('onBreak', onBreak)
-    }, [openBreakModal, breakType, onBreak]);
 
 
 
     React.useEffect(() => {
-        let url = `${URL}breaks`;
 
-        axios.get(url, { "emp_id": userinfo.user_name })
-            .then((res) => {
-                console.log(res)
-            }).catch((err) => {
-                console.log(err)
-            })
-            .finally(() => {
-                console.log('Fetched')
-            })
-    }, [onBreak])
+        const fetchData = async () => {
+            try {
+                const url = `${URL}breaks`;
+                const username = userinfo.user_name;
+
+                const response = await axios.get(url, {
+                    params: {
+                        id: username
+                    }
+                });
+
+                const { breakStatus, breakMasterData, data } = response.data;
+
+                setBreakStatus(breakStatus);
+                setBreaksName(breakMasterData);
+                setSessionData(data);
+
+                StatusFunction(breakStatus);
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchData();
+
+    }, [userinfo.user_name]);
+
+
+    const StatusFunction = (breakStatusData) => {
+        const data = breakStatusData.filter((item) => item.status === 1);
+        if (data.length !== 0) {
+            setOnBreak(true);
+            setOpenBreakModal(true);
+            setBreakType(data[0].type);
+        }
+    };
+
 
 
     const handleClose = () => {
@@ -69,10 +93,6 @@ const UserSession = () => {
 
             const data = JSON.stringify(response.data.data)
 
-            localStorage.setItem('BreakData', data)
-
-            setDisableSelection(response.data.data)
-
         } catch (err) {
             console.log(err)
         }
@@ -95,10 +115,6 @@ const UserSession = () => {
 
             const data = JSON.stringify(response.data.data)
 
-            localStorage.setItem('BreakData', data)
-
-            setDisableSelection(response.data.data)
-
         } catch (error) {
             console.log(error)
         }
@@ -109,59 +125,12 @@ const UserSession = () => {
         setOnBreak(!onBreak)
     }
 
-
-    // console.log(disableSelection)
+    console.log(breakStatus)
 
     return (
         <>
             <Grid container spacing={2}>
-                {/* <Grid item xs={6}> <CardComponent cardTime='06h 39m' cardContent='Logged Hours' /> </Grid>
-                <Grid item xs={6}> <CardComponent cardTime='03h 41m' cardContent='Non-Productive Hours' /> </Grid>
-                <Grid item xs={6}> <CardComponent cardTime='00h 44m' cardContent='Break Time' /> </Grid>
-                <Grid item xs={6}> <CardComponent cardTime='01h 04m' cardContent='Meeting & Feedback' /> </Grid> */}
                 <Grid item xs={12}>
-                    {/* <TableContainer component={Paper}>
-                        <Table size='small'>
-                            <TableHead  >
-                                <TableRow>
-                                    <TableCell>Types </TableCell>
-                                    <TableCell>Time</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody >
-                                <TableRow >
-                                    <TableCell align='left'>Logged Hours</TableCell>
-                                    <TableCell align='left'>00:00:00</TableCell>
-                                </TableRow>
-                                <TableRow >
-                                    <TableCell align='left'>Non-Productive Hours</TableCell>
-                                    <TableCell align='left'>00:00:00</TableCell>
-                                </TableRow>
-                                <TableRow >
-                                    <TableCell align='left'>15 Mins Break 1</TableCell>
-                                    <TableCell align='left'>00:00:00</TableCell>
-                                </TableRow>
-                                <TableRow >
-                                    <TableCell align='left'>15 Mins Break 2</TableCell>
-                                    <TableCell align='left'>00:00:00</TableCell>
-                                </TableRow>
-                                <TableRow >
-                                    <TableCell align='left'>30 Mins Break</TableCell>
-                                    <TableCell align='left'>00:00:00</TableCell>
-                                </TableRow>
-                                <TableRow >
-                                    <TableCell align='left'>Meetings Session</TableCell>
-                                    <TableCell align='left'>00:00:00</TableCell>
-                                </TableRow>
-                                <TableRow >
-                                    <TableCell align='left'>Feedback Session</TableCell>
-                                    <TableCell align='left'>00:00:00</TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer> */}
-
-
                     <TableContainer component={Paper}>
                         <Table size='small'>
                             <TableHead>
@@ -173,31 +142,31 @@ const UserSession = () => {
                             <TableBody>
                                 <TableRow>
                                     <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>Logged Hours</Typography></TableCell>
-                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>00:00:00</Typography></TableCell>
+                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>{SessionData?.loggedhours}</Typography></TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>Non-Productive Hours</Typography></TableCell>
-                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>00:00:00</Typography></TableCell>
+                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>{SessionData?.nonproductivehours}</Typography></TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>15 Mins Break 1</Typography></TableCell>
-                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>00:00:00</Typography></TableCell>
+                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>{SessionData?.firstBreak}</Typography></TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>15 Mins Break 2</Typography></TableCell>
-                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>00:00:00</Typography></TableCell>
+                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>{SessionData?.secondBreak}</Typography></TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>30 Mins Break</Typography></TableCell>
-                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>00:00:00</Typography></TableCell>
+                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>{SessionData?.thirdBreak}</Typography></TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>Meetings Session</Typography></TableCell>
-                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>00:00:00</Typography></TableCell>
+                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>{SessionData?.meetingBreak}</Typography></TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>Feedback Session</Typography></TableCell>
-                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>00:00:00</Typography></TableCell>
+                                    <TableCell sx={{ padding: '11px' }} align='left'><Typography variant='body2'>{SessionData?.feedbackBreak}</Typography></TableCell>
                                 </TableRow>
                             </TableBody>
                         </Table>
@@ -223,7 +192,8 @@ const UserSession = () => {
                 handleConfirmBreak={handleConfirmBreak}
                 onBreak={onBreak}
                 handleCloseBreak={handleCloseBreak}
-                disableSelection={disableSelection}
+                breaksName={breaksName}
+                breakStatus={breakStatus}
             />
         </>
     )
@@ -231,7 +201,12 @@ const UserSession = () => {
 
 export default UserSession
 
-function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfirmBreak, onBreak, handleCloseBreak, disableSelection }) {
+function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfirmBreak, onBreak, handleCloseBreak, breaksName, breakStatus }) {
+
+
+    console.log(breaksName, 'this is iimportant , breaks name inside the component')
+
+    console.log(breaksName.map((item) => item.break_type))
 
     const StatusValue = (value) => {
         let StatusName;
@@ -308,17 +283,31 @@ function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfi
                                         backgroundColor: '#ffffff',
                                     }}
                                 >
-                                    <MenuItem disabled={disableSelection.break1End === 1} value={1}>
-                                        15 Mins Break 1
-                                    </MenuItem>
-                                    <MenuItem disabled={disableSelection.break2End === 1} value={2}>
-                                        15 Mins Break 2
-                                    </MenuItem>
-                                    <MenuItem disabled={disableSelection.break3End === 1} value={3}>
-                                        30 Mins Break
-                                    </MenuItem>
-                                    <MenuItem value={4}>Meeting Session</MenuItem>
-                                    <MenuItem value={5}>Feedback Session</MenuItem>
+                                    {/* {breakStatus.map((item2) => {
+                                        {
+                                            breaksName.map((item) => (
+                                                <MenuItem disabled={item2.status === 2} key={item.id} value={item.id}>
+                                                    {item.break_type}
+                                                </MenuItem>
+                                            ))
+                                        }
+                                    })} */}
+                                    {breaksName.map((item) => {
+                                        const breakStatusItem = breakStatus.find((status) => status.breakName === item.break_type);
+                                        const isDisabled = breakStatusItem && breakStatusItem.status === 2;
+
+                                        return (
+                                            <MenuItem
+                                                key={item.id}
+                                                value={item.id}
+                                                disabled={isDisabled}
+                                            >
+                                                {item.break_type}
+                                            </MenuItem>
+                                        );
+                                    })}
+
+
                                 </Select>
                             </FormControl>
                         </Grid>
@@ -357,6 +346,12 @@ function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfi
 
 function CardComponent({ cardTime, cardContent }) {
 
+
+    { /* <Grid item xs={6}> <CardComponent cardTime='06h 39m' cardContent='Logged Hours' /> </Grid>
+    <Grid item xs={6}> <CardComponent cardTime='03h 41m' cardContent='Non-Productive Hours' /> </Grid>
+    <Grid item xs={6}> <CardComponent cardTime='00h 44m' cardContent='Break Time' /> </Grid>
+    <Grid item xs={6}> <CardComponent cardTime='01h 04m' cardContent='Meeting & Feedback' /> </Grid> */ }
+
     return (
 
         <Card variant='outlined' >
@@ -377,3 +372,24 @@ function CardComponent({ cardTime, cardContent }) {
 
     )
 }
+
+
+
+
+
+
+
+
+
+
+{/* <MenuItem disabled={disableSelection.break1End === 1} value={1}>
+                                        15 Mins Break 1
+                                    </MenuItem>
+                                    <MenuItem disabled={disableSelection.break2End === 1} value={2}>
+                                        15 Mins Break 2
+                                    </MenuItem>
+                                    <MenuItem disabled={disableSelection.break3End === 1} value={3}>
+                                        30 Mins Break
+                                    </MenuItem>
+                                    <MenuItem value={4}>Meeting Session</MenuItem>
+                                    <MenuItem value={5}>Feedback Session</MenuItem> */}
