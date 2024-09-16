@@ -21,6 +21,7 @@ const UserSession = () => {
     const [SessionData, setSessionData] = useState([])
     const [breaksName, setBreaksName] = useState([])
     const [breakStatus, setBreakStatus] = useState([])
+    const [reRender , setRender ] = useState(false)
 
 
 
@@ -53,7 +54,7 @@ const UserSession = () => {
 
         fetchData();
 
-    }, [userinfo.user_name]);
+    }, [reRender]);
 
 
     const StatusFunction = (breakStatusData) => {
@@ -123,6 +124,7 @@ const UserSession = () => {
         setOpenBreakModal(!openBreakModal)
         setBreakType('')
         setOnBreak(!onBreak)
+        setRender(!reRender)
     }
 
     console.log(breakStatus)
