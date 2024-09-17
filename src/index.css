@@ -3,9 +3,9 @@
   box-shadow: none !important;
 }
 
-.rs-calendar-table-cell-content {
+/* .rs-calendar-table-cell-content {
   line-height: 2.6 !important;
-}
+} */
 
 .rs-calendar-panel .rs-calendar-table-cell-is-today .rs-calendar-table-cell-day {
   background-color: #3498ff !important;
@@ -18,3 +18,7 @@
   z-index: 0 !important;
 }
 
+div:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
