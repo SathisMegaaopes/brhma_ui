@@ -15,6 +15,7 @@ import { useSharedContext } from "../../Context";
 import UserSession from "../SessionComponent";
 import CalenderComponent from "../CalenderComponent";
 
+import IdleTimerComponent from "./idleTimer";
 
 
 export default function MOSDashboard() {
@@ -33,7 +34,7 @@ export default function MOSDashboard() {
     const [candidateList, setCandidatelist] = React.useState([]);
     const [emp_details, setEmp] = React.useState([]);
     const [total, setTotal] = React.useState(0);
-
+    const [open, setOpen] = React.useState(false);
 
     const [startnewDate, setStartnewDate] = useState(new Date());
     const [endnewDate, setEndnewDate] = useState(new Date());
@@ -68,11 +69,11 @@ export default function MOSDashboard() {
     };
 
 
-
     const fromdate = formatDate(startnewDate);
     const todate = formatDate(endnewDate);
 
     let currentDisplayDate;
+
 
     if (fromdate === todate) {
         currentDisplayDate = fromdate;
@@ -122,11 +123,16 @@ export default function MOSDashboard() {
             });
     }, [startnewDate, endnewDate]);
 
+
+
     React.useEffect(() => {
         if (candidates.length !== 0) {
             setTotal(candidates.length);
         }
     }, [candidates]);
+
+
+
 
     const handleNavigate = (val) => {
         if (val === 1) {
@@ -136,6 +142,8 @@ export default function MOSDashboard() {
         }
     };
 
+
+
     const fnCountByRef = (ref) => {
         let data = candidates.filter((item) => {
             return item.ref_by_basic === ref;
@@ -143,6 +151,8 @@ export default function MOSDashboard() {
 
         return data.length;
     };
+
+
 
     const fnLoadRefData = (ref) => {
         if (ref !== null) {
@@ -155,6 +165,8 @@ export default function MOSDashboard() {
         }
     };
 
+    
+
     const fnGetCount = (ref, status) => {
         let count = 0;
         let data = candidates.filter(
@@ -163,6 +175,7 @@ export default function MOSDashboard() {
         );
         return data.length;
     };
+
 
     const fnFilterCandidateByRound = (data, status, emp_id, round = 0) => {
         let temp_round = "round_" + round;
@@ -174,6 +187,7 @@ export default function MOSDashboard() {
         return temp_data.length;
     };
 
+
     const fnGetCountById = (id, status) => {
         let curr_candidate = candidates.filter(
             (item) => parseInt(item.updated_by) == parseInt(id)
@@ -184,16 +198,18 @@ export default function MOSDashboard() {
         return round1;
     };
 
-    const [open, setOpen] = React.useState(false);
 
     const handleOpen = () => {
 
         setOpen(true);
     };
+
+
     const handleClose = () => {
 
         setOpen(false);
     };
+
 
     const style = {
 
@@ -224,6 +240,7 @@ export default function MOSDashboard() {
         })
 
     };
+
 
     return (
 
@@ -276,7 +293,6 @@ export default function MOSDashboard() {
                         </Modal>
                     </React.Fragment>
                 </Grid>
-                {/* <Paper sx={{ padding: "8px", margin: "4px" }}> */}
 
                 <Paper sx={{ padding: "8px", margin: "4px" }}>
                     <Grid>
@@ -400,6 +416,10 @@ export default function MOSDashboard() {
                     </Grid>
                 </Paper>
             </Grid>
+
+            <>
+             <IdleTimerComponent/>
+            </>
 
         </Grid>
 

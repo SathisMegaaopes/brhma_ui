@@ -127,8 +127,6 @@ const UserSession = () => {
         setRender(!reRender)
     }
 
-    console.log(breakStatus)
-
     return (
         <>
             <Grid container spacing={2}>
@@ -137,7 +135,7 @@ const UserSession = () => {
                         <Table size='small'>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell sx={{ fontWeight: 'bold', fontSize: '1rem', padding: '11px' }}>Types</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold', fontSize: '1rem', padding: '11px' }}>Today's Activity</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold', fontSize: '1rem', padding: '11px' }}>Time</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -204,11 +202,6 @@ const UserSession = () => {
 export default UserSession
 
 function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfirmBreak, onBreak, handleCloseBreak, breaksName, breakStatus }) {
-
-
-    console.log(breaksName, 'this is iimportant , breaks name inside the component')
-
-    console.log(breaksName.map((item) => item.break_type))
 
     const StatusValue = (value) => {
         let StatusName;
@@ -328,7 +321,7 @@ function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfi
                     {onBreak ? (
                         <Grid item xs={12}>
                             <Button variant="outlined" color='success' onClick={handleCloseBreak} fullWidth>
-                                I'm Back
+                                     Back to Work
                             </Button>
                         </Grid>
                     ) : (
