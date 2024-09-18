@@ -130,10 +130,6 @@ const CalendarComponent = () => {
                     isoWeek={false}
                     renderCell={renderCell}
                     onSelect={(date) => handleMouseEnter(date)}
-                    style={{
-                        Tooltip : false ,
-                        Whisper : false ,
-                    }}
                 />
             </Card>
         </>

@@ -180,7 +180,7 @@ function MOSCandiateTable(props) {
                     variant="filled"
                     sx={{ width: '100%' }}
                 >
-                    {deleteStatusVal === 1 ? "The User deleted successfully ! " : " Something went wrong ! "}
+                    {deleteStatusVal === 1 ? " Candidate deleted successfully ! " : " Something went wrong ! "}
                 </Alert>
             </Snackbar>
 

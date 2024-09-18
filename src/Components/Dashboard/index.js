@@ -20,13 +20,10 @@ import IdleTimerComponent from "./idleTimer";
 
 export default function MOSDashboard() {
 
-    const { setSharedTab } = useSharedContext()
-
+    const { setSharedTab } = useSharedContext();
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
-
     const user_session = sessionStorage.getItem("user_info");
-
-    const AuthorizedPerson = userinfo.user_role
+    const AuthorizedPerson = userinfo.user_role;
 
     const history = useNavigate();
 
@@ -35,20 +32,18 @@ export default function MOSDashboard() {
     const [emp_details, setEmp] = React.useState([]);
     const [total, setTotal] = React.useState(0);
     const [open, setOpen] = React.useState(false);
-
     const [startnewDate, setStartnewDate] = useState(new Date());
     const [endnewDate, setEndnewDate] = useState(new Date());
-    const [ reload , setReload ] = useState(false);
-    const [onbreak , setOnbreak ] = useState(false);
-
+    const [reload, setReload] = useState(false);
+    const [onbreak, setOnbreak] = useState(false);
 
     const date = new Date();
 
     let day = date.getDate().toString().padStart(2, "0");
     let month = (date.getMonth() + 1).toString().padStart(2, "0");
     let year = date.getFullYear();
-
     let currentDate = `${year}-${month}-${day}`;
+
 
     const formatDate = (dateString) => {
 
@@ -70,12 +65,10 @@ export default function MOSDashboard() {
         key: "selection",
     };
 
-
     const fromdate = formatDate(startnewDate);
     const todate = formatDate(endnewDate);
 
     let currentDisplayDate;
-
 
     if (fromdate === todate) {
         currentDisplayDate = fromdate;
@@ -97,6 +90,7 @@ export default function MOSDashboard() {
 
     const from_date = fromdate + " 00:00:00";
     const to_date = todate + " 23:59:59";
+
 
     React.useEffect(() => {
         if (
@@ -126,14 +120,11 @@ export default function MOSDashboard() {
     }, [startnewDate, endnewDate]);
 
 
-
     React.useEffect(() => {
         if (candidates.length !== 0) {
             setTotal(candidates.length);
         }
     }, [candidates]);
-
-
 
 
     const handleNavigate = (val) => {
@@ -144,8 +135,6 @@ export default function MOSDashboard() {
         }
     };
 
-
-
     const fnCountByRef = (ref) => {
         let data = candidates.filter((item) => {
             return item.ref_by_basic === ref;
@@ -153,8 +142,6 @@ export default function MOSDashboard() {
 
         return data.length;
     };
-
-
 
     const fnLoadRefData = (ref) => {
         if (ref !== null) {
@@ -167,8 +154,6 @@ export default function MOSDashboard() {
         }
     };
 
-    
-
     const fnGetCount = (ref, status) => {
         let count = 0;
         let data = candidates.filter(
@@ -177,7 +162,6 @@ export default function MOSDashboard() {
         );
         return data.length;
     };
-
 
     const fnFilterCandidateByRound = (data, status, emp_id, round = 0) => {
         let temp_round = "round_" + round;
@@ -189,7 +173,6 @@ export default function MOSDashboard() {
         return temp_data.length;
     };
 
-
     const fnGetCountById = (id, status) => {
         let curr_candidate = candidates.filter(
             (item) => parseInt(item.updated_by) == parseInt(id)
@@ -200,18 +183,15 @@ export default function MOSDashboard() {
         return round1;
     };
 
-
     const handleOpen = () => {
 
         setOpen(true);
     };
 
-
     const handleClose = () => {
 
         setOpen(false);
     };
-
 
     const style = {
 
@@ -226,12 +206,7 @@ export default function MOSDashboard() {
         pb: 3,
     };
 
-
     const handleNext = (e, id) => {
-
-        // history(
-        //     `/dashboard/candidate-master/?employid=${id}&fromdate=${from_date}&todate=${to_date}`
-        // );
 
         setSharedTab({
             Tabname: 'particularEmployee',
@@ -243,9 +218,6 @@ export default function MOSDashboard() {
 
     };
 
-
-    console.log(!onbreak,'Tooo important bro')
-
     return (
 
         <Grid container spacing={2} sx={{ paddingLeft: 6, paddingY: 0 }}>
@@ -256,20 +228,18 @@ export default function MOSDashboard() {
                 </Typography>
             </Grid>
 
-
-            <Grid item xs={12} md={3} lg={3} xl={3}>
+            <Grid item xs={12}  md={4} lg={4} xl={3}>
                 <CalenderComponent />
             </Grid>
 
-            <Grid item xs={12} md={5} lg={5} xl={5}>
-                <UserSession  reload={reload}  onbreak={onbreak} setOnbreak={setOnbreak} />
+            <Grid item xs={12} md={4} lg={4} xl={5}>
+                <UserSession reload={reload} onbreak={onbreak} setOnbreak={setOnbreak} />
             </Grid>
 
             <Grid item xs={12} md={4} lg={4} xl={4}>
                 <Todolist />
             </Grid>
 
-            {/* <Grid item xs={12} md={6} lg={4} xl={4} > */}
             <Grid item xs={12}  >
                 <Grid>
                     <React.Fragment>
@@ -422,12 +392,9 @@ export default function MOSDashboard() {
             </Grid>
 
             <>
-              { !onbreak ? <IdleTimerComponent setReload={setReload} reload={reload}/> : '' } 
+                {!onbreak ? <IdleTimerComponent setReload={setReload} reload={reload} /> : ''}
             </>
 
         </Grid>
-
-
-
     );
 }

@@ -1,5 +1,5 @@
-import { Button, Card, CardContent, FormControl, Grid, InputLabel, MenuItem, Modal, Paper, Select, Switch, switchClasses, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useScrollTrigger } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import { Button, FormControl, Grid, InputLabel, MenuItem, Modal, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import React, { useState } from 'react'
 import axios from 'axios'
 import URL from '../Global/Utils/url_route'
 
@@ -28,6 +28,7 @@ const UserSession = ({ reload, onbreak, setOnbreak }) => {
                         id: username
                     }
                 });
+
 
                 const { breakStatus, breakMasterData, data } = response.data;
 
@@ -74,7 +75,6 @@ const UserSession = ({ reload, onbreak, setOnbreak }) => {
 
         let url = `${URL}breaks`;
 
-
         try {
             const response = await axios.put(url, {
                 "breakType": breakType,
@@ -93,7 +93,6 @@ const UserSession = ({ reload, onbreak, setOnbreak }) => {
     }
 
 
-
     const handleCloseBreak = async () => {
 
         let url = `${URL}breaks`
@@ -105,12 +104,9 @@ const UserSession = ({ reload, onbreak, setOnbreak }) => {
                 "breakEnd": 1
             })
 
-            const data = JSON.stringify(response.data.data)
-
         } catch (error) {
             console.log(error)
         }
-
 
         setOpenBreakModal(!openBreakModal)
         setBreakType('')
@@ -270,15 +266,7 @@ function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfi
                                         backgroundColor: '#ffffff',
                                     }}
                                 >
-                                    {/* {breakStatus.map((item2) => {
-                                        {
-                                            breaksName.map((item) => (
-                                                <MenuItem disabled={item2.status === 2} key={item.id} value={item.id}>
-                                                    {item.break_type}
-                                                </MenuItem>
-                                            ))
-                                        }
-                                    })} */}
+
                                     {breaksName.map((item) => {
                                         const breakStatusItem = breakStatus.find((status) => status.breakName === item.break_type);
                                         const isDisabled = breakStatusItem && breakStatusItem.status === 2;
@@ -326,57 +314,6 @@ function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfi
                 </Grid>
             </div>
         </Modal>
-
     )
 }
 
-
-function CardComponent({ cardTime, cardContent }) {
-
-
-    { /* <Grid item xs={6}> <CardComponent cardTime='06h 39m' cardContent='Logged Hours' /> </Grid>
-    <Grid item xs={6}> <CardComponent cardTime='03h 41m' cardContent='Non-Productive Hours' /> </Grid>
-    <Grid item xs={6}> <CardComponent cardTime='00h 44m' cardContent='Break Time' /> </Grid>
-    <Grid item xs={6}> <CardComponent cardTime='01h 04m' cardContent='Meeting & Feedback' /> </Grid> */ }
-
-    return (
-
-        <Card variant='outlined' >
-            <CardContent >
-                <Typography gutterBottom variant="h3" align='center'
-                    sx={{
-                        color: '#545454'
-                    }}>
-                    {cardTime}
-                </Typography>
-                <Typography align='center' variant='h5' sx={{
-                    color: '#737373'
-                }} >
-                    {cardContent}
-                </Typography>
-            </CardContent>
-        </Card>
-
-    )
-}
-
-
-
-
-
-
-
-
-
-
-{/* <MenuItem disabled={disableSelection.break1End === 1} value={1}>
-                                        15 Mins Break 1
-                                    </MenuItem>
-                                    <MenuItem disabled={disableSelection.break2End === 1} value={2}>
-                                        15 Mins Break 2
-                                    </MenuItem>
-                                    <MenuItem disabled={disableSelection.break3End === 1} value={3}>
-                                        30 Mins Break
-                                    </MenuItem>
-                                    <MenuItem value={4}>Meeting Session</MenuItem>
-                                    <MenuItem value={5}>Feedback Session</MenuItem> */}

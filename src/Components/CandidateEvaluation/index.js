@@ -3,12 +3,10 @@ import * as React from 'react';
 import {
     Container, Grid,
     Button, TextField, Typography,
-    Card, CardActions, CardContent, CardHeader, Avatar, IconButton,
+    Card, CardActions, CardContent, CardHeader,
     Select, MenuItem, FormControl, FormLabel,
-    FormControlLabel, Radio, RadioGroup,
-    CardActionArea, InputLabel, Dialog, DialogTitle, DialogContent
+    FormControlLabel, Radio, RadioGroup, Dialog, DialogTitle ,
 } from "@mui/material";
-import { SignalCellularNull } from '@mui/icons-material';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 
 import axios from 'axios';
@@ -124,7 +122,6 @@ function CandidateEvaluation(props) {
 
 
     const [total, setTotal] = React.useState(0);
-    //const [finalRating,setFinalRating] = React.useState(null);
 
     React.useEffect(() => {
         let count = parseInt(appearance) + parseInt(charater) + parseInt(goal) + parseInt(mos) +
@@ -140,12 +137,6 @@ function CandidateEvaluation(props) {
     const [interviewStatus, setInterviewStatus] = React.useState(0);
 
     const [showAlert, setShowAlert] = React.useState(false);
-
-    // React.useEffect(()=>{
-    //     let finalRating = RatingName(total);
-
-    //     setFinalRating(finalRating);
-    // },[appearance,charater,goal,mos,job,longterm]);
 
     const handleAlertClose = () => {
         setShowAlert(false);
