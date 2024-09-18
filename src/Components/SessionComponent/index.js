@@ -3,16 +3,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import URL from '../Global/Utils/url_route'
 
-const UserSession = () => {
-
-
-    //import change pannanum , athu enna na , select la kamikura data va backend la irunthu fetch pannitu vanthu kamikanum , ithu than antha task , marantharatha da Sathis uhhhhhhhhh..............
-
-
-    // const [openBreakModal, setOpenBreakModal] = useState(localStorage.getItem('isBreakOpen') === 'true' || false)
-    // const [breakType, setBreakType] = useState(localStorage.getItem('breakType') || '')
-    // const [onBreak, setOnBreak] = useState(localStorage.getItem('onBreak') === 'true' || false)
-
+const UserSession = ({ reload, onbreak, setOnbreak }) => {
 
     const [openBreakModal, setOpenBreakModal] = useState(false)
     const [breakType, setBreakType] = useState('')
@@ -21,8 +12,7 @@ const UserSession = () => {
     const [SessionData, setSessionData] = useState([])
     const [breaksName, setBreaksName] = useState([])
     const [breakStatus, setBreakStatus] = useState([])
-    const [reRender , setRender ] = useState(false)
-
+    const [reRender, setRender] = useState(false)
 
 
 
@@ -54,7 +44,7 @@ const UserSession = () => {
 
         fetchData();
 
-    }, [reRender]);
+    }, [reRender, reload]);
 
 
     const StatusFunction = (breakStatusData) => {
@@ -98,6 +88,7 @@ const UserSession = () => {
             console.log(err)
         }
         setOnBreak(!onBreak)
+        setOnbreak(!onbreak)
 
     }
 
@@ -124,6 +115,7 @@ const UserSession = () => {
         setOpenBreakModal(!openBreakModal)
         setBreakType('')
         setOnBreak(!onBreak)
+        setOnbreak(!onbreak)
         setRender(!reRender)
     }
 
@@ -321,7 +313,7 @@ function ModalComponent({ breakType, handleBreak, handleClose, Open, handleConfi
                     {onBreak ? (
                         <Grid item xs={12}>
                             <Button variant="outlined" color='success' onClick={handleCloseBreak} fullWidth>
-                                     Back to Work
+                                Back to Work
                             </Button>
                         </Grid>
                     ) : (

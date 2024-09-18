@@ -353,8 +353,8 @@ const Todolist = () => {
                 </Box>
 
                 {/* <Box sx={{ backgroundColor: 'White', width: '100%', maxHeight: '0vh' }}> */}
-                <Box  sx={{ backgroundColor: 'white', width: '100%', height: '50%', overflow: 'auto' }}>
-                    <TableContainer component={Paper}  variant='outlined' >
+                <Box sx={{ backgroundColor: 'white', width: '100%', height: '50%', overflow: 'auto' }}>
+                    <TableContainer component={Paper} variant='outlined' >
                         <Table stickyHeader >
 
                             <TableHead>
@@ -812,7 +812,7 @@ const Todolist = () => {
 
 
                             {selectedTask.status !== 4 ?
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' , paddingTop:'5px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', paddingTop: '5px' }}>
                                     <Button
                                         variant="outlined"
                                         onClick={handleClose}

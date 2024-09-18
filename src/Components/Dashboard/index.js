@@ -38,6 +38,8 @@ export default function MOSDashboard() {
 
     const [startnewDate, setStartnewDate] = useState(new Date());
     const [endnewDate, setEndnewDate] = useState(new Date());
+    const [ reload , setReload ] = useState(false);
+    const [onbreak , setOnbreak ] = useState(false);
 
 
     const date = new Date();
@@ -242,6 +244,8 @@ export default function MOSDashboard() {
     };
 
 
+    console.log(!onbreak,'Tooo important bro')
+
     return (
 
         <Grid container spacing={2} sx={{ paddingLeft: 6, paddingY: 0 }}>
@@ -258,7 +262,7 @@ export default function MOSDashboard() {
             </Grid>
 
             <Grid item xs={12} md={5} lg={5} xl={5}>
-                <UserSession />
+                <UserSession  reload={reload}  onbreak={onbreak} setOnbreak={setOnbreak} />
             </Grid>
 
             <Grid item xs={12} md={4} lg={4} xl={4}>
@@ -418,7 +422,7 @@ export default function MOSDashboard() {
             </Grid>
 
             <>
-             <IdleTimerComponent/>
+              { !onbreak ? <IdleTimerComponent setReload={setReload} reload={reload}/> : '' } 
             </>
 
         </Grid>

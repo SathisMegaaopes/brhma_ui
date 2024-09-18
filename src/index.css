@@ -3,9 +3,14 @@
   box-shadow: none !important;
 }
 
-/* .rs-calendar-table-cell-content {
-  line-height: 2.6 !important;
-} */
+.rs-calendar-table-cell-content {
+  line-height: 2.8 !important;
+}
+
+.rs-calendar-tooltip {
+  display: none !important;
+}
+
 
 .rs-calendar-panel .rs-calendar-table-cell-is-today .rs-calendar-table-cell-day {
   background-color: #3498ff !important;
@@ -21,4 +26,9 @@
 div:hover .tooltip {
   visibility: visible;
   opacity: 1;
+}
+
+
+.rs-calendar-popover {
+  display: none !important;
 }

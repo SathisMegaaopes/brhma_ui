@@ -29,7 +29,7 @@ const CalculateTime = (firstDate, updateCallback) => {
 };
 
 
-const IdleTimerComponent = () => {
+const IdleTimerComponent = ({setReload,reload}) => {
     const [isIdle, setIsIdle] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const idleTimerRef = useRef(null);
@@ -104,6 +104,7 @@ const IdleTimerComponent = () => {
             if (response.data.status === 1) {
                 setModalOpen(false);
                 setIsIdle(false);
+                setReload(!reload)
             }
         } catch (error) {
             console.log("Error occurred in updating the idle End Time", error);
@@ -115,6 +116,7 @@ const IdleTimerComponent = () => {
         <IdleTimerProvider
             ref={idleTimerRef}
             timeout={1000 * 60 * 5}
+            // timeout={1000 * 5 }
             onIdle={onIdle}
             debounce={500}
         >
