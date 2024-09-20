@@ -18,6 +18,7 @@ import {
     Tooltip,
     TextField,
     Grid,
+    Card,
 } from '@mui/material';
 import URL from '../Global/Utils/url_route';
 import Fade from '@mui/material/Fade';
@@ -224,7 +225,7 @@ const Todolist = () => {
         <>
             <Grid container sx={{ gap: 2, height: '80vh' }}>
                 {/* <Box sx={{ backgroundColor: 'white', width: '100%', maxHeight: '0vh' }}> */}
-                <Box sx={{ backgroundColor: 'white', width: '100%', height: '50%', overflow: 'auto' }}>
+                <Box sx={{ backgroundColor: 'white', width: '100%', height: '50%', overflow: 'auto' }} >
                     <TableContainer component={Paper} variant='outlined'>
                         <Table stickyHeader >
 

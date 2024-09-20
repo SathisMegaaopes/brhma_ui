@@ -1,4 +1,4 @@
-import { Button, FormControl, Grid, InputLabel, MenuItem, Modal, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { Button, Card, FormControl, Grid, InputLabel, MenuItem, Modal, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import axios from 'axios'
 import URL from '../Global/Utils/url_route'
@@ -13,7 +13,6 @@ const UserSession = ({ reload, onbreak, setOnbreak }) => {
     const [breaksName, setBreaksName] = useState([])
     const [breakStatus, setBreakStatus] = useState([])
     const [reRender, setRender] = useState(false)
-
 
 
     React.useEffect(() => {
@@ -119,7 +118,8 @@ const UserSession = ({ reload, onbreak, setOnbreak }) => {
         <>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <TableContainer component={Paper}>
+                    {/* <TableContainer component={Paper}> */}
+                    <Card variant='outlined'>
                         <Table size='small'>
                             <TableHead>
                                 <TableRow>
@@ -158,7 +158,8 @@ const UserSession = ({ reload, onbreak, setOnbreak }) => {
                                 </TableRow>
                             </TableBody>
                         </Table>
-                    </TableContainer>
+                    {/* </TableContainer> */}
+                    </Card>
                 </Grid>
                 <Grid item xs={12}>
                     <Button

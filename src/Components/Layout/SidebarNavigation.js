@@ -21,12 +21,13 @@ const SidebarContainer = styled('div')(({ isOpen, isActive }) => ({
     position: "fixed",
     zIndex: 3,
     left: 0,
-    backgroundColor: isOpen ? "#808080" : "#272727",
+    // backgroundColor: isOpen ? "#808080" : "#272727",
+    backgroundColor: isOpen ? "#749BC2" : "#749BC2",
     overflowX: "hidden",
     overflowY: "auto",
     transition: "width 0.5s, background-color 0.5s",
     whiteSpace: "nowrap",
-    boxShadow: "2px 0 5px rgba(0,0,0,0.5)",
+    // boxShadow: "2px 0 5px rgba(0,0,0,0.5)",
 }));
 
 const MainContainer = styled('div')(() => ({
@@ -35,12 +36,12 @@ const MainContainer = styled('div')(() => ({
 }));
 
 const SidebarIcon = styled(IconButton)(({ theme, isOpen, isActive }) => ({
-    color: isActive ? 'White' : isOpen ? "#B6B6B4" : "#B6B6B4",
+    color: isActive ? 'White' : isOpen ? "#91C8E4" : "#91C8E4",
     display: "flex",
     justifyContent: "flex-start",
     alignContent: 'center',
     padding: "25px 15px",
-    fontSize: "20px",
+    fontSize: "20px",   
     transition: "color 0.5s",
     "&:hover": {
         color: isOpen ? "white" : "#f1f1f1",

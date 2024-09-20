@@ -50,6 +50,8 @@ const AddTodo = ({ value }) => {
         endDateTime: null
     });
 
+    const [open, setOpen] = useState(false);
+
 
     useEffect(() => {
         let url = `${URL}todolist/department`
@@ -119,7 +121,6 @@ const AddTodo = ({ value }) => {
 
     const AuthorizedPerson = userinfo.user_role
 
-    const [open, setOpen] = useState(false);
 
     const handleCloseModal = () => {
         setOpenModal(!openModal)
@@ -250,9 +251,17 @@ const AddTodo = ({ value }) => {
             });
 
         }
-        // task_name , task_description , task_dept , task_team , task_assignee , status , tat , created_by , created_at ;
-
     };
+
+
+    const handleCheckCloseModal = () => {
+
+        if(formState.name || formState.description || formState.startDateTime || formState.endDateTime){
+            setConfirmCancel(!confirmCancel)
+        }else{
+            setOpen(false)
+        }
+    }
 
 
     return (
@@ -408,7 +417,7 @@ const AddTodo = ({ value }) => {
                     </Box>
 
                     <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-                        <Button variant="outlined" onClick={() => setConfirmCancel(!confirmCancel)} color='error'
+                        <Button variant="outlined" onClick={handleCheckCloseModal} color='error'
                         >
                             Cancel
                         </Button>

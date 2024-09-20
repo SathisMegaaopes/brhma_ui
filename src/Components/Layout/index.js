@@ -47,7 +47,7 @@ export default function MOSNavigation() {
 
   return (
     <Box >
-      <AppBar position="fixed" sx={{ background: "#272727", zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar position="fixed" sx={{ background: "#749BC2", boxShadow:'none' ,  zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <IconButton
             size="large"
@@ -60,7 +60,7 @@ export default function MOSNavigation() {
             <img src={logo1} alt='brmha' width={"35px"} height={"35px"} />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Megaaopes
+            Megaaopes Solutions
           </Typography>
           <div>
             <IconButton

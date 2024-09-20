@@ -64,7 +64,7 @@ const CalendarComponent = () => {
                     backgroundColor: color,
                     borderRadius: '50%',
                     margin: '-40px auto',
-                    // zIndex: 5,
+                    zIndex: 5,
                 }}
             >
                 {hoveredDate === dateStr && content && (
@@ -79,11 +79,11 @@ const CalendarComponent = () => {
 
     return (
         <>
-<style>
-    {`
+            <style>
+                {`
         .calendar-cell {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -91,6 +91,7 @@ const CalendarComponent = () => {
             cursor: pointer;
             border: none; 
             box-shadow: none; 
+            color:black;
         }
 
         .calendar-cell .points {
@@ -124,12 +125,22 @@ const CalendarComponent = () => {
     `}
             </style>
 
-            <Card>
+            <Card variant='outlined'>
                 <Calendar
+
+                    renderHeader={({ date }) => (
+                        <div style={{ textAlign: 'center' }}>
+                            {date.toLocaleDateString('default', { month: 'long', year: 'numeric' })}
+                        </div>
+                    )}
+
                     compact
                     isoWeek={false}
                     renderCell={renderCell}
                     onSelect={(date) => handleMouseEnter(date)}
+                    style={{
+                        color: 'white'
+                    }}
                 />
             </Card>
         </>

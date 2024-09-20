@@ -29,7 +29,9 @@ const CalculateTime = (firstDate, updateCallback) => {
 };
 
 
-const IdleTimerComponent = ({setReload,reload}) => {
+
+const IdleTimerComponent = ({ setReload, reload }) => {
+
     const [isIdle, setIsIdle] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const idleTimerRef = useRef(null);
@@ -53,6 +55,7 @@ const IdleTimerComponent = ({setReload,reload}) => {
             });
     }, [isIdle]);
 
+
     useEffect(() => {
         if (idleStatus?.status === 1) {
             setIsIdle(true);
@@ -62,6 +65,7 @@ const IdleTimerComponent = ({setReload,reload}) => {
             setModalOpen(false);
         }
     }, [idleStatus]);
+
 
     useEffect(() => {
         if (idleStatus?.start) {
@@ -111,12 +115,13 @@ const IdleTimerComponent = ({setReload,reload}) => {
         }
     };
 
+    
 
     return (
         <IdleTimerProvider
             ref={idleTimerRef}
             timeout={1000 * 60 * 5}
-            // timeout={1000 * 5 }
+            // timeout={1000 * 5}
             onIdle={onIdle}
             debounce={500}
         >

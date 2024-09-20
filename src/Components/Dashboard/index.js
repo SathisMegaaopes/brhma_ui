@@ -37,6 +37,53 @@ export default function MOSDashboard() {
     const [reload, setReload] = useState(false);
     const [onbreak, setOnbreak] = useState(false);
 
+
+    React.useEffect(() => {
+
+        const isPageRefreshed = () => {
+            const navigationEntries = performance.getEntriesByType('navigation');
+            if (navigationEntries.length > 0) {
+                return navigationEntries[0].type === 'reload';  // 'reload' means page was refreshed
+            }
+            return false;
+        };
+
+        const handleUnload = async (event) => {
+            try {
+
+                if (isPageRefreshed()) {
+                    return;
+                }
+
+
+                // event.preventDefault();
+                // event.returnValue = '';
+
+                let url = URL + "login/validateUser";
+
+                let request = { "user_name": userinfo.user_name, "user_pwd": userinfo.user_pwd, "type": "logout" };
+
+                const response = await axios.post(url, request)
+
+
+
+
+
+            } catch (err) {
+                console.log(err)
+            }
+        }
+
+        window.addEventListener('beforeunload', handleUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleUnload);
+        };
+    }, []);
+
+
+
+
     const date = new Date();
 
     let day = date.getDate().toString().padStart(2, "0");
@@ -228,7 +275,7 @@ export default function MOSDashboard() {
                 </Typography>
             </Grid>
 
-            <Grid item xs={12}  md={4} lg={4} xl={3}>
+            <Grid item xs={12} md={4} lg={4} xl={3}>
                 <CalenderComponent />
             </Grid>
 
@@ -238,6 +285,10 @@ export default function MOSDashboard() {
 
             <Grid item xs={12} md={4} lg={4} xl={4}>
                 <Todolist />
+            </Grid>
+
+            <Grid item xs={12} sx={{ padding: 10 }}>
+
             </Grid>
 
             <Grid item xs={12}  >
@@ -391,9 +442,12 @@ export default function MOSDashboard() {
                 </Paper>
             </Grid>
 
-            <>
-                {!onbreak ? <IdleTimerComponent setReload={setReload} reload={reload} /> : ''}
-            </>
+            {AuthorizedPerson !== 1 &&
+                <>
+                    {!onbreak ? <IdleTimerComponent setReload={setReload} reload={reload} /> : ''}
+                </>
+
+            }
 
         </Grid>
     );

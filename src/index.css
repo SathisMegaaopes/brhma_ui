@@ -4,7 +4,7 @@
 }
 
 .rs-calendar-table-cell-content {
-  line-height: 2.8 !important;
+  line-height: 2.9 !important;
 }
 
 .rs-calendar-tooltip {
@@ -13,22 +13,38 @@
 
 
 .rs-calendar-panel .rs-calendar-table-cell-is-today .rs-calendar-table-cell-day {
-  background-color: #3498ff !important;
+  /* background-color: #3498ff !important; */
+  /* background-color: #3498ff !important; */
   border-radius: 50% !important;
-  color: #fff !important;
-  height: 40px !important;
-  width: 40px !important;
-  line-height: 40px !important;
+  color: #fff5f5 !important;
+  height: 35px !important;
+  width: 35px !important;
+  line-height: 2.8 !important;
   text-align: center !important;
   z-index: 0 !important;
-}
-
-div:hover .tooltip {
-  visibility: visible;
-  opacity: 1;
 }
 
 
 .rs-calendar-popover {
   display: none !important;
+}
+
+
+.rs-btn-icon.rs-btn-sm>.rs-icon {
+  display: none;
+
+}
+
+.rs-btn-sm.rs-btn {
+
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.rs-btn-icon.rs-btn-sm {
+  pointer-events: none;
+}
+
+.rs-calendar-panel .rs-calendar-header .rs-calendar-btn-today {
+  display: none;
 }
