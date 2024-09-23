@@ -14,7 +14,7 @@ function MOSLogin() {
 
 
   const handleValidate = () => {
-    let request = { "user_name": user_name, "user_pwd": user_pwd , "type" : "login" };
+    let request = { "user_name": user_name, "user_pwd": user_pwd, "type": "login" };
 
     let url = URL + "login/validateUser";
     axios.post(url, request)

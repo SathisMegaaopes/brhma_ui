@@ -61,7 +61,7 @@ function Sidebar() {
 
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
 
-    const AuthorizedPerson = userinfo.user_role
+    const AuthorizedPerson = userinfo.user_role 
 
     React.useEffect(() => {
         if (sharedTab.active === 1) {
@@ -164,7 +164,7 @@ function Sidebar() {
                 {AuthorizedPerson === 1 &&
                     <SidebarIcon disableRipple aria-label="EmployeeMaster" isOpen={isOpen} onClick={() => handleTabChange('EmployeeMaster')} isActive={activeTab === 'EmployeeMaster'} >
                         <SupervisorAccountIcon sx={{ fontSize: 30 }} />
-                        {isOpen && <span>&nbsp;&nbsp;&nbsp;Employee Table</span>}
+                        {isOpen && <span>&nbsp;&nbsp;&nbsp;Employee </span>}
                     </SidebarIcon>}
 
             </SidebarContainer>

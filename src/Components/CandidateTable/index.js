@@ -15,7 +15,7 @@ function MOSCandiateTable(props) {
     const { rerender, setRerender } = useSharedContext();
 
     const [candidate, setCandidate] = React.useState([]);
-    const [anchorEl, setAnchorEl] = React.useState(null);   
+    const [anchorEl, setAnchorEl] = React.useState(null);
     const [openModal, setOpen] = React.useState(false);
 
     const [deletemodal, setDeletemodal] = React.useState(false)
@@ -144,7 +144,7 @@ function MOSCandiateTable(props) {
                     </Table>
                 </TableContainer>
             </Grid>
-           
+
 
 
             <Dialog

@@ -130,7 +130,6 @@ function CandidateReportCard(props) {
     const total_exp = props.candidate.years + "." + props.candidate.months + " yrs";
     const dob = props.candidate.dob;
     const emp_details = props.emp_details;
-
     const distance = props.candidate.distance
 
 

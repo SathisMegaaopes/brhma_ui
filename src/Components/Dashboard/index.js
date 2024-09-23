@@ -43,7 +43,7 @@ export default function MOSDashboard() {
         const isPageRefreshed = () => {
             const navigationEntries = performance.getEntriesByType('navigation');
             if (navigationEntries.length > 0) {
-                return navigationEntries[0].type === 'reload';  // 'reload' means page was refreshed
+                return navigationEntries[0].type === 'reload';
             }
             return false;
         };
@@ -55,19 +55,11 @@ export default function MOSDashboard() {
                     return;
                 }
 
-
-                // event.preventDefault();
-                // event.returnValue = '';
-
                 let url = URL + "login/validateUser";
 
                 let request = { "user_name": userinfo.user_name, "user_pwd": userinfo.user_pwd, "type": "logout" };
 
                 const response = await axios.post(url, request)
-
-
-
-
 
             } catch (err) {
                 console.log(err)

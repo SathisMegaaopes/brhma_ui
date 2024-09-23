@@ -13,8 +13,6 @@
 
 
 .rs-calendar-panel .rs-calendar-table-cell-is-today .rs-calendar-table-cell-day {
-  /* background-color: #3498ff !important; */
-  /* background-color: #3498ff !important; */
   border-radius: 50% !important;
   color: #fff5f5 !important;
   height: 35px !important;
