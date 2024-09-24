@@ -5,14 +5,23 @@ import Stack from '@mui/material/Stack';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import SettingsIcon from '@mui/icons-material/Settings';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import VideoLabelIcon from '@mui/icons-material/VideoLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { FormControl, FormControlLabel, FormLabel, Grid, InputAdornment, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from '@mui/material';
+import { useForm, Controller, useWatch } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import PaymentIcon from '@mui/icons-material/Payment';
+import PersonIcon from '@mui/icons-material/Person';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import dayjs from 'dayjs';
+import { DatePicker } from '@mui/x-date-pickers';
+
+
 
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
@@ -77,11 +86,18 @@ const ColorlibStepIconRoot = styled('div')(({ theme }) => ({
 function ColorlibStepIcon(props) {
     const { active, completed, className } = props;
 
+    // const icons = {
+    //     1: <SettingsIcon />,
+    //     2: <GroupAddIcon />,
+    //     3: <VideoLabelIcon />,
+    //     4: <VideoLabelIcon />,
+    // };
     const icons = {
-        1: <SettingsIcon />,
-        2: <GroupAddIcon />,
-        3: <VideoLabelIcon />,
-        4: <VideoLabelIcon />,
+        1: <PersonIcon />,
+        2: <BusinessCenterIcon />,
+        3: <HistoryEduIcon />,
+        4: <AssignmentIcon />,
+        5: <PaymentIcon />,
     };
 
     return (
@@ -109,213 +125,1470 @@ ColorlibStepIcon.propTypes = {
     icon: PropTypes.node,
 };
 
-const steps = ['BASIC INFORMATION', 'EMPLOYEE POSITION', ' STATUTORY INFO', 'PAYMENT MODE'];
+const steps = ['BASIC INFORMATION', 'EMPLOYEE POSITION', 'EXPERIENCE', ' STATUTORY INFO', 'PAYMENT MODE']
 
-// export default function EmployeeForm() {
-//     const [activeStep, setActiveStep] = React.useState(0);
-//     const [skipped, setSkipped] = React.useState(new Set());
+const Designations = ['CEO', 'Software Developer', 'Vice President - HR Operations', 'Team Leader', 'HR - Telecaller', 'HR Executive', 'Front Desk Executive', 'System Admin', 'Admin Executive', 'Quality Analyst', 'Business Development Executive']
 
-//     const isStepOptional = (step) => {
-//         return step === 1;
-//     };
+const Department = ['Executive', 'Operations', 'Human Resource', 'IT Infrastructure', 'Facility Management', 'Learning and Development', 'Business Development', 'Software Development']
 
-//     const isStepSkipped = (step) => {
-//         return skipped.has(step);
-//     };
+const Teams = ['Management', 'Supervisor/Manager', 'Documentation and Recruitment', 'Recruitment', 'Front Office', 'IT Team', 'Admin and Facility', 'Quality Control', 'Sales', 'Software Team']
 
-//     const handleNext = () => {
-//         let newSkipped = skipped;
-//         if (isStepSkipped(activeStep)) {
-//             newSkipped = new Set(newSkipped.values());
-//             newSkipped.delete(activeStep);
-//         }
-
-//         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-//         setSkipped(newSkipped);
-//     };
-
-//     const handleBack = () => {
-//         setActiveStep((prevActiveStep) => prevActiveStep - 1);
-//     };
-
-//     const handleSkip = () => {
-//         if (!isStepOptional(activeStep)) {
-//             throw new Error("You can't skip a step that isn't optional.");
-//         }
-
-//         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-//         setSkipped((prevSkipped) => {
-//             const newSkipped = new Set(prevSkipped.values());
-//             newSkipped.add(activeStep);
-//             return newSkipped;
-//         });
-//     };
-
-//     const handleReset = () => {
-//         setActiveStep(0);
-//     };
-
-//     return (
-
-//         <Box sx={{ width: '100%' }} >
-//             <Stack sx={{ width: '100%' }} spacing={4} >
-//                 <Stepper activeStep={activeStep} alternativeLabel connector={<ColorlibConnector />}>
-//                     {steps.map((label, index) => {
-//                         const stepProps = {};
-//                         const labelProps = {};
-//                         if (isStepOptional(index)) {
-//                             labelProps.optional = (
-//                                 <Typography variant="caption">Optional</Typography>
-//                             );
-//                         }
-//                         if (isStepSkipped(index)) {
-//                             stepProps.completed = false;
-//                         }
-//                         return (
-//                             <Step key={label} {...stepProps}>
-//                                 <StepLabel StepIconComponent={ColorlibStepIcon} {...labelProps}>{label}</StepLabel>
-//                             </Step>
-//                         );
-//                     })}
-//                 </Stepper>
-//             </Stack>
-
-//             {activeStep === 0 &&
-//                 <Box sx={{ mt: 4 }}>
-//                     <Grid container spacing={2} xs={12}>
-//                         <Grid item xs={6}>
-//                             <TextField fullWidth label="Field 1" />
-//                         </Grid>
-//                         <Grid item xs={6}>
-//                             <TextField fullWidth label="Field 2" />
-//                         </Grid>
-//                         <Grid item xs={6}>
-//                             <TextField fullWidth label="Field 3" />
-//                         </Grid>
-//                         <Grid item xs={6}>
-//                             <TextField fullWidth label="Field 4" />
-//                         </Grid>
-//                         <Grid item xs={6}>
-//                             <TextField fullWidth label="Field 5" />
-//                         </Grid>
-//                         <Grid item xs={6}>
-//                             <TextField fullWidth label="Field 6" />
-//                         </Grid>
-//                     </Grid>
-//                 </Box>
-//             }
-
-//             {activeStep === steps.length ? (
-//                 <React.Fragment>
-//                     <Typography sx={{ mt: 2, mb: 1 }}>
-//                         All steps completed - you&apos;re finished
-//                     </Typography>
-//                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-//                         <Box sx={{ flex: '1 1 auto' }} />
-//                         <Button onClick={handleReset}>Reset</Button>
-//                     </Box>
-//                 </React.Fragment>
-//             ) : (
-//                 <React.Fragment>
-//                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-//                         <Button
-//                             color="inherit"
-//                             disabled={activeStep === 0}
-//                             onClick={handleBack}
-//                             sx={{ mr: 1 }}
-//                         >
-//                             Back
-//                         </Button>
-//                         <Box sx={{ flex: '1 1 auto' }} />
-//                         {isStepOptional(activeStep) && (
-//                             <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-//                                 Skip
-//                             </Button>
-//                         )}
-//                         <Button onClick={handleNext}>
-//                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-//                         </Button>
-//                     </Box>
-//                 </React.Fragment>
-//             )}
-//         </Box>
-//     );
-// }
+const shifts = [
+    "00:00 - 09:00",
+    "00:30 - 09:30",
+    "01:00 - 10:00",
+    "01:30 - 10:30",
+    "02:00 - 11:00",
+    "02:30 - 11:30",
+    "03:00 - 12:00",
+    "03:30 - 12:30",
+    "04:00 - 13:00",
+    "04:30 - 13:30",
+    "05:00 - 14:00",
+    "05:30 - 14:30",
+    "06:00 - 15:00",
+    "06:30 - 15:30",
+    "07:00 - 16:00",
+    "07:30 - 16:30",
+    "08:00 - 17:00",
+    "08:30 - 17:30",
+    "09:00 - 18:00",
+    "09:30 - 18:30",
+    "10:00 - 19:00",
+    "10:30 - 19:30",
+    "11:00 - 20:00",
+    "11:30 - 20:30",
+    "12:00 - 21:00",
+    "12:30 - 21:30",
+    "13:00 - 22:00",
+    "13:30 - 22:30",
+    "14:00 - 23:00",
+    "14:30 - 23:30",
+    "15:00 - 00:00",
+    "15:30 - 00:30",
+    "16:00 - 01:00",
+    "16:30 - 01:30",
+    "17:00 - 02:00",
+    "17:30 - 02:30",
+    "18:00 - 03:00",
+    "18:30 - 03:30",
+    "19:00 - 04:00",
+    "19:30 - 04:30",
+    "20:00 - 05:00",
+    "20:30 - 05:30",
+    "21:00 - 06:00",
+    "21:30 - 06:30",
+    "22:00 - 07:00",
+    "22:30 - 07:30",
+    "23:00 - 08:00",
+    "23:30 - 08:30"
+];
 
 
+const schemaValidationForForm = Yup.object().shape({
+    employeeNumber: Yup.string()
+        .required('Employee Number is required')
+        .matches(/^\d+$/, 'Employee Number must contain only digits')
+        .min(4, 'At least four digit is required')
+        .max(6, 'No more than 6 digits allowed')
+    ,
+    employeeName: Yup.string()
+        .required('Employee Name is required')
+        .matches(/^[a-zA-Z\s]+$/, 'Employee Name must contain only characters..')
+        .min(5, 'At least fives digit is required')
+    ,
+    dateOfBirth: Yup.date().required('Date of Birth is required'),
+    dateOfJoining: Yup.date().required('Date of Joining is required'),
+    gender: Yup.string().required('Gender is required'),
+    email: Yup.string()
+        .required('Email is required')
+        .email('Enter a valid email')
+        .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email format'),
 
+    phone: Yup.string()
+    // .matches(/^[2-9]\d{2}-\d{3}-\d{4}$/, 'Enter a valid Phone number')
+    ,
+    mobileNumber: Yup.string()
+        .required('Mobile Number is required')
+        .matches(/([0-9]{11}$)|(^[7-9][0-9]{9}$)/, 'Enter a valid mobile number')
+        .max(10, 'Mobile number cannot be more than 10 digits.')
+    ,
+    emergencyContactName: Yup.string()
+        .required('Emergency Contact Name is required')
+        .matches(/^[a-zA-Z\s]+$/, 'Emergency Contact Name must contain only characters..')
+        .min(5, 'At least fives digit is required')
+    ,
+    emergencyContactNumber: Yup.string()
+        .required('Emergency Contact Number is required')
+        .matches(/([0-9]{11}$)|(^[7-9][0-9]{9}$)/, 'Enter a valid Emergency Contact mobile number')
+        .max(10, 'Emergency Contact number cannot be more than 10 digits.')
+
+    ,
+    emergencyContactRelation: Yup.string().required('Emergency Contact Relation is required'),
+    fathersName: Yup.string()
+        .required('Father Namet Name is required')
+        .matches(/^[a-zA-Z\s]+$/, 'Father Name must contain only characters..')
+        .min(5, 'At least fives digit is required')
+    ,
+    fathersOccupation: Yup.string(),
+    spouseName: Yup.string(),
+    bloodGroup: Yup.string(),
+    countryOfOrigin: Yup.string(),
+    nationality: Yup.string(),
+    physicallyChallenged: Yup.string(),
+});
+
+
+const schemaValidationForForm2 = Yup.object().shape({
+    reportingmanager: Yup.string().required('Reporting Manager is required'),
+    reportingteamlead: Yup.string().required('Reporting Team Lead is required'),
+    designation: Yup.string().required('Designation is required'),
+    department: Yup.string().required('Department is required'),
+    team: Yup.string().required('Team is required'),
+    referrdby: Yup.string().required('ReferredBy is required'),
+    employmentstatus: Yup.string().required('Employment Status is required'),
+    employeestatus: Yup.string().required('Employee status is required'),
+    shift: Yup.string().required('Shift is required'),
+    grade: Yup.string().required('Grade is required'),
+    probabationperiod: Yup.string()
+        .required('Probation period is required')
+        .matches(/^\d+$/, 'Employee Number must contain only digits')
+        .max(4, 'Probation period cannot be four digits , please check...')
+    ,
+    salaryofferred: Yup.string()
+        .required('Salary Offered is required')
+        .matches(/^\d+$/, 'Employee Number must contain only digits')
+    ,
+    attendancebonus: Yup.string().required('Attendace Bonus is required'),
+    totalmonthlyctc: Yup.string().required('TotalMonthly CTC is required'),
+    totalyearlyctc: Yup.string().required(' TotalYearly CTC is required'),
+    billablestatus: Yup.string().required('Billable Status is required'),
+})
+
+
+//need to check here  ///What means in terms of the Confirmation Date.....
+//employeeconfirmationstatus , this also I have to check again . all are come around one thing only....
+
+const getValidationSchema = (page) => {
+    if (page === 0) {
+        return schemaValidationForForm;
+    } else if (page === 1) {
+        return schemaValidationForForm2;
+    }
+    return Yup.object().shape({});
+};
 
 export default function EmployeeForm() {
     const [activeStep, setActiveStep] = React.useState(0);
-    const [skipped, setSkipped] = React.useState(new Set());
 
-    const isStepOptional = (step) => {
-        return step === 1;
-    };
+    const { control, handleSubmit, getValues, setValue, trigger, formState: { errors, isValid } } = useForm({
+        mode: 'onChange',
+        // resolver: yupResolver(schemaValidationForForm),
+        resolver: yupResolver(getValidationSchema(activeStep)),
+    });
 
-    const isStepSkipped = (step) => {
-        return skipped.has(step);
-    };
 
-    const handleNext = () => {
-        let newSkipped = skipped;
-        if (isStepSkipped(activeStep)) {
-            newSkipped = new Set(newSkipped.values());
-            newSkipped.delete(activeStep);
+
+
+    // const [formData, setFormData] = React.useState({
+    //     email: '',
+    //     employeeNumber: '',
+    //     employeeName: '',
+    //     dateOfBirth: '',
+    //     dateOfJoining: '',
+    //     gender: '',
+    //     phone: '',
+    //     mobileNumber: '',
+    //     emergencyContactName: '',
+    //     emergencyContactNumber: '',
+    //     emergencyContactRelation: '',
+    //     fathersName: '',
+    //     fathersOccupation: '',
+    //     spouseName: '',
+    //     bloodGroup: '',
+    //     countryOfOrigin: '',
+    //     nationality: '',
+    //     physicallyChallenged: '',
+    //     //new code....
+    //     reportingmanager: '',
+    //     reportingteamlead: '',
+    //     designation: '',
+    //     department: '',
+    //     team: '',
+    //     referrdby: '',
+    //     employmentstatus: '',
+    //     employeestatus: '',
+    //     shift: '',
+    //     grade: '',
+    //     probabationperiod: '',
+    //     salaryofferred: '',
+    //     totalmonthlyctc: '',
+    //     totalyearlyctc: '',
+    //     attendancebonus: '',
+    //     billablestatus: '',
+    // });
+    const [formData, setFormData] = React.useState({
+        email: 'test@gmail.com',
+        employeeNumber: '20002',
+        employeeName: 'sssssss',
+        dateOfBirth: '2024-09-26',
+        dateOfJoining: '2024-09-26',
+        gender: 'Male',
+        phone: '',
+        mobileNumber: '8778164504',
+        emergencyContactName: 'sssssss',
+        emergencyContactNumber: '8778164504',
+        emergencyContactRelation: 'sssssssss',
+        fathersName: 'iiiiiiiiiiiii',
+        fathersOccupation: '',
+        spouseName: '',
+        bloodGroup: '',
+        countryOfOrigin: '',
+        nationality: '',
+        physicallyChallenged: '',
+        //new code....
+        reportingmanager: 'Shamala Nagaveni',
+        reportingteamlead: 'Kannan R',
+        designation: 'CEO',
+        department: 'Executive',
+        team: 'Supervisor/Manager',
+        referrdby: 'Male',
+        employmentstatus: 'Male',
+        employeestatus: 'Male',
+        shift: '07:00 - 16:00',
+        grade: 'L1',
+        probabationperiod: '180',
+        salaryofferred: '12000',
+        totalmonthlyctc: '12000',
+        totalyearlyctc: '12000',
+        attendancebonus: 'Yes',
+        billablestatus: 'Billable',
+    });
+
+    const salaryOfferred = useWatch({ control, name: 'salaryofferred' });
+    console.log(salaryOfferred)
+
+
+    React.useEffect(() => {
+        console.log('useEffectHItted')
+        const salary = parseFloat(salaryOfferred) || '';
+        const totalMonthlyCTC = salary;
+        const totalYearlyCTC = salary * 12;
+
+        setValue('totalmonthlyctc', totalMonthlyCTC, { shouldValidate: true });
+        setValue('totalyearlyctc', totalYearlyCTC, { shouldValidate: true });
+
+        setFormData(preState => ({
+            ...preState,
+            totalmonthlyctc: totalMonthlyCTC,
+            totalyearlyctc: totalYearlyCTC,
+        }))
+
+    }, [salaryOfferred]);
+
+    console.log(formData)
+
+
+    const handleNext = async () => {
+        const isStepValid = await trigger();
+        if (isStepValid) {
+            setFormData((prevData) => ({ ...prevData, ...getValues() }));
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
         }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped(newSkipped);
     };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleSkip = () => {
-        if (!isStepOptional(activeStep)) {
-            throw new Error("You can't skip a step that isn't optional.");
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped((prevSkipped) => {
-            const newSkipped = new Set(prevSkipped.values());
-            newSkipped.add(activeStep);
-            return newSkipped;
-        });
-    };
-
     const handleReset = () => {
         setActiveStep(0);
     };
 
-    return (
+    const onSubmit = (data) => {
+        setFormData((prevData) => ({ ...prevData, ...data }));
+        console.log('Form submitted:', formData);
+    };
 
-        <Box sx={{ width: '100%' }} >
-            <Stack sx={{ width: '100%' }} spacing={4} >
+
+
+    return (
+        <Box sx={{ width: '100%' }}>
+            <Stack sx={{ width: '100%' }} spacing={4}>
                 <Stepper activeStep={activeStep} alternativeLabel connector={<ColorlibConnector />}>
-                    {steps.map((label, index) => {
-                        const stepProps = {};
-                        const labelProps = {};
-                        // if (isStepOptional(index)) {
-                        //     labelProps.optional = (
-                        //         <Typography variant="caption">Optional</Typography>
-                        //     );
-                        // }
-                        if (isStepSkipped(index)) {
-                            stepProps.completed = false;
-                        }
-                        return (
-                            <Step key={label} {...stepProps}>
-                                <StepLabel StepIconComponent={ColorlibStepIcon} {...labelProps}>{label}</StepLabel>
-                            </Step>
-                        );
-                    })}
+                    {steps.map((label, index) => (
+                        <Step key={label}>
+                            <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+                        </Step>
+                    ))}
                 </Stepper>
             </Stack>
+            <Box component="form" sx={{ mt: 4 }} onSubmit={handleSubmit(onSubmit)}>
+                <Grid container spacing={2}>
+                    {activeStep === 0 && (
+                        <>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="employeeNumber"
+                                    control={control}
+                                    defaultValue={formData.employeeNumber}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Employee Number*"
+                                            label={<span>Employee Number <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.employeeNumber}
+                                            helperText={errors.employeeNumber ? errors.employeeNumber.message : ''}
+                                        // disabled
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="employeeName"
+                                    control={control}
+                                    defaultValue={formData.employeeName}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Employee Name*"
+                                            label={<span>Employee Name <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.employeeName}
+                                            helperText={errors.employeeName ? errors.employeeName.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="dateOfBirth"
+                                    control={control}
+                                    defaultValue={formData.dateOfBirth}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Date of Birth*"
+                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
+                                            type="date"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            InputLabelProps={{ shrink: true }}
+                                            error={!!errors.dateOfBirth}
+                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="dateOfJoining"
+                                    control={control}
+                                    defaultValue={formData.dateOfJoining}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Date of Joining*"
+                                            label={<span>Date of Joining <span style={{ color: 'red' }}>*</span></span>}
+                                            type="date"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            InputLabelProps={{ shrink: true }}
+                                            error={!!errors.dateOfJoining}
+                                            helperText={errors.dateOfJoining ? errors.dateOfJoining.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="gender"
+                                    control={control}
+                                    defaultValue={formData.gender}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Gender*"
+                                            label={<span>Gender<span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.gender}
+                                            helperText={errors.gender ? errors.gender.message : ''}
+                                        >
+                                            <MenuItem value="Male">Male</MenuItem>
+                                            <MenuItem value="Female">Female</MenuItem>
+                                            <MenuItem value="Others">Others</MenuItem>
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="email"
+                                    control={control}
+                                    defaultValue={formData.email}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Email Address*"
+                                            label={<span>Email Address <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.email}
+                                            helperText={errors.email ? errors.email.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="phone"
+                                    control={control}
+                                    defaultValue={formData.phone}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Phone Number"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.phone}
+                                            helperText={errors.phone ? errors.phone.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="mobileNumber"
+                                    control={control}
+                                    defaultValue={formData.mobileNumber}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Mobile Number*"
+                                            label={<span>Mobile Number <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.mobileNumber}
+                                            helperText={errors.mobileNumber ? errors.mobileNumber.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="emergencyContactName"
+                                    control={control}
+                                    defaultValue={formData.emergencyContactName}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Emergency Contact Name*"
+                                            label={<span>Emergency Contact Name <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.emergencyContactName}
+                                            helperText={errors.emergencyContactName ? errors.emergencyContactName.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="emergencyContactNumber"
+                                    control={control}
+                                    defaultValue={formData.emergencyContactNumber}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Emergency Contact Number*"
+                                            label={<span>Emergency Contact Number  <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.emergencyContactNumber}
+                                            helperText={errors.emergencyContactNumber ? errors.emergencyContactNumber.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="emergencyContactRelation"
+                                    control={control}
+                                    defaultValue={formData.emergencyContactRelation}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Emergency Contact Relation (Should be blood relative)*"
+                                            label={<span>Emergency Contact Relation (Should be blood relative) <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.emergencyContactRelation}
+                                            helperText={errors.emergencyContactRelation ? errors.emergencyContactRelation.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="fathersName"
+                                    control={control}
+                                    defaultValue={formData.fathersName}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Father's Name"
+                                            label={<span>Father's Name <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.fathersName}
+                                            helperText={errors.fathersName ? errors.fathersName.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="fathersOccupation"
+                                    control={control}
+                                    defaultValue={formData.fathersOccupation}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Father's Occupation"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.fathersOccupation}
+                                            helperText={errors.fathersOccupation ? errors.fathersOccupation.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="spouseName"
+                                    control={control}
+                                    defaultValue={formData.spouseName}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Spouse Name"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.spouseName}
+                                            helperText={errors.spouseName ? errors.spouseName.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="bloodGroup"
+                                    control={control}
+                                    defaultValue={formData.bloodGroup}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Blood Group"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.bloodGroup}
+                                            helperText={errors.bloodGroup ? errors.bloodGroup.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="countryOfOrigin"
+                                    control={control}
+                                    defaultValue={formData.countryOfOrigin}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Country of Origin"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.countryOfOrigin}
+                                            helperText={errors.countryOfOrigin ? errors.countryOfOrigin.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="nationality"
+                                    control={control}
+                                    defaultValue={formData.nationality}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Nationality"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.nationality}
+                                            helperText={errors.nationality ? errors.nationality.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="physicallyChallenged"
+                                    control={control}
+                                    defaultValue={formData.physicallyChallenged}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Physically Challenged (Yes/No)"
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.physicallyChallenged}
+                                            helperText={errors.physicallyChallenged ? errors.physicallyChallenged.message : ''}
+                                        >
+                                            <MenuItem value="Yes">Yes</MenuItem>
+                                            <MenuItem value="No">No</MenuItem>
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+                        </>
+                    )}
+
+                    {activeStep === 1 && (
+                        <>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="reportingmanager"
+                                    control={control}
+                                    defaultValue={formData.reportingmanager}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span>Reporting Manager<span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.reportingmanager}
+                                            helperText={errors.reportingmanager ? errors.reportingmanager.message : ''}
+                                        >
+                                            <MenuItem value="Kannan R">Kannan R</MenuItem>
+                                            <MenuItem value="Shamala Nagaveni">Shamala Nagaveni</MenuItem>
+                                            <MenuItem value="Sathis kumar">Sathis kumar</MenuItem>
+                                            <MenuItem value="Santhosh">Santhosh</MenuItem>
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="reportingteamlead"
+                                    control={control}
+                                    defaultValue={formData.reportingteamlead}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span>Reporting Team Lead<span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.reportingteamlead}
+                                            helperText={errors.reportingteamlead ? errors.reportingteamlead.message : ''}
+                                        >
+                                            <MenuItem value="Kannan R">Kannan R</MenuItem>
+                                            <MenuItem value="Shamala Nagaveni">Shamala Nagaveni</MenuItem>
+                                            <MenuItem value="Sathis kumar">Sathis kumar</MenuItem>
+                                            <MenuItem value="Santhosh">Santhosh</MenuItem>
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="designation"
+                                    control={control}
+                                    defaultValue={formData.designation}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span> Designation <span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.designation}
+                                            helperText={errors.designation ? errors.designation.message : ''}
+                                        >
+                                            {Designations.map((value, index) => (
+                                                <MenuItem key={index} value={value}>
+                                                    {value}
+                                                </MenuItem>
+                                            ))}
+                                            {/* <MenuItem value="Female">Shamala Nagaveni</MenuItem>
+                                            <MenuItem value="Others">Sathis kumar</MenuItem>
+                                            <MenuItem value="Others">Santhosh</MenuItem> */}
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="department"
+                                    control={control}
+                                    defaultValue={formData.department}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span> Department <span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.department}
+                                            helperText={errors.department ? errors.department.message : ''}
+                                        >
+                                            {Department.map((value, index) => (
+                                                <MenuItem key={index} value={value}>{value}</MenuItem>
+                                            ))}
+                                            {/* <MenuItem value="Male">Kannan R</MenuItem>
+                                            <MenuItem value="Female">Shamala Nagaveni</MenuItem>
+                                            <MenuItem value="Others">Sathis kumar</MenuItem>
+                                            <MenuItem value="Others">Santhosh</MenuItem> */}
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="team"
+                                    control={control}
+                                    defaultValue={formData.team}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span> Team <span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.team}
+                                            helperText={errors.team ? errors.team.message : ''}
+                                        >
+                                            {Teams.map((value, index) => (
+                                                <MenuItem key={index} value={value}>{value}</MenuItem>
+                                            ))}
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="referrdby"
+                                    control={control}
+                                    defaultValue={formData.referrdby}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span> Referred By <span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.referrdby}
+                                            helperText={errors.referrdby ? errors.referrdby.message : ''}
+                                        >
+                                            <MenuItem value="Male">Kannan R</MenuItem>
+                                            <MenuItem value="Female">Shamala Nagaveni</MenuItem>
+                                            <MenuItem value="Others">Sathis kumar</MenuItem>
+                                            <MenuItem value="Others">Santhosh</MenuItem>
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="employmentstatus"
+                                    control={control}
+                                    defaultValue={formData.employmentstatus}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span> Employment Status <span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.employmentstatus}
+                                            helperText={errors.employmentstatus ? errors.employmentstatus.message : ''}
+                                        >
+                                            <MenuItem value="Male">Probation</MenuItem>
+                                            <MenuItem value="Female">Confirmed</MenuItem>
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="employeestatus"
+                                    control={control}
+                                    defaultValue={formData.employeestatus}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span> Employee Status <span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.employeestatus}
+                                            helperText={errors.employeestatus ? errors.employeestatus.message : ''}
+                                        >
+                                            <MenuItem value="Male">Active</MenuItem>
+                                            <MenuItem value="Female">In Active</MenuItem>
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="shift"
+                                    control={control}
+                                    defaultValue={formData.shift}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span> Shift <span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.shift}
+                                            helperText={errors.shift ? errors.shift.message : ''}
+                                        >
+                                            {shifts.map((value, index) => (
+                                                <MenuItem key={index} value={value}>
+                                                    {value}
+                                                </MenuItem>
+                                            ))}
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="grade"
+                                    control={control}
+                                    defaultValue={formData.grade}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span> Grade <span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.grade}
+                                            helperText={errors.grade ? errors.grade.message : ''}
+                                        >
+                                            <MenuItem value="L1">L1</MenuItem>
+                                            <MenuItem value="L2">L2</MenuItem>
+                                            <MenuItem value="L3">L3</MenuItem>
+                                            <MenuItem value="L4">L4</MenuItem>
+                                            <MenuItem value="L5">L5</MenuItem>
+                                            <MenuItem value="L4">L4</MenuItem>
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="probabationperiod"
+                                    control={control}
+                                    defaultValue={formData.probabationperiod}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Employee Number*"
+                                            label={<span>Probabation Period <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.probabationperiod}
+                                            helperText={errors.probabationperiod ? errors.probabationperiod.message : ''}
+                                        // disabled
+                                        />
+                                    )}
+                                />
+                            </Grid>
 
 
-            {/* <TextField
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="salaryofferred"
+                                    control={control}
+                                    defaultValue={formData.salaryofferred}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Employee Number*"
+                                            label={<span>Salary Offerred <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.salaryofferred}
+                                            helperText={errors.salaryofferred ? errors.salaryofferred.message : ''}
+                                        // disabled
+                                        />
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="attendancebonus"
+                                    control={control}
+                                    defaultValue={formData.attendancebonus}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span> Attendance Bonus <span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.attendancebonus}
+                                            helperText={errors.attendancebonus ? errors.attendancebonus.message : ''}
+                                        >
+                                            <MenuItem value="Yes">Yes</MenuItem>
+                                            <MenuItem value="No">No</MenuItem>
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="totalmonthlyctc"
+                                    control={control}
+                                    defaultValue={formData.totalmonthlyctc}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Employee Number*"
+                                            label={<span>Total Monthly ctc <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.totalmonthlyctc}
+                                            helperText={errors.totalmonthlyctc ? errors.totalmonthlyctc.message : ''}
+                                            disabled
+                                        />
+                                    )}
+                                />
+                            </Grid>
+
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="totalyearlyctc"
+                                    control={control}
+                                    defaultValue={formData.totalyearlyctc}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Employee Number*"
+                                            label={<span>Total Yearly ctc <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.totalyearlyctc}
+                                            helperText={errors.totalyearlyctc ? errors.totalyearlyctc.message : ''}
+                                            disabled
+                                        />
+                                    )}
+                                />
+                            </Grid>
+
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="billablestatus"
+                                    control={control}
+                                    defaultValue={formData.billablestatus}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span> Billable Status <span style={{ color: 'red' }}>*</span></span>}
+                                            select
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.billablestatus}
+                                            helperText={errors.billablestatus ? errors.billablestatus.message : ''}
+                                        >
+                                            <MenuItem value="Billable">Billable</MenuItem>
+                                            <MenuItem value="Non-Billable">Non-Billable</MenuItem>
+                                            <MenuItem value="Partially">Partially Billed</MenuItem>
+                                        </TextField>
+                                    )}
+                                />
+                            </Grid>
+
+
+
+                        </>
+                    )}
+
+                    {activeStep === 2 && (
+                        <>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="previousOrganizationName1"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span>Previous Organization Name 1 <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.previousOrganizationName1}
+                                            helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="designation"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span>Designation <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.designation}
+                                            helperText={errors.designation ? errors.designation.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="dateOfBirth"
+                                    control={control}
+                                    // defaultValue={formData.dateOfBirth}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Date of Birth*"
+                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
+                                            type="date"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            InputLabelProps={{ shrink: true }}
+                                            error={!!errors.dateOfBirth}
+                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="dateOfBirth"
+                                    control={control}
+                                    // defaultValue={formData.dateOfBirth}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Date of Birth*"
+                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
+                                            type="date"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            InputLabelProps={{ shrink: true }}
+                                            error={!!errors.dateOfBirth}
+                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="totalExperience"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span>Total Experience (Years) <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.totalExperience}
+                                            helperText={errors.totalExperience ? errors.totalExperience.message : ''}
+                                            disabled // Total Experience is read-only
+                                        />
+                                    )}
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="previousOrganizationName1"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span>Previous Organization Name 1 <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.previousOrganizationName1}
+                                            helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="designation"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span>Designation <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.designation}
+                                            helperText={errors.designation ? errors.designation.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="dateOfBirth"
+                                    control={control}
+                                    // defaultValue={formData.dateOfBirth}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Date of Birth*"
+                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
+                                            type="date"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            InputLabelProps={{ shrink: true }}
+                                            error={!!errors.dateOfBirth}
+                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="dateOfBirth"
+                                    control={control}
+                                    // defaultValue={formData.dateOfBirth}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Date of Birth*"
+                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
+                                            type="date"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            InputLabelProps={{ shrink: true }}
+                                            error={!!errors.dateOfBirth}
+                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="totalExperience"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span>Total Experience (Years) <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.totalExperience}
+                                            helperText={errors.totalExperience ? errors.totalExperience.message : ''}
+                                            disabled // Total Experience is read-only
+                                        />
+                                    )}
+                                />
+                            </Grid>
+
+
+
+                            <Grid item xs={4}>
+
+                            </Grid>
+
+
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="previousOrganizationName1"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span>Previous Organization Name 1 <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.previousOrganizationName1}
+                                            helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="designation"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span>Designation <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.designation}
+                                            helperText={errors.designation ? errors.designation.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="dateOfBirth"
+                                    control={control}
+                                    // defaultValue={formData.dateOfBirth}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Date of Birth*"
+                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
+                                            type="date"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            InputLabelProps={{ shrink: true }}
+                                            error={!!errors.dateOfBirth}
+                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="dateOfBirth"
+                                    control={control}
+                                    // defaultValue={formData.dateOfBirth}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            // label="Date of Birth*"
+                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
+                                            type="date"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            InputLabelProps={{ shrink: true }}
+                                            error={!!errors.dateOfBirth}
+                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                        />
+                                    )}
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Controller
+                                    name="totalExperience"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label={<span>Total Experience (Years) <span style={{ color: 'red' }}>*</span></span>}
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            error={!!errors.totalExperience}
+                                            helperText={errors.totalExperience ? errors.totalExperience.message : ''}
+                                            disabled // Total Experience is read-only
+                                        />
+                                    )}
+                                />
+                            </Grid>
+
+
+                        </>
+                    )}
+
+                    {activeStep === 3 && (
+                        <>
+
+                        </>
+                    )}
+                </Grid>
+
+                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                    <Button
+                        color="inherit"
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                        sx={{ mr: 1 }}
+                        variant='outlined'
+                    >
+                        Back
+                    </Button>
+                    <Box sx={{ flex: '1 1 auto' }} />
+                    {activeStep === steps.length - 1 ? (
+                        <Button variant="contained" color="primary" type="submit">
+                            Submit
+                        </Button>
+                    ) : (
+                        <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
+                            Next
+                        </Button>
+                    )}
+                </Box>
+            </Box>
+        </Box>
+    );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/* <Grid item xs={6}> */ }
+{/* <FormControl component="fieldset" error={hasError}> */ }
+{/* <FormControl component="fieldset" >
+                                <FormLabel component="legend">Gender</FormLabel>
+                                <RadioGroup
+                                    aria-label="gender"
+                                    name="gender" */}
+{/* // value={gender}
+                                // onChange={handleChange}
+                                > */}
+{/* <FormControlLabel value="male" control={<Radio />} label="Male" />
+                                    <FormControlLabel value="female" control={<Radio />} label="Female" />
+                                    <FormControlLabel value="other" control={<Radio />} label="Other" />
+                                </RadioGroup> */}
+{/* {hasError && <FormHelperText>Please select your gender</FormHelperText>} */ }
+{/* </FormControl> */ }
+{/* </Grid> */ }
+
+
+{/* <TextField
                                 required
                                 id='employee_number'
                                 // size='medium'
@@ -358,1049 +1631,15 @@ export default function EmployeeForm() {
 
 
 
-            {/*         Employee Number (Auto Generated in series and should be unique)
-                        Employee Name*
-                        Date of Birth*
-                        Date of Joining*
-                        Gender (Male, Female and Others)*
-                        Reporting Manager
-                        Reporting Team Lead
-                        Designation*
-                        Department*
-                        Team*
-                        Salary Offered (Monthly Net)  */}
 
 
-            {/* 
 
-Address Proof – (Aadhaar, Driving License, Bank Statement, Phone Bill, Gas Bill, etc..)
-Address Proof copy upload
-ESI Number
-UAN Number
-PF Number
-PF Join Date
-Previous Organization Name 1
-Designation
-Start Date
-End Date
-Total Experience (Auto generated using start and End date
-Previous Organization Name 2
-Designation
-Start Date
-End Date
-Total Experience (Auto generated using start and End date
-Previous Organization Name 3
-Designation
-Start Date
-End Date
-Total Experience (Auto generated using start and End date
-Total Experience in months relevant to current position
-Total Overall Experience in months (including relevant and irrelevant to current position)
-Background Check Status (Yes/No) */}
 
 
 
 
-            {activeStep === 0 &&
-                <Box sx={{ mt: 4, width: '100%', bgcolor: '', }} >
-                    <Grid container spacing={2} xs={12}>
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='employee_number'
-                                fullWidth
-                                label="Employee Number"
-                                variant='outlined'
-                                placeholder='Enter Employee Number'
-                                type='number'
-                                inputMode='numeric'
-                                // size='medium'
-                                // value={}
-                                // error={}
-                                // onChange={}
-                                // onFocus={} //This is to handle the error...
-                                // onBlur={} //This for calling api to check if the employee Number is already exists...
-                                // helperText={}
-                                inputProps={{
-                                    maxLength: 10,
-                                }}
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, '');  // Replace any non-digit characters
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='employee_name'
-                                fullWidth
-                                label="Employee Name"
-                                variant='outlined'
-                                placeholder='Enter Employee Name'
-                                type='text'
-                                inputMode='text'
-                                // size='medium'
-                                // value={}
-                                // error={}
-                                // onChange={}
-                                // onFocus={} //This is to handle the error...
-                                // onBlur={} //This for calling api to check if the employee Number is already exists...
-                                // helperText={}
-                                inputProps={{
-                                    maxLength: 10,
-                                }}
-                            // onInput={(e) => {
-                            //     e.target.value = e.target.value.replace(/[^0-9]/g, '');  // Replace any non-digit characters
-                            // }}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='employee_dob'
-                                fullWidth
-                                label="Date of Birth"
-                                variant='outlined'
-                                placeholder='Enter Date of Birth'
-                                type='date'
-                                // inputMode=''
-                                // size='medium'
-                                // value={}
-                                // error={}
-                                // onChange={}
-                                // onFocus={} //This is to handle the error...
-                                // onBlur={} //This for calling api to check if the employee Number is already exists...
-                                // helperText={}
-                                inputProps={{
-                                    maxLength: 10,
-                                }}
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, '');  // Replace any non-digit characters
-                                }}
-                            />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='employee_doj'
-                                fullWidth
-                                label="Date of Join"
-                                variant='outlined'
-                                placeholder='Enter Date of Join'
-                                type='date'
-                            // inputMode=''
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <FormControl fullWidth size='medium' required>
-                                <InputLabel id="gender">Gender</InputLabel>
-                                <Select
-                                    id="gender"
-                                    fullWidth
-                                    label="Gender"
-                                // value={gender}
-                                // error={gender === "" ? true : false}
-                                // onChange={e => setGender(e.target.value)}
-                                >
-                                    <MenuItem value={"Male"}>Male</MenuItem>
-                                    <MenuItem value={"Female"}>Female</MenuItem>
-                                    <MenuItem value={"Others"}>Others</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <FormControl fullWidth required>  {/* This ensures full width within the grid item */}
-                                <InputLabel>Reporting Manager</InputLabel>
-                                <Select
-                                    id="Reporting_Manager"
-                                    label="Reporting Manager"
-                                // value={gender}
-                                // error={gender === "" ? true : false}
-                                // onChange={e => setGender(e.target.value)}
-                                >
-                                    <MenuItem value={"Male"}>One</MenuItem>
-                                    <MenuItem value={"Female"}>Two</MenuItem>
-                                    <MenuItem value={"Others"}>Three</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormControl fullWidth required>  {/* This ensures full width within the grid item */}
-                                <InputLabel>Reporting Team Lead</InputLabel>
-                                <Select
-                                    id="Reporting Team Lead"
-                                    label="Reporting Team Lead"
-                                // value={gender}
-                                // error={gender === "" ? true : false}
-                                // onChange={e => setGender(e.target.value)}
-                                >
-                                    <MenuItem value={"Male"}>One</MenuItem>
-                                    <MenuItem value={"Female"}>Two</MenuItem>
-                                    <MenuItem value={"Others"}>Three</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormControl fullWidth required>  {/* This ensures full width within the grid item */}
-                                <InputLabel>Designation</InputLabel>
-                                <Select
-                                    id="Designation"
-                                    label="Designation"
-                                // value={gender}
-                                // error={gender === "" ? true : false}
-                                // onChange={e => setGender(e.target.value)}
-                                >
-                                    <MenuItem value={"Male"}>One</MenuItem>
-                                    <MenuItem value={"Female"}>Two</MenuItem>
-                                    <MenuItem value={"Others"}>Three</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormControl fullWidth required>  {/* This ensures full width within the grid item */}
-                                <InputLabel>Department</InputLabel>
-                                <Select
-                                    id="Department"
-                                    label="Department"
-                                // value={gender}
-                                // error={gender === "" ? true : false}
-                                // onChange={e => setGender(e.target.value)}
-                                >
-                                    <MenuItem value={"Male"}>One</MenuItem>
-                                    <MenuItem value={"Female"}>Two</MenuItem>
-                                    <MenuItem value={"Others"}>Three</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormControl fullWidth required>  {/* This ensures full width within the grid item */}
-                                <InputLabel>Team</InputLabel>
-                                <Select
-                                    id="Team"
-                                    label="Team"
-                                // value={gender}
-                                // error={gender === "" ? true : false}
-                                // onChange={e => setGender(e.target.value)}
-                                >
-                                    <MenuItem value={"Male"}>One</MenuItem>
-                                    <MenuItem value={"Female"}>Two</MenuItem>
-                                    <MenuItem value={"Others"}>Three</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='Salary_Offered'
-                                fullWidth
-                                label="Salary Offered"
-                                variant='outlined'
-                                placeholder='Enter Salary Offered (Monthly Net)'
-                                type='number'
-                                inputMode='numeric'
-                                // size='medium'
-                                // value={}
-                                // error={}
-                                // onChange={}
-                                // onFocus={} //This is to handle the error...
-                                // onBlur={} //This for calling api to check if the employee Number is already exists...
-                                // helperText={}
-                                inputProps={{
-                                    maxLength: 10,
-                                }}
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, '');  // Replace any non-digit characters
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='Attendance_Bonus'
-                                fullWidth
-                                label="Attendance Bonus"
-                                variant='outlined'
-                                // placeholder='Enter Salary Offered (Monthly Net)'
-                                // type='number'
-                                // inputMode='numeric'
-                                // size='medium'
-                                // value={}
-                                error={true}
-                                // onChange={}
-                                // onFocus={} //This is to handle the error...
-                                // onBlur={} //This for calling api to check if the employee Number is already exists...
-                                helperText={"Need to work on this again .."}
-                                inputProps={{
-                                    maxLength: 10,
-                                }}
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, '');  // Replace any non-digit characters
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='Total_Monthly_CTC'
-                                fullWidth
-                                label="Total Monthly CTC"
-                                variant='outlined'
-                                // placeholder='Enter Salary Offered (Monthly Net)'
-                                // type='number'
-                                // inputMode='numeric'
-                                // size='medium'
-                                // value={}
-                                error={true}
-                                // onChange={}
-                                // onFocus={} //This is to handle the error...
-                                // onBlur={} //This for calling api to check if the employee Number is already exists...
-                                helperText={"Need to work on this again .."}
-                                inputProps={{
-                                    maxLength: 10,
-                                }}
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, '');  // Replace any non-digit characters
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='Total_Yearly_CTC'
-                                fullWidth
-                                label="Total Yearly CTC"
-                                variant='outlined'
-                                // placeholder='Enter Salary Offered (Yearly Net)'
-                                // type='number'
-                                // inputMode='numeric'
-                                // size='medium'
-                                // value={}
-                                error={true}
-                                // onChange={}
-                                // onFocus={} //This is to handle the error...
-                                // onBlur={} //This for calling api to check if the employee Number is already exists...
-                                helperText={"Need to work on this again .."}
-                                inputProps={{
-                                    maxLength: 10,
-                                }}
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, '');  // Replace any non-digit characters
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormControl fullWidth required>  {/* This ensures full width within the grid item */}
-                                <InputLabel>Billable Status</InputLabel>
-                                <Select
-                                    id="Billable_Status"
-                                    label="Billable Status"
-                                // value={gender}
-                                // error={gender === "" ? true : false}
-                                // onChange={e => setGender(e.target.value)}
-                                >
-                                    <MenuItem value={"Billable"}>Billable</MenuItem>
-                                    <MenuItem value={"Non-Billable"}>Non-Billable</MenuItem>
-                                    <MenuItem value={"Partially Billed"}>Partially Billed</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='Employee_Confirmation_Status '
-                                fullWidth
-                                // label="Employee Confirmation Status "
-                                variant='outlined'
-                                // placeholder='Enter Salary Offered (Yearly Net)'
-                                type='date'
-                                // size='medium'
-                                // value={}
-                                error={true}
-                                // onChange={}
-                                // onFocus={} //This is to handle the error...
-                                // onBlur={} //This for calling api to check if the employee Number is already exists...
-                                helperText={"Need to work on this again .."}
-                                inputProps={{
-                                    maxLength: 10,
-                                }}
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, '');  // Replace any non-digit characters
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField fullWidth
-                                id="email"
-                                label="Email"
-                                variant="outlined"
-                                required
-                                // error={error}
-                                type='email'
-                                inputMode='email'
-                            // value={email}
-                            // helperText={helperText}
-                            // onChange={handleEmailChange}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                id="Phone_number"
-                                label="Enter Phone Number"
-                                variant="outlined"
-                                type='number'
-                                inputMode='numeric'
-                            // value={mobile2}
-                            // onChange={e => setMobile2(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                fullWidth
-                                id="Mobile_number"
-                                label="Enter Mobile Number"
-                                variant="outlined"
-                                type='number'
-                                inputMode='numeric'
-                            // value={mobile2}
-                            // onChange={e => setMobile2(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='Emergency_Contact_Name'
-                                fullWidth
-                                label="Emergency Contact Name"
-                                variant='outlined'
-                                placeholder='Enter Emergency Contact Name'
-                                type='text'
-                                inputMode='text'
-                            // value={mobile2}
-                            // onChange={e => setMobile2(e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                fullWidth
-                                id="Emergency_Contact_Number "
-                                label="Enter Emergency Contact Number"
-                                variant="outlined"
-                                type='number'
-                                inputMode='numeric'
-                            // value={mobile2}
-                            // onChange={e => setMobile2(e.target.value)}
-                            />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='emergency_contact_relation'
-                                fullWidth
-                                label="Emergency Contact Relation (Should be blood relative)"
-                                variant='outlined'
-                                placeholder='Enter Emergency Contact Relation (Should be blood relative)'
-                                type='text'
-                                inputMode='text'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='father_name'
-                                fullWidth
-                                label="Father Name"
-                                variant='outlined'
-                                placeholder='Enter Father Name'
-                                type='text'
-                                inputMode='text'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='father_occupation'
-                                fullWidth
-                                label="Father Occupation"
-                                variant='outlined'
-                                placeholder='Enter Father Occupation'
-                                type='text'
-                                inputMode='text'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='Spouse Name'
-                                fullWidth
-                                label="Spouse Name"
-                                variant='outlined'
-                                placeholder='Enter Spouse Name'
-                                type='text'
-                                inputMode='text'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='blood_group'
-                                fullWidth
-                                label="Blood Group"
-                                variant='outlined'
-                                placeholder='Enter Blood Group'
-                                type='text'
-                                inputMode='text'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='country_of_origin'
-                                fullWidth
-                                label="Country of Origin"
-                                variant='outlined'
-                                placeholder='Enter Country of Origin'
-                                type='text'
-                                inputMode='text'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='nationality'
-                                fullWidth
-                                label="Nationality"
-                                variant='outlined'
-                                placeholder='Enter Nationality'
-                                type='text'
-                                inputMode='text'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <FormControl fullWidth required>  {/* This ensures full width within the grid item */}
-                                <InputLabel>Physically Challenged </InputLabel>
-                                <Select
-                                    id="physically_challenged"
-                                    label="Physically Challenged"
-                                // value={gender}
-                                // error={gender === "" ? true : false}
-                                // onChange={e => setGender(e.target.value)}
-                                >
-                                    <MenuItem value={"Yes"}>Yes</MenuItem>
-                                    <MenuItem value={"No"}>No</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-
-
-                        {/* Important ithu vanthu accounts oriented ones  */}
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='aadhaar_number'
-                                fullWidth
-                                label="Aadhaar Number"
-                                variant='outlined'
-                                placeholder='Enter Aadhaar Number'
-                                type='number'
-                                inputMode='numeric'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='pan_number'
-                                fullWidth
-                                label="Pan Number"
-                                variant='outlined'
-                                placeholder='Enter Pan Number'
-                                type='number'
-                                inputMode='numeric'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='passport_number'
-                                fullWidth
-                                label="Passport Number"
-                                variant='outlined'
-                                placeholder='Enter Passport Number'
-                                type='number'
-                                inputMode='numeric'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='bank_account_number'
-                                fullWidth
-                                label="Bank Account Number"
-                                variant='outlined'
-                                placeholder='Enter Bank Account  Number'
-                                type='number'
-                                inputMode='numeric'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='bank_ifsc_code'
-                                fullWidth
-                                label="Bank IFSC Code"
-                                variant='outlined'
-                                placeholder='Enter Bank IFSC Code'
-                                type='number'
-                                inputMode='numeric'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='ceneficiary_code'
-                                fullWidth
-                                // label="Bank IFSC Code"
-                                variant='outlined'
-                                placeholder='Beneficiary Code'
-                                // type=''
-                                // inputMode='numeric'
-                                // size='medium'
-                                // value={}
-                                error={true}
-                                // onChange={}
-                                // onFocus={} //This is to handle the error...
-                                // onBlur={} //This for calling api to check if the employee Number is already exists...
-                                helperText={"This is Beneficiary Code used , Will be automatically genarated....."}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='education'
-                                fullWidth
-                                label="Education "
-                                variant='outlined'
-                                placeholder='Enter Education – Highest Degree'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-                        {/* Current Address */}
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='Employee AddressCurrent'
-                                fullWidth
-                                label="Employee Address"
-                                variant='outlined'
-                                placeholder='Enter Employee Current Address'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='Area'
-                                fullWidth
-                                label="Area"
-                                variant='outlined'
-                                placeholder='Enter Area'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='pin_code'
-                                fullWidth
-                                label="Area"
-                                variant='outlined'
-                                placeholder='Enter Area'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-                        {/* Permanent Address */}
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='Employee Address Permanent'
-                                fullWidth
-                                label="Employee Address - Permanent"
-                                variant='outlined'
-                                placeholder='Enter Employee Permanent Address'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='AreaPermanent'
-                                fullWidth
-                                label="AreaPermanent"
-                                variant='outlined'
-                                placeholder='Enter Area '
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='pin_codePermanent'
-                                fullWidth
-                                label="pin_codePermanent"
-                                variant='outlined'
-                                placeholder='Enter pin_codePermanent'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <FormControl fullWidth required>  {/* This ensures full width within the grid item */}
-                                <InputLabel>Address Proof</InputLabel>
-                                <Select
-                                    id="address_proof"
-                                    label="Physically Challenged"
-                                // value={gender}
-                                // error={gender === "" ? true : false}
-                                // onChange={e => setGender(e.target.value)}
-                                >
-                                    <MenuItem value={"Aadhaar"}>Aadhaar</MenuItem>
-                                    <MenuItem value={"Driving License"}>Driving License</MenuItem>
-                                    <MenuItem value={"Bank Statement"}>Bank Statement</MenuItem>
-                                    <MenuItem value={"Phone Bill"}> Phone Bill</MenuItem>
-                                    <MenuItem value={"Gas Bill"}> Gas Bill</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <Typography>
-                                This is the File Upload for the Address Prof...
-                            </Typography>
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='esi_number'
-                                fullWidth
-                                label="ESI Number"
-                                variant='outlined'
-                                placeholder='Enter ESI Number'
-                                type='number'
-                                inputMode='numeric'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='uan_number'
-                                fullWidth
-                                label="UAN Number"
-                                variant='outlined'
-                                placeholder='Enter UAN Number'
-                                type='number'
-                                inputMode='numeric'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='pf_number'
-                                fullWidth
-                                label="PF Number"
-                                variant='outlined'
-                                placeholder='Enter PF Number'
-                                type='number'
-                                inputMode='numeric'
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-
-                        <Grid item xs={6}>
-                            <TextField
-                                required
-                                id='pf_join_date'
-                                fullWidth
-                                label="PF Join Date"
-                                variant='outlined'
-                                placeholder='Enter PF Join Date'
-                                type='date'
-                            // inputMode=''
-                            // size='medium'
-                            // value={}
-                            // error={}
-                            // onChange={}
-                            // onFocus={} //This is to handle the error...
-                            // onBlur={} //This for calling api to check if the employee Number is already exists...
-                            // helperText={}
-                            />
-                        </Grid>
-
-                    </Grid>
-                </Box>
-            }
-
-
-
-
-
-            {activeStep === steps.length ? (
-                <React.Fragment>
-                    <Typography sx={{ mt: 2, mb: 1 }}>
-                        All steps completed - you&apos;re finished
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <Box sx={{ flex: '1 1 auto' }} />
-                        <Button onClick={handleReset}>Reset</Button>
-                    </Box>
-                </React.Fragment>
-            ) : (
-                <React.Fragment>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                        <Button
-                            color="inherit"
-                            disabled={activeStep === 0}
-                            onClick={handleBack}
-                            sx={{ mr: 1 }}
-                        >
-                            Back
-                        </Button>
-                        <Box sx={{ flex: '1 1 auto' }} />
-                        {isStepOptional(activeStep) && (
-                            <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
-                                Skip
-                            </Button>
-                        )}
-                        <Button onClick={handleNext}>
-                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                        </Button>
-                    </Box>
-                </React.Fragment>
-            )}
-        </Box>
-    );
-}
-
-
-
-
-
-{/* <Grid item xs={6}> */ }
-{/* <FormControl component="fieldset" error={hasError}> */ }
-{/* <FormControl component="fieldset" >
-                                <FormLabel component="legend">Gender</FormLabel>
-                                <RadioGroup
-                                    aria-label="gender"
-                                    name="gender" */}
-{/* // value={gender}
-                                // onChange={handleChange}
-                                > */}
-{/* <FormControlLabel value="male" control={<Radio />} label="Male" />
-                                    <FormControlLabel value="female" control={<Radio />} label="Female" />
-                                    <FormControlLabel value="other" control={<Radio />} label="Other" />
-                                </RadioGroup> */}
-{/* {hasError && <FormHelperText>Please select your gender</FormHelperText>} */ }
-{/* </FormControl> */ }
-{/* </Grid> */ }
+// if (isStepOptional(index)) {
+//     labelProps.optional = (
+//         <Typography variant="caption">Optional</Typography>
+//     );
+// }
