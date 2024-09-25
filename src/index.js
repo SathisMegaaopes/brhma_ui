@@ -6,15 +6,22 @@ import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
+import { QueryClient , QueryClientProvider } from '@tanstack/react-query';
+
+
+const queryClient = new QueryClient();
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
+  <QueryClientProvider client={queryClient}>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <App />
-    </ThemeProvider>, 
-    //  </React.StrictMode>
+    </ThemeProvider>,
+  </QueryClientProvider>
+  //  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

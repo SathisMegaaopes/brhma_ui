@@ -11,8 +11,6 @@ import MOSLayout from "./Components/Layout";
 import MOSDashboard from "./Components/Dashboard";
 import Employee from "./Components/EmployeeTable";
 import { SharedProvider } from "./Context";
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
-import axios from "axios";
 import { useEffect } from "react";
 
 
@@ -20,10 +18,8 @@ function App() {
   
   const user_id = sessionStorage.getItem("user_id");
 
-  const queryClient = new QueryClient();
   return (
     <div >
-      <QueryClientProvider client={queryClient}>
         <SharedProvider>
           <BrowserRouter>
             <Routes>
@@ -55,7 +51,6 @@ function App() {
             </Routes>
           </BrowserRouter>
         </SharedProvider>
-      </QueryClientProvider>
     </div>
   );
 }

@@ -9,7 +9,7 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { FormControl, FormControlLabel, FormLabel, Grid, InputAdornment, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from '@mui/material';
+import { Autocomplete, Avatar, Checkbox, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from '@mui/material';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -20,6 +20,36 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import dayjs from 'dayjs';
 import { DatePicker } from '@mui/x-date-pickers';
+import Component from './demofile';
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+
+// const DarkTextField = styled(TextField)(({ theme }) => ({
+const DarkTextField = styled((props) => <TextField {...props} size="small" sx={{
+    // fontSize
+}} />)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        color: '#555555',
+        '&.Mui-disabled': {
+            color: '#cccccc',
+        },
+    },
+    '& .MuiInputLabel-root': {
+        color: '#555555',
+        '&.Mui-focused': {
+            color: theme.palette.primary.main,
+        },
+        '&.Mui-disabled': {
+            color: '#cccccc',
+        },
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#555555',
+        '&.Mui-disabled': {
+            borderColor: '#cccccc',
+        },
+    },
+}));
 
 
 
@@ -85,13 +115,6 @@ const ColorlibStepIconRoot = styled('div')(({ theme }) => ({
 
 function ColorlibStepIcon(props) {
     const { active, completed, className } = props;
-
-    // const icons = {
-    //     1: <SettingsIcon />,
-    //     2: <GroupAddIcon />,
-    //     3: <VideoLabelIcon />,
-    //     4: <VideoLabelIcon />,
-    // };
     const icons = {
         1: <PersonIcon />,
         2: <BusinessCenterIcon />,
@@ -184,7 +207,6 @@ const shifts = [
     "23:30 - 08:30"
 ];
 
-
 const schemaValidationForForm = Yup.object().shape({
     employeeNumber: Yup.string()
         .required('Employee Number is required')
@@ -238,7 +260,6 @@ const schemaValidationForForm = Yup.object().shape({
     physicallyChallenged: Yup.string(),
 });
 
-
 const schemaValidationForForm2 = Yup.object().shape({
     reportingmanager: Yup.string().required('Reporting Manager is required'),
     reportingteamlead: Yup.string().required('Reporting Team Lead is required'),
@@ -265,7 +286,6 @@ const schemaValidationForForm2 = Yup.object().shape({
     billablestatus: Yup.string().required('Billable Status is required'),
 })
 
-
 //need to check here  ///What means in terms of the Confirmation Date.....
 //employeeconfirmationstatus , this also I have to check again . all are come around one thing only....
 
@@ -278,17 +298,21 @@ const getValidationSchema = (page) => {
     return Yup.object().shape({});
 };
 
+
+
+
 export default function EmployeeForm() {
+
     const [activeStep, setActiveStep] = React.useState(0);
 
     const { control, handleSubmit, getValues, setValue, trigger, formState: { errors, isValid } } = useForm({
         mode: 'onChange',
-        // resolver: yupResolver(schemaValidationForForm),
         resolver: yupResolver(getValidationSchema(activeStep)),
     });
 
-
-
+    const [isPFChecked, setIsPFChecked] = React.useState(false);
+    const [isESIChecked, setIsESIChecked] = React.useState(false);
+    const [isLWFChecked, setIsLWFChecked] = React.useState(false);
 
     // const [formData, setFormData] = React.useState({
     //     email: '',
@@ -327,9 +351,11 @@ export default function EmployeeForm() {
     //     attendancebonus: '',
     //     billablestatus: '',
     // });
+
+
     const [formData, setFormData] = React.useState({
         email: 'test@gmail.com',
-        employeeNumber: '20002',
+        employeeNumber: '',
         employeeName: 'sssssss',
         dateOfBirth: '2024-09-26',
         dateOfJoining: '2024-09-26',
@@ -347,7 +373,7 @@ export default function EmployeeForm() {
         nationality: '',
         physicallyChallenged: '',
         //new code....
-        reportingmanager: 'Shamala Nagaveni',
+        reportingmanager: '',
         reportingteamlead: 'Kannan R',
         designation: 'CEO',
         department: 'Executive',
@@ -365,12 +391,28 @@ export default function EmployeeForm() {
         billablestatus: 'Billable',
     });
 
-    const salaryOfferred = useWatch({ control, name: 'salaryofferred' });
-    console.log(salaryOfferred)
+    const [selectedPaymentType, setSelectedPaymentType] = React.useState('');
 
+
+    const salaryOfferred = useWatch({ control, name: 'salaryofferred' });
+
+    const handleCheckboxChange = (event) => {
+        setIsPFChecked(event.target.checked);
+    };
+
+    const handleCheckboxESIChange = (event) => {
+        setIsESIChecked(event.target.checked);
+    };
+
+    const handleCheckboxLWFChange = (event) => {
+        setIsLWFChecked(event.target.checked);
+    };
+
+    const handlePaymentTypeChange = (event) => {
+        setSelectedPaymentType(event.target.value);
+    };
 
     React.useEffect(() => {
-        console.log('useEffectHItted')
         const salary = parseFloat(salaryOfferred) || '';
         const totalMonthlyCTC = salary;
         const totalYearlyCTC = salary * 12;
@@ -386,7 +428,6 @@ export default function EmployeeForm() {
 
     }, [salaryOfferred]);
 
-    console.log(formData)
 
 
     const handleNext = async () => {
@@ -411,6 +452,14 @@ export default function EmployeeForm() {
     };
 
 
+    const options = [
+        { label: 'Kannan R', value: 'Kannan R' },
+        { label: 'Shamala Nagaveni', value: 'Shamala Nagaveni' },
+        { label: 'Sathis Kumar', value: 'Sathis Kumar' },
+        { label: 'Santhosh', value: 'Santhosh' }
+    ];
+
+    const removeSpaces = (str) => str.replace(/\s+/g, '');
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -423,1081 +472,444 @@ export default function EmployeeForm() {
                     ))}
                 </Stepper>
             </Stack>
+
+
+
+
             <Box component="form" sx={{ mt: 4 }} onSubmit={handleSubmit(onSubmit)}>
-                <Grid container spacing={2}>
+
+
+
+                <Grid container spacing={6} >
                     {activeStep === 0 && (
                         <>
-
                             <Grid item xs={4}>
-                                <Controller
-                                    name="employeeNumber"
-                                    control={control}
-                                    defaultValue={formData.employeeNumber}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Employee Number*"
-                                            label={<span>Employee Number <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.employeeNumber}
-                                            helperText={errors.employeeNumber ? errors.employeeNumber.message : ''}
-                                        // disabled
+                                <Grid container spacing={2} sx={{ bgcolor: '', paddingLeft: 0 }} >
+
+                                    <Grid item xs={12} container justifyContent="center">
+                                        <Avatar
+                                            sx={{
+                                                width: 200,
+                                                height: 200,
+                                            }}
+                                            alt="Profile Image"
+                                            src="https://images.pexels.com/photos/4629633/pexels-photo-4629633.jpeg?cs=srgb&dl=pexels-cottonbro-4629633.jpg&fm=jpg"
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="employeeName"
-                                    control={control}
-                                    defaultValue={formData.employeeName}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Employee Name*"
-                                            label={<span>Employee Name <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.employeeName}
-                                            helperText={errors.employeeName ? errors.employeeName.message : ''}
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="employeeName"
+                                            control={control}
+                                            defaultValue={formData.employeeName}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    // label="Employee Name*"
+                                                    label={<span>Employee Name <span style={{ color: 'red' }}>*</span></span>}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.employeeName}
+                                                    helperText={errors.employeeName ? errors.employeeName.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="dateOfBirth"
-                                    control={control}
-                                    defaultValue={formData.dateOfBirth}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Date of Birth*"
-                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
-                                            type="date"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            InputLabelProps={{ shrink: true }}
-                                            error={!!errors.dateOfBirth}
-                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                    </Grid>
+
+
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="employeeNumber"
+                                            control={control}
+                                            defaultValue={formData.employeeNumber}
+                                            render={({ field }) => (
+                                                <DarkTextField
+
+                                                    {...field}
+                                                    // label="Employee Number*"
+                                                    size="small"
+                                                    label={
+                                                        <span>
+                                                            Employee Number
+                                                            <span style={{ color: 'red', fontSize: '1.5rem', marginLeft: '0.25rem' }}>
+                                                                *
+                                                            </span>
+                                                        </span>
+                                                    }
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.employeeNumber}
+                                                    helperText={errors.employeeNumber ? errors.employeeNumber.message : ''}
+                                                // disabled
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="dateOfJoining"
-                                    control={control}
-                                    defaultValue={formData.dateOfJoining}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Date of Joining*"
-                                            label={<span>Date of Joining <span style={{ color: 'red' }}>*</span></span>}
-                                            type="date"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            InputLabelProps={{ shrink: true }}
-                                            error={!!errors.dateOfJoining}
-                                            helperText={errors.dateOfJoining ? errors.dateOfJoining.message : ''}
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="email"
+                                            control={control}
+                                            defaultValue={formData.email}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    // label="Email Address*"
+                                                    label={<span>Email Address <span style={{ color: 'red' }}>*</span></span>}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.email}
+                                                    helperText={errors.email ? errors.email.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="gender"
-                                    control={control}
-                                    defaultValue={formData.gender}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Gender*"
-                                            label={<span>Gender<span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.gender}
-                                            helperText={errors.gender ? errors.gender.message : ''}
-                                        >
-                                            <MenuItem value="Male">Male</MenuItem>
-                                            <MenuItem value="Female">Female</MenuItem>
-                                            <MenuItem value="Others">Others</MenuItem>
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="email"
-                                    control={control}
-                                    defaultValue={formData.email}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Email Address*"
-                                            label={<span>Email Address <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.email}
-                                            helperText={errors.email ? errors.email.message : ''}
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="mobileNumber"
+                                            control={control}
+                                            defaultValue={formData.mobileNumber}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    // label="Mobile Number*"
+                                                    label={<span>Mobile Number <span style={{ color: 'red' }}>*</span></span>}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.mobileNumber}
+                                                    helperText={errors.mobileNumber ? errors.mobileNumber.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="phone"
-                                    control={control}
-                                    defaultValue={formData.phone}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Phone Number"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.phone}
-                                            helperText={errors.phone ? errors.phone.message : ''}
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="dateOfBirth"
+                                            control={control}
+                                            defaultValue={formData.dateOfBirth}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    // label="Date of Birth*"
+                                                    label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
+                                                    type="date"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    error={!!errors.dateOfBirth}
+                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="mobileNumber"
-                                    control={control}
-                                    defaultValue={formData.mobileNumber}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Mobile Number*"
-                                            label={<span>Mobile Number <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.mobileNumber}
-                                            helperText={errors.mobileNumber ? errors.mobileNumber.message : ''}
+                                    </Grid>
+
+
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="gender"
+                                            control={control}
+                                            defaultValue={formData.gender}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    // label="Gender*"
+                                                    label={<span>Gender<span style={{ color: 'red' }}>*</span></span>}
+                                                    select
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.gender}
+                                                    helperText={errors.gender ? errors.gender.message : ''}
+                                                >
+                                                    <MenuItem value="Male">Male</MenuItem>
+                                                    <MenuItem value="Female">Female</MenuItem>
+                                                    <MenuItem value="Others">Others</MenuItem>
+                                                </DarkTextField>
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="emergencyContactName"
-                                    control={control}
-                                    defaultValue={formData.emergencyContactName}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Emergency Contact Name*"
-                                            label={<span>Emergency Contact Name <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.emergencyContactName}
-                                            helperText={errors.emergencyContactName ? errors.emergencyContactName.message : ''}
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="phone"
+                                            control={control}
+                                            defaultValue={formData.phone}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    label="Phone Number"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.phone}
+                                                    helperText={errors.phone ? errors.phone.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="emergencyContactNumber"
-                                    control={control}
-                                    defaultValue={formData.emergencyContactNumber}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Emergency Contact Number*"
-                                            label={<span>Emergency Contact Number  <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.emergencyContactNumber}
-                                            helperText={errors.emergencyContactNumber ? errors.emergencyContactNumber.message : ''}
+                                    </Grid>
+
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="bloodGroup"
+                                            control={control}
+                                            defaultValue={formData.bloodGroup}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    label="Blood Group"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.bloodGroup}
+                                                    helperText={errors.bloodGroup ? errors.bloodGroup.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
+                                    </Grid>
+
+
+
+                                </Grid>
+
                             </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="emergencyContactRelation"
-                                    control={control}
-                                    defaultValue={formData.emergencyContactRelation}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Emergency Contact Relation (Should be blood relative)*"
-                                            label={<span>Emergency Contact Relation (Should be blood relative) <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.emergencyContactRelation}
-                                            helperText={errors.emergencyContactRelation ? errors.emergencyContactRelation.message : ''}
+
+                            <Grid item xs={8}>
+                                <Grid container sx={{ bgcolor: '' }} spacing={2} >
+
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="dateOfJoining"
+                                            control={control}
+                                            defaultValue={formData.dateOfJoining}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    // label="Date of Joining*"
+                                                    label={<span>Date of Joining <span style={{ color: 'red' }}>*</span></span>}
+                                                    type="date"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    error={!!errors.dateOfJoining}
+                                                    helperText={errors.dateOfJoining ? errors.dateOfJoining.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="fathersName"
-                                    control={control}
-                                    defaultValue={formData.fathersName}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Father's Name"
-                                            label={<span>Father's Name <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.fathersName}
-                                            helperText={errors.fathersName ? errors.fathersName.message : ''}
+                                    </Grid>
+
+
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="emergencyContactName"
+                                            control={control}
+                                            defaultValue={formData.emergencyContactName}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    // label="Emergency Contact Name*"
+                                                    label={<span>Emergency Contact Name <span style={{ color: 'red' }}>*</span></span>}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.emergencyContactName}
+                                                    helperText={errors.emergencyContactName ? errors.emergencyContactName.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="fathersOccupation"
-                                    control={control}
-                                    defaultValue={formData.fathersOccupation}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Father's Occupation"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.fathersOccupation}
-                                            helperText={errors.fathersOccupation ? errors.fathersOccupation.message : ''}
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="emergencyContactNumber"
+                                            control={control}
+                                            defaultValue={formData.emergencyContactNumber}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    // label="Emergency Contact Number*"
+                                                    label={<span>Emergency Contact Number  <span style={{ color: 'red' }}>*</span></span>}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.emergencyContactNumber}
+                                                    helperText={errors.emergencyContactNumber ? errors.emergencyContactNumber.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="spouseName"
-                                    control={control}
-                                    defaultValue={formData.spouseName}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Spouse Name"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.spouseName}
-                                            helperText={errors.spouseName ? errors.spouseName.message : ''}
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="emergencyContactRelation"
+                                            control={control}
+                                            defaultValue={formData.emergencyContactRelation}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    // label="Emergency Contact Relation (Should be blood relative)*"
+                                                    label={<span>Emergency Contact Relation (Should be blood relative) <span style={{ color: 'red' }}>*</span></span>}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.emergencyContactRelation}
+                                                    helperText={errors.emergencyContactRelation ? errors.emergencyContactRelation.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="bloodGroup"
-                                    control={control}
-                                    defaultValue={formData.bloodGroup}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Blood Group"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.bloodGroup}
-                                            helperText={errors.bloodGroup ? errors.bloodGroup.message : ''}
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="fathersName"
+                                            control={control}
+                                            defaultValue={formData.fathersName}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    // label="Father's Name"
+                                                    label={<span>Father's Name <span style={{ color: 'red' }}>*</span></span>}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.fathersName}
+                                                    helperText={errors.fathersName ? errors.fathersName.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="countryOfOrigin"
-                                    control={control}
-                                    defaultValue={formData.countryOfOrigin}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Country of Origin"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.countryOfOrigin}
-                                            helperText={errors.countryOfOrigin ? errors.countryOfOrigin.message : ''}
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="fathersOccupation"
+                                            control={control}
+                                            defaultValue={formData.fathersOccupation}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    label="Father's Occupation"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.fathersOccupation}
+                                                    helperText={errors.fathersOccupation ? errors.fathersOccupation.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="nationality"
-                                    control={control}
-                                    defaultValue={formData.nationality}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Nationality"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.nationality}
-                                            helperText={errors.nationality ? errors.nationality.message : ''}
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="spouseName"
+                                            control={control}
+                                            defaultValue={formData.spouseName}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    label="Spouse Name"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.spouseName}
+                                                    helperText={errors.spouseName ? errors.spouseName.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="physicallyChallenged"
-                                    control={control}
-                                    defaultValue={formData.physicallyChallenged}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label="Physically Challenged (Yes/No)"
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.physicallyChallenged}
-                                            helperText={errors.physicallyChallenged ? errors.physicallyChallenged.message : ''}
-                                        >
-                                            <MenuItem value="Yes">Yes</MenuItem>
-                                            <MenuItem value="No">No</MenuItem>
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-                        </>
-                    )}
+                                    </Grid>
 
-                    {activeStep === 1 && (
-                        <>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="reportingmanager"
-                                    control={control}
-                                    defaultValue={formData.reportingmanager}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span>Reporting Manager<span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.reportingmanager}
-                                            helperText={errors.reportingmanager ? errors.reportingmanager.message : ''}
-                                        >
-                                            <MenuItem value="Kannan R">Kannan R</MenuItem>
-                                            <MenuItem value="Shamala Nagaveni">Shamala Nagaveni</MenuItem>
-                                            <MenuItem value="Sathis kumar">Sathis kumar</MenuItem>
-                                            <MenuItem value="Santhosh">Santhosh</MenuItem>
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="reportingteamlead"
-                                    control={control}
-                                    defaultValue={formData.reportingteamlead}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span>Reporting Team Lead<span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.reportingteamlead}
-                                            helperText={errors.reportingteamlead ? errors.reportingteamlead.message : ''}
-                                        >
-                                            <MenuItem value="Kannan R">Kannan R</MenuItem>
-                                            <MenuItem value="Shamala Nagaveni">Shamala Nagaveni</MenuItem>
-                                            <MenuItem value="Sathis kumar">Sathis kumar</MenuItem>
-                                            <MenuItem value="Santhosh">Santhosh</MenuItem>
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="designation"
-                                    control={control}
-                                    defaultValue={formData.designation}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span> Designation <span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.designation}
-                                            helperText={errors.designation ? errors.designation.message : ''}
-                                        >
-                                            {Designations.map((value, index) => (
-                                                <MenuItem key={index} value={value}>
-                                                    {value}
-                                                </MenuItem>
-                                            ))}
-                                            {/* <MenuItem value="Female">Shamala Nagaveni</MenuItem>
-                                            <MenuItem value="Others">Sathis kumar</MenuItem>
-                                            <MenuItem value="Others">Santhosh</MenuItem> */}
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="department"
-                                    control={control}
-                                    defaultValue={formData.department}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span> Department <span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.department}
-                                            helperText={errors.department ? errors.department.message : ''}
-                                        >
-                                            {Department.map((value, index) => (
-                                                <MenuItem key={index} value={value}>{value}</MenuItem>
-                                            ))}
-                                            {/* <MenuItem value="Male">Kannan R</MenuItem>
-                                            <MenuItem value="Female">Shamala Nagaveni</MenuItem>
-                                            <MenuItem value="Others">Sathis kumar</MenuItem>
-                                            <MenuItem value="Others">Santhosh</MenuItem> */}
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="team"
-                                    control={control}
-                                    defaultValue={formData.team}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span> Team <span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.team}
-                                            helperText={errors.team ? errors.team.message : ''}
-                                        >
-                                            {Teams.map((value, index) => (
-                                                <MenuItem key={index} value={value}>{value}</MenuItem>
-                                            ))}
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="referrdby"
-                                    control={control}
-                                    defaultValue={formData.referrdby}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span> Referred By <span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.referrdby}
-                                            helperText={errors.referrdby ? errors.referrdby.message : ''}
-                                        >
-                                            <MenuItem value="Male">Kannan R</MenuItem>
-                                            <MenuItem value="Female">Shamala Nagaveni</MenuItem>
-                                            <MenuItem value="Others">Sathis kumar</MenuItem>
-                                            <MenuItem value="Others">Santhosh</MenuItem>
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="employmentstatus"
-                                    control={control}
-                                    defaultValue={formData.employmentstatus}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span> Employment Status <span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.employmentstatus}
-                                            helperText={errors.employmentstatus ? errors.employmentstatus.message : ''}
-                                        >
-                                            <MenuItem value="Male">Probation</MenuItem>
-                                            <MenuItem value="Female">Confirmed</MenuItem>
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="employeestatus"
-                                    control={control}
-                                    defaultValue={formData.employeestatus}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span> Employee Status <span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.employeestatus}
-                                            helperText={errors.employeestatus ? errors.employeestatus.message : ''}
-                                        >
-                                            <MenuItem value="Male">Active</MenuItem>
-                                            <MenuItem value="Female">In Active</MenuItem>
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="shift"
-                                    control={control}
-                                    defaultValue={formData.shift}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span> Shift <span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.shift}
-                                            helperText={errors.shift ? errors.shift.message : ''}
-                                        >
-                                            {shifts.map((value, index) => (
-                                                <MenuItem key={index} value={value}>
-                                                    {value}
-                                                </MenuItem>
-                                            ))}
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="grade"
-                                    control={control}
-                                    defaultValue={formData.grade}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span> Grade <span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.grade}
-                                            helperText={errors.grade ? errors.grade.message : ''}
-                                        >
-                                            <MenuItem value="L1">L1</MenuItem>
-                                            <MenuItem value="L2">L2</MenuItem>
-                                            <MenuItem value="L3">L3</MenuItem>
-                                            <MenuItem value="L4">L4</MenuItem>
-                                            <MenuItem value="L5">L5</MenuItem>
-                                            <MenuItem value="L4">L4</MenuItem>
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="probabationperiod"
-                                    control={control}
-                                    defaultValue={formData.probabationperiod}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Employee Number*"
-                                            label={<span>Probabation Period <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.probabationperiod}
-                                            helperText={errors.probabationperiod ? errors.probabationperiod.message : ''}
-                                        // disabled
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="countryOfOrigin"
+                                            control={control}
+                                            defaultValue={formData.countryOfOrigin}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    label="Country of Origin"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.countryOfOrigin}
+                                                    helperText={errors.countryOfOrigin ? errors.countryOfOrigin.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="salaryofferred"
-                                    control={control}
-                                    defaultValue={formData.salaryofferred}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Employee Number*"
-                                            label={<span>Salary Offerred <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.salaryofferred}
-                                            helperText={errors.salaryofferred ? errors.salaryofferred.message : ''}
-                                        // disabled
+                                    </Grid>
+                                    
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="nationality"
+                                            control={control}
+                                            defaultValue={formData.nationality}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    label="Nationality"
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.nationality}
+                                                    helperText={errors.nationality ? errors.nationality.message : ''}
+                                                />
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
+                                    </Grid>
 
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="attendancebonus"
-                                    control={control}
-                                    defaultValue={formData.attendancebonus}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span> Attendance Bonus <span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.attendancebonus}
-                                            helperText={errors.attendancebonus ? errors.attendancebonus.message : ''}
-                                        >
-                                            <MenuItem value="Yes">Yes</MenuItem>
-                                            <MenuItem value="No">No</MenuItem>
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
-
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="totalmonthlyctc"
-                                    control={control}
-                                    defaultValue={formData.totalmonthlyctc}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Employee Number*"
-                                            label={<span>Total Monthly ctc <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.totalmonthlyctc}
-                                            helperText={errors.totalmonthlyctc ? errors.totalmonthlyctc.message : ''}
-                                            disabled
+                                    <Grid item xs={6}>
+                                        <Controller
+                                            name="physicallyChallenged"
+                                            control={control}
+                                            defaultValue={formData.physicallyChallenged}
+                                            render={({ field }) => (
+                                                <DarkTextField
+                                                    {...field}
+                                                    label="Physically Challenged (Yes/No)"
+                                                    select
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.physicallyChallenged}
+                                                    helperText={errors.physicallyChallenged ? errors.physicallyChallenged.message : ''}
+                                                >
+                                                    <MenuItem value="Yes">Yes</MenuItem>
+                                                    <MenuItem value="No">No</MenuItem>
+                                                </DarkTextField>
+                                            )}
                                         />
-                                    )}
-                                />
-                            </Grid>
-
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="totalyearlyctc"
-                                    control={control}
-                                    defaultValue={formData.totalyearlyctc}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Employee Number*"
-                                            label={<span>Total Yearly ctc <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.totalyearlyctc}
-                                            helperText={errors.totalyearlyctc ? errors.totalyearlyctc.message : ''}
-                                            disabled
-                                        />
-                                    )}
-                                />
-                            </Grid>
-
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="billablestatus"
-                                    control={control}
-                                    defaultValue={formData.billablestatus}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span> Billable Status <span style={{ color: 'red' }}>*</span></span>}
-                                            select
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.billablestatus}
-                                            helperText={errors.billablestatus ? errors.billablestatus.message : ''}
-                                        >
-                                            <MenuItem value="Billable">Billable</MenuItem>
-                                            <MenuItem value="Non-Billable">Non-Billable</MenuItem>
-                                            <MenuItem value="Partially">Partially Billed</MenuItem>
-                                        </TextField>
-                                    )}
-                                />
-                            </Grid>
+                                    </Grid>
 
 
 
-                        </>
-                    )}
-
-                    {activeStep === 2 && (
-                        <>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="previousOrganizationName1"
-                                    control={control}
-                                    defaultValue=""
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span>Previous Organization Name 1 <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.previousOrganizationName1}
-                                            helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="designation"
-                                    control={control}
-                                    defaultValue=""
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span>Designation <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.designation}
-                                            helperText={errors.designation ? errors.designation.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="dateOfBirth"
-                                    control={control}
-                                    // defaultValue={formData.dateOfBirth}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Date of Birth*"
-                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
-                                            type="date"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            InputLabelProps={{ shrink: true }}
-                                            error={!!errors.dateOfBirth}
-                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="dateOfBirth"
-                                    control={control}
-                                    // defaultValue={formData.dateOfBirth}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Date of Birth*"
-                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
-                                            type="date"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            InputLabelProps={{ shrink: true }}
-                                            error={!!errors.dateOfBirth}
-                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="totalExperience"
-                                    control={control}
-                                    defaultValue=""
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span>Total Experience (Years) <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.totalExperience}
-                                            helperText={errors.totalExperience ? errors.totalExperience.message : ''}
-                                            disabled // Total Experience is read-only
-                                        />
-                                    )}
-                                />
-                            </Grid>
-
-                            <Grid item xs={4}>
-
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="previousOrganizationName1"
-                                    control={control}
-                                    defaultValue=""
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span>Previous Organization Name 1 <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.previousOrganizationName1}
-                                            helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="designation"
-                                    control={control}
-                                    defaultValue=""
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span>Designation <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.designation}
-                                            helperText={errors.designation ? errors.designation.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="dateOfBirth"
-                                    control={control}
-                                    // defaultValue={formData.dateOfBirth}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Date of Birth*"
-                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
-                                            type="date"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            InputLabelProps={{ shrink: true }}
-                                            error={!!errors.dateOfBirth}
-                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="dateOfBirth"
-                                    control={control}
-                                    // defaultValue={formData.dateOfBirth}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Date of Birth*"
-                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
-                                            type="date"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            InputLabelProps={{ shrink: true }}
-                                            error={!!errors.dateOfBirth}
-                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="totalExperience"
-                                    control={control}
-                                    defaultValue=""
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span>Total Experience (Years) <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.totalExperience}
-                                            helperText={errors.totalExperience ? errors.totalExperience.message : ''}
-                                            disabled // Total Experience is read-only
-                                        />
-                                    )}
-                                />
-                            </Grid>
-
-
-
-                            <Grid item xs={4}>
+                                </Grid>
 
                             </Grid>
 
 
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="previousOrganizationName1"
-                                    control={control}
-                                    defaultValue=""
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span>Previous Organization Name 1 <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.previousOrganizationName1}
-                                            helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="designation"
-                                    control={control}
-                                    defaultValue=""
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span>Designation <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.designation}
-                                            helperText={errors.designation ? errors.designation.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="dateOfBirth"
-                                    control={control}
-                                    // defaultValue={formData.dateOfBirth}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Date of Birth*"
-                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
-                                            type="date"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            InputLabelProps={{ shrink: true }}
-                                            error={!!errors.dateOfBirth}
-                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="dateOfBirth"
-                                    control={control}
-                                    // defaultValue={formData.dateOfBirth}
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            // label="Date of Birth*"
-                                            label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
-                                            type="date"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            InputLabelProps={{ shrink: true }}
-                                            error={!!errors.dateOfBirth}
-                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
-                                        />
-                                    )}
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Controller
-                                    name="totalExperience"
-                                    control={control}
-                                    defaultValue=""
-                                    render={({ field }) => (
-                                        <TextField
-                                            {...field}
-                                            label={<span>Total Experience (Years) <span style={{ color: 'red' }}>*</span></span>}
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            error={!!errors.totalExperience}
-                                            helperText={errors.totalExperience ? errors.totalExperience.message : ''}
-                                            disabled // Total Experience is read-only
-                                        />
-                                    )}
-                                />
-                            </Grid>
 
 
-                        </>
-                    )}
 
-                    {activeStep === 3 && (
-                        <>
+
+
+
 
                         </>
                     )}
                 </Grid>
 
-                <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        px: 12,
+                        pb: 3,
+                        position: 'fixed',
+                        bottom: 0,
+                        left: 0,
+                        width: '100%',
+                    }}
+                >
                     <Button
                         color="inherit"
                         disabled={activeStep === 0}
@@ -1564,7 +976,27 @@ export default function EmployeeForm() {
 
 
 
-
+{/* <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+    <Button
+        color="inherit"
+        disabled={activeStep === 0}
+        onClick={handleBack}
+        sx={{ mr: 1 }}
+        variant='outlined'
+    >
+        Back
+    </Button>
+    <Box sx={{ flex: '1 1 auto' }} />
+    {activeStep === steps.length - 1 ? (
+        <Button variant="contained" color="primary" type="submit">
+            Submit
+        </Button>
+    ) : (
+        <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
+            Next
+        </Button>
+    )}
+</Box> */}
 
 
 
@@ -1588,43 +1020,46 @@ export default function EmployeeForm() {
 {/* </Grid> */ }
 
 
-{/* <TextField
-                                required
-                                id='employee_number'
-                                // size='medium'
-                                fullWidth
-                                label="Employee Number"
-                                // value={}
-                                variant='outlined'
-                                placeholder='Enter Employee Number'
-                                error={true}
-                                // onChange={}
-                                // type='number'
-                                // onFocus={} //This is to handle the error...
-                                // onBlur={} //This for calling api to check if the employee Number is already exists...
-                                helperText={"Employee Id is required"}
-                                inputMode='numeric'
-                                inputProps={{
-                                    maxLength: 10,
-                                    // pattern: "[a-zA-Z0-9]*",
-                                }}
-                                onInput={(e) => {
-                                    e.target.value = e.target.value.replace(/[^0-9]/g, '');  // Replace any non-digit characters
-                                }}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            $
-                                        </InputAdornment>
-                                    ),
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            .com
-                                        </InputAdornment>
-                                    ),
-                                    disableUnderline: false,
-                                }}
-                            /> */}
+
+
+
+{/* <DarkTextField
+    required
+    id='employee_number'
+    // size='medium'
+    fullWidth
+    label="Employee Number"
+    // value={}
+    variant='outlined'
+    placeholder='Enter Employee Number'
+    error={true}
+    // onChange={}
+    // type='number'
+    // onFocus={} //This is to handle the error...
+    // onBlur={} //This for calling api to check if the employee Number is already exists...
+    helperText={"Employee Id is required"}
+    inputMode='numeric'
+    inputProps={{
+        maxLength: 10,
+        // pattern: "[a-zA-Z0-9]*",
+    }}
+    onInput={(e) => {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');  // Replace any non-digit characters
+    }}
+    InputProps={{
+        startAdornment: (
+            <InputAdornment position="start">
+                $
+            </InputAdornment>
+        ),
+        endAdornment: (
+            <InputAdornment position="end">
+                .com
+            </InputAdornment>
+        ),
+        disableUnderline: false,
+    }}
+/> */}
 
 
 
