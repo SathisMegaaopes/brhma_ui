@@ -9,7 +9,7 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Autocomplete, Avatar, Checkbox, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from '@mui/material';
+import { Autocomplete, Avatar, Checkbox, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, InputLabel, MenuItem, OutlinedInput, Radio, RadioGroup, Select, TextField } from '@mui/material';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -23,11 +23,10 @@ import { DatePicker } from '@mui/x-date-pickers';
 import Component from './demofile';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
+import { blue, red } from '@mui/material/colors';
 
 // const DarkTextField = styled(TextField)(({ theme }) => ({
-const DarkTextField = styled((props) => <TextField {...props} size="small" sx={{
-    // fontSize
-}} />)(({ theme }) => ({
+const DarkTextField = styled((props) => <TextField {...props} size="small" sx={{}} />)(({ theme }) => ({
     '& .MuiOutlinedInput-root': {
         color: '#555555',
         '&.Mui-disabled': {
@@ -298,14 +297,39 @@ const getValidationSchema = (page) => {
     return Yup.object().shape({});
 };
 
+const StyledContainer = styled(Grid)`
+  display: flex;
+  align-items: center;
+`;
 
+// Styled label
+const StyledLabel = styled('label')`
+  font-weight: bold;
+  margin-right: 16px; 
+`;
+
+// const StyledInput = styled(TextField)(({ theme }) => ({
+
+//     '& .MuiInputBase-root': {
+//         height: '40px',
+//     },
+
+// }));
+
+
+const StyledInput = styled(TextField)(({ theme }) => ({
+    '& .MuiInputBase-root': {
+        height: '40px',
+        width: '100%',  // Ensure the input takes full width
+    },
+}));
 
 
 export default function EmployeeForm() {
 
     const [activeStep, setActiveStep] = React.useState(0);
 
-    const { control, handleSubmit, getValues, setValue, trigger, formState: { errors, isValid } } = useForm({
+    const { control, handleSubmit, getValues, setValue, trigger, formState: { errors, isValid, isSubmitting ,isSubmitSuccessful } } = useForm({
         mode: 'onChange',
         resolver: yupResolver(getValidationSchema(activeStep)),
     });
@@ -356,7 +380,7 @@ export default function EmployeeForm() {
     const [formData, setFormData] = React.useState({
         email: 'test@gmail.com',
         employeeNumber: '',
-        employeeName: 'sssssss',
+        employeeName: '',
         dateOfBirth: '2024-09-26',
         dateOfJoining: '2024-09-26',
         gender: 'Male',
@@ -395,6 +419,7 @@ export default function EmployeeForm() {
 
 
     const salaryOfferred = useWatch({ control, name: 'salaryofferred' });
+
 
     const handleCheckboxChange = (event) => {
         setIsPFChecked(event.target.checked);
@@ -459,7 +484,20 @@ export default function EmployeeForm() {
         { label: 'Santhosh', value: 'Santhosh' }
     ];
 
-    const removeSpaces = (str) => str.replace(/\s+/g, '');
+    const mapOptions = (data) => {
+        return data.map(item => ({
+            label: item, // Adjust as needed
+            value: item    // Adjust as needed
+        }));
+    }
+
+    // console.log(mapOptions(Designations), 'important dude....')
+
+    const handleSubmit2 = () => {
+        console.log('this is formData', formData)
+        console.log('this is isSubmitting', isSubmitting)
+        console.log('this is isSubmitSuccessful', isSubmitSuccessful)
+    }
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -473,608 +511,2179 @@ export default function EmployeeForm() {
                 </Stepper>
             </Stack>
 
-
-
-
-            <Box component="form" sx={{ mt: 4 }} onSubmit={handleSubmit(onSubmit)}>
-
-
-
-                <Grid container spacing={6} >
+            <Box component="form" sx={{ mt: 6, }} onSubmit={handleSubmit(onSubmit)}  >
+                <Grid container >  {/* Whole Parent Container */}
                     {activeStep === 0 && (
                         <>
-                            <Grid item xs={4}>
-                                <Grid container spacing={2} sx={{ bgcolor: '', paddingLeft: 0 }} >
+                            <Grid container xs={12} paddingLeft={0}  > {/* First Half  Parent Container */}
 
-                                    <Grid item xs={12} container justifyContent="center">
+                                <Grid container xs={2} > {/* Avatar container */}
+
+                                    <Grid item xs={12} paddingLeft={5}>
                                         <Avatar
-                                            sx={{
-                                                width: 200,
-                                                height: 200,
-                                            }}
+                                            sx={{ width: 200, height: 200 }}
                                             alt="Profile Image"
                                             src="https://images.pexels.com/photos/4629633/pexels-photo-4629633.jpeg?cs=srgb&dl=pexels-cottonbro-4629633.jpg&fm=jpg"
                                         />
                                     </Grid>
 
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="employeeName"
-                                            control={control}
-                                            defaultValue={formData.employeeName}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    // label="Employee Name*"
-                                                    label={<span>Employee Name <span style={{ color: 'red' }}>*</span></span>}
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.employeeName}
-                                                    helperText={errors.employeeName ? errors.employeeName.message : ''}
+                                </Grid>
+
+                                <Grid container xs={10} paddingLeft={6} columnGap={2} >  {/* Basic Details , like name and other container */}
+
+                                    <Grid container xs={6} spacing={1} >  {/* First Half container */}
+
+                                        <Grid container alignItems="center" paddingBottom={2} >
+                                            <Grid item xs={4}>
+                                                <StyledLabel>
+                                                    Employee Name <span style={{ color: 'red' }}>*</span>
+                                                </StyledLabel>
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <Controller
+                                                    name="employeeName"
+                                                    control={control}
+                                                    defaultValue={formData.employeeName}
+                                                    render={({ field }) => (
+                                                        <StyledInput
+                                                            fullWidth
+                                                            {...field}
+                                                            variant="outlined"
+                                                            error={!!errors.employeeName}
+                                                            helperText={errors.employeeName ? errors.employeeName.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                        />
-                                    </Grid>
+                                            </Grid>
+                                        </Grid>
 
-
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="employeeNumber"
-                                            control={control}
-                                            defaultValue={formData.employeeNumber}
-                                            render={({ field }) => (
-                                                <DarkTextField
-
-                                                    {...field}
-                                                    // label="Employee Number*"
-                                                    size="small"
-                                                    label={
-                                                        <span>
-                                                            Employee Number
-                                                            <span style={{ color: 'red', fontSize: '1.5rem', marginLeft: '0.25rem' }}>
-                                                                *
-                                                            </span>
-                                                        </span>
-                                                    }
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.employeeNumber}
-                                                    helperText={errors.employeeNumber ? errors.employeeNumber.message : ''}
-                                                // disabled
+                                        <Grid container alignItems="center" paddingBottom={2}>
+                                            <Grid item xs={4}>
+                                                <StyledLabel>
+                                                    Employee Number <span style={{ color: 'red' }}>*</span>
+                                                </StyledLabel>
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <Controller
+                                                    name="employeeNumber"
+                                                    control={control}
+                                                    defaultValue={formData.employeeNumber}
+                                                    render={({ field }) => (
+                                                        <StyledInput
+                                                            fullWidth
+                                                            {...field}
+                                                            variant="outlined"
+                                                            error={!!errors.employeeNumber}
+                                                            helperText={errors.employeeNumber ? errors.employeeNumber.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                        />
-                                    </Grid>
+                                            </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="email"
-                                            control={control}
-                                            defaultValue={formData.email}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    // label="Email Address*"
-                                                    label={<span>Email Address <span style={{ color: 'red' }}>*</span></span>}
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.email}
-                                                    helperText={errors.email ? errors.email.message : ''}
+                                        <Grid container alignItems="center" paddingBottom={2}>
+                                            <Grid item xs={4}>
+                                                <StyledLabel>
+                                                    Email Address <span style={{ color: 'red' }}>*</span>
+                                                </StyledLabel>
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <Controller
+                                                    name="email"
+                                                    control={control}
+                                                    defaultValue={formData.email}
+                                                    render={({ field }) => (
+                                                        <StyledInput
+                                                            fullWidth
+                                                            {...field}
+                                                            variant="outlined"
+                                                            error={!!errors.email}
+                                                            helperText={errors.email ? errors.email.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                        />
-                                    </Grid>
+                                            </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="mobileNumber"
-                                            control={control}
-                                            defaultValue={formData.mobileNumber}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    // label="Mobile Number*"
-                                                    label={<span>Mobile Number <span style={{ color: 'red' }}>*</span></span>}
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.mobileNumber}
-                                                    helperText={errors.mobileNumber ? errors.mobileNumber.message : ''}
+                                        <Grid container alignItems="center" paddingBottom={2}>
+                                            <Grid item xs={4}>
+                                                <StyledLabel>
+                                                    Mobile Number <span style={{ color: 'red' }}>*</span>
+                                                </StyledLabel>
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <Controller
+                                                    name="mobileNumber"
+                                                    control={control}
+                                                    defaultValue={formData.mobileNumber}
+                                                    render={({ field }) => (
+                                                        <StyledInput
+                                                            fullWidth
+                                                            {...field}
+                                                            variant="outlined"
+                                                            error={!!errors.mobileNumber}
+                                                            helperText={errors.mobileNumber ? errors.mobileNumber.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                        />
+                                            </Grid>
+                                        </Grid>
+
                                     </Grid>
 
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="dateOfBirth"
-                                            control={control}
-                                            defaultValue={formData.dateOfBirth}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    // label="Date of Birth*"
-                                                    label={<span>Date of Birth <span style={{ color: 'red' }}>*</span></span>}
-                                                    type="date"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    InputLabelProps={{ shrink: true }}
-                                                    error={!!errors.dateOfBirth}
-                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                    <Grid container xs={6} spacing={1} >  {/* Second Half  container */}
+
+                                        <Grid container alignItems="center" paddingBottom={2}>
+                                            <Grid item xs={4}>
+                                                <StyledLabel>
+                                                    Date of Birth <span style={{ color: 'red' }}>*</span>
+                                                </StyledLabel>
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <Controller
+                                                    name="dateOfBirth"
+                                                    control={control}
+                                                    defaultValue={formData.dateOfBirth}
+                                                    render={({ field }) => (
+                                                        <StyledInput
+                                                            fullWidth
+                                                            {...field}
+                                                            type="date"
+                                                            variant="outlined"
+                                                            InputLabelProps={{ shrink: true }}
+                                                            error={!!errors.dateOfBirth}
+                                                            helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'relative', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                        />
-                                    </Grid>
+                                            </Grid>
+                                        </Grid>
 
-
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="gender"
-                                            control={control}
-                                            defaultValue={formData.gender}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    // label="Gender*"
-                                                    label={<span>Gender<span style={{ color: 'red' }}>*</span></span>}
-                                                    select
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.gender}
-                                                    helperText={errors.gender ? errors.gender.message : ''}
-                                                >
-                                                    <MenuItem value="Male">Male</MenuItem>
-                                                    <MenuItem value="Female">Female</MenuItem>
-                                                    <MenuItem value="Others">Others</MenuItem>
-                                                </DarkTextField>
-                                            )}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="phone"
-                                            control={control}
-                                            defaultValue={formData.phone}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    label="Phone Number"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.phone}
-                                                    helperText={errors.phone ? errors.phone.message : ''}
+                                        <Grid container alignItems="center" paddingBottom={2}>
+                                            <Grid item xs={4}>
+                                                <StyledLabel>
+                                                    Gender <span style={{ color: 'red' }}>*</span>
+                                                </StyledLabel>
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <Controller
+                                                    name="gender"
+                                                    control={control}
+                                                    defaultValue={formData.gender}
+                                                    render={({ field }) => (
+                                                        <StyledInput
+                                                            fullWidth
+                                                            {...field}
+                                                            select
+                                                            variant="outlined"
+                                                            error={!!errors.gender}
+                                                            helperText={errors.gender ? errors.gender.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        >
+                                                            <MenuItem value="Male">Male</MenuItem>
+                                                            <MenuItem value="Female">Female</MenuItem>
+                                                            <MenuItem value="Others">Others</MenuItem>
+                                                        </StyledInput>
+                                                    )}
                                                 />
-                                            )}
-                                        />
-                                    </Grid>
+                                            </Grid>
+                                        </Grid>
 
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="bloodGroup"
-                                            control={control}
-                                            defaultValue={formData.bloodGroup}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    label="Blood Group"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.bloodGroup}
-                                                    helperText={errors.bloodGroup ? errors.bloodGroup.message : ''}
+                                        <Grid container alignItems="center" paddingBottom={2}>
+                                            <Grid item xs={4}>
+                                                <StyledLabel>
+                                                    Phone Number <span style={{ color: 'red' }}>*</span>
+                                                </StyledLabel>
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <Controller
+                                                    name="phone"
+                                                    control={control}
+                                                    defaultValue={formData.phone}
+                                                    render={({ field }) => (
+                                                        <StyledInput
+                                                            fullWidth
+                                                            {...field}
+                                                            variant="outlined"
+                                                            error={!!errors.phone}
+                                                            helperText={errors.phone ? errors.phone.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
                                                 />
-                                            )}
-                                        />
+                                            </Grid>
+                                        </Grid>
+
+                                        <Grid container alignItems="center" paddingBottom={2}>
+                                            <Grid item xs={4}>
+                                                <StyledLabel>
+                                                    Blood Group
+                                                </StyledLabel>
+                                            </Grid>
+                                            <Grid item xs={7}>
+                                                <Controller
+                                                    name="bloodGroup"
+                                                    control={control}
+                                                    defaultValue={formData.bloodGroup}
+                                                    render={({ field }) => (
+                                                        <StyledInput
+                                                            fullWidth
+                                                            {...field}
+                                                            variant="outlined"
+                                                            error={!!errors.bloodGroup}
+                                                            helperText={errors.bloodGroup ? errors.bloodGroup.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            </Grid>
+                                        </Grid>
+
                                     </Grid>
-
-
 
                                 </Grid>
 
                             </Grid>
 
-                            <Grid item xs={8}>
-                                <Grid container sx={{ bgcolor: '' }} spacing={2} >
+                            <Grid container xs={12} bgcolor={''} marginTop={2}  > {/* Second Half Parent Container */}
 
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="dateOfJoining"
-                                            control={control}
-                                            defaultValue={formData.dateOfJoining}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    // label="Date of Joining*"
-                                                    label={<span>Date of Joining <span style={{ color: 'red' }}>*</span></span>}
-                                                    type="date"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    InputLabelProps={{ shrink: true }}
-                                                    error={!!errors.dateOfJoining}
-                                                    helperText={errors.dateOfJoining ? errors.dateOfJoining.message : ''}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
+                                <Grid container xs={4} bgcolor={''} > {/* Second Half child - 1  Container */}
 
-
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="emergencyContactName"
-                                            control={control}
-                                            defaultValue={formData.emergencyContactName}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    // label="Emergency Contact Name*"
-                                                    label={<span>Emergency Contact Name <span style={{ color: 'red' }}>*</span></span>}
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.emergencyContactName}
-                                                    helperText={errors.emergencyContactName ? errors.emergencyContactName.message : ''}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="emergencyContactNumber"
-                                            control={control}
-                                            defaultValue={formData.emergencyContactNumber}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    // label="Emergency Contact Number*"
-                                                    label={<span>Emergency Contact Number  <span style={{ color: 'red' }}>*</span></span>}
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.emergencyContactNumber}
-                                                    helperText={errors.emergencyContactNumber ? errors.emergencyContactNumber.message : ''}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="emergencyContactRelation"
-                                            control={control}
-                                            defaultValue={formData.emergencyContactRelation}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    // label="Emergency Contact Relation (Should be blood relative)*"
-                                                    label={<span>Emergency Contact Relation (Should be blood relative) <span style={{ color: 'red' }}>*</span></span>}
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.emergencyContactRelation}
-                                                    helperText={errors.emergencyContactRelation ? errors.emergencyContactRelation.message : ''}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="fathersName"
-                                            control={control}
-                                            defaultValue={formData.fathersName}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    // label="Father's Name"
-                                                    label={<span>Father's Name <span style={{ color: 'red' }}>*</span></span>}
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.fathersName}
-                                                    helperText={errors.fathersName ? errors.fathersName.message : ''}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="fathersOccupation"
-                                            control={control}
-                                            defaultValue={formData.fathersOccupation}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    label="Father's Occupation"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.fathersOccupation}
-                                                    helperText={errors.fathersOccupation ? errors.fathersOccupation.message : ''}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="spouseName"
-                                            control={control}
-                                            defaultValue={formData.spouseName}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    label="Spouse Name"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.spouseName}
-                                                    helperText={errors.spouseName ? errors.spouseName.message : ''}
-                                                />
-                                            )}
-                                        />
+                                    <Grid container alignItems="center" paddingBottom={2}>
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Date of Joining <span style={{ color: 'red' }}>*</span>
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="dateOfJoining"
+                                                control={control}
+                                                defaultValue={formData.dateOfJoining}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        type="date"
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        InputLabelProps={{ shrink: true }}
+                                                        error={!!errors.dateOfJoining}
+                                                        helperText={errors.dateOfJoining ? errors.dateOfJoining.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Date of Joining <span style={{ color: 'red' }}>*</span></span>}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
                                     </Grid>
 
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="countryOfOrigin"
-                                            control={control}
-                                            defaultValue={formData.countryOfOrigin}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    label="Country of Origin"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.countryOfOrigin}
-                                                    helperText={errors.countryOfOrigin ? errors.countryOfOrigin.message : ''}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                    
-                                    <Grid item xs={6}>
-                                        <Controller
-                                            name="nationality"
-                                            control={control}
-                                            defaultValue={formData.nationality}
-                                            render={({ field }) => (
-                                                <DarkTextField
-                                                    {...field}
-                                                    label="Nationality"
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    margin="normal"
-                                                    error={!!errors.nationality}
-                                                    helperText={errors.nationality ? errors.nationality.message : ''}
-                                                />
-                                            )}
-                                        />
+                                    <Grid container alignItems="center" paddingBottom={2}>
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Emergency Contact Name <span style={{ color: 'red' }}>*</span>
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="emergencyContactName"
+                                                control={control}
+                                                defaultValue={formData.emergencyContactName}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={!!errors.emergencyContactName}
+                                                        helperText={errors.emergencyContactName ? errors.emergencyContactName.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Emergency Contact Name <span style={{ color: 'red' }}>*</span></span>}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
                                     </Grid>
 
-                                    <Grid item xs={6}>
+                                    <Grid container alignItems="center" paddingBottom={2}>
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Emergency Contact Number <span style={{ color: 'red' }}>*</span>
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="emergencyContactNumber"
+                                                control={control}
+                                                defaultValue={formData.emergencyContactNumber}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={!!errors.emergencyContactNumber}
+                                                        helperText={errors.emergencyContactNumber ? errors.emergencyContactNumber.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Emergency Contact Number <span style={{ color: 'red' }}>*</span></span>}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+
+                                    </Grid>
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Emergency Contact Relation (Should be blood relative) <span style={{ color: 'red' }}>*</span>
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="emergencyContactRelation"
+                                                control={control}
+                                                defaultValue={formData.emergencyContactRelation}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={!!errors.emergencyContactRelation}
+                                                        helperText={errors.emergencyContactRelation ? errors.emergencyContactRelation.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Emergency Contact Relation (Should be blood relative) <span style={{ color: 'red' }}>*</span></span>}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                </Grid>
+
+                                <Grid container xs={4} bgcolor={''}> {/* Second Half child - 2 Container */}
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Father's Name <span style={{ color: 'red' }}>*</span>
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="fathersName"
+                                                control={control}
+                                                defaultValue={formData.fathersName}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={!!errors.fathersName}
+                                                        helperText={errors.fathersName ? errors.fathersName.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Father's Name <span style={{ color: 'red' }}>*</span></span>}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Father's Occupation
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="fathersOccupation"
+                                                control={control}
+                                                defaultValue={formData.fathersOccupation}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={!!errors.fathersOccupation}
+                                                        helperText={errors.fathersOccupation ? errors.fathersOccupation.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Father's Occupation</span>}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Spouse Name
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="spouseName"
+                                                control={control}
+                                                defaultValue={formData.spouseName}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={!!errors.spouseName}
+                                                        helperText={errors.spouseName ? errors.spouseName.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Spouse Name</span>}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+
+                                    </Grid>
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Education (Highest Level) <span style={{ color: 'red' }}>*</span>
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="education"
+                                                control={control}
+                                                defaultValue={formData.education}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={!!errors.education}
+                                                        helperText={errors.education ? errors.education.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Spouse Name</span>}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+
+                                    </Grid>
+
+                                </Grid>
+
+                                <Grid container xs={4} bgcolor={''}> {/* Second Half child - 3 Container */}
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Country of Origin
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="countryOfOrigin"
+                                                control={control}
+                                                defaultValue={formData.countryOfOrigin}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={!!errors.countryOfOrigin}
+                                                        helperText={errors.countryOfOrigin ? errors.countryOfOrigin.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Country of Origin</span>}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Nationality
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="nationality"
+                                                control={control}
+                                                defaultValue={formData.nationality}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={!!errors.nationality}
+                                                        helperText={errors.nationality ? errors.nationality.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Nationality</span>}
+                                                    />
+                                                )}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Physically Challenged (Yes/No)
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="physicallyChallenged"
+                                                control={control}
+                                                defaultValue={formData.physicallyChallenged}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        select
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={!!errors.physicallyChallenged}
+                                                        helperText={errors.physicallyChallenged ? errors.physicallyChallenged.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Physically Challenged (Yes/No)</span>}
+                                                    >
+                                                        <MenuItem value="Yes">Yes</MenuItem>
+                                                        <MenuItem value="No">No</MenuItem>
+                                                    </StyledInput>
+                                                )}
+                                            />
+                                        </Grid>
+
+                                    </Grid>
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Address Proof <span style={{ color: 'red' }}>*</span>
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="addressprof"
+                                                control={control}
+                                                defaultValue={formData.addressprof}
+                                                render={({ field }) => (
+                                                    <StyledInput
+                                                        {...field}
+                                                        select
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="normal"
+                                                        error={!!errors.addressprof}
+                                                        helperText={errors.addressprof ? errors.addressprof.message : ''}
+                                                        FormHelperTextProps={{
+                                                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                        }}
+                                                    // label={<span>Address Proof <span style={{ color: 'red' }}>*</span></span>}
+                                                    >
+                                                        <MenuItem value="Aadhaar">Aadhaar</MenuItem>
+                                                        <MenuItem value="Driving License">Driving License</MenuItem>
+                                                        <MenuItem value="Bank Statement">Bank Statement</MenuItem>
+                                                        <MenuItem value="Phone Bill">Phone Bill</MenuItem>
+                                                        <MenuItem value="Gas Bill">Gas Bill</MenuItem>
+                                                    </StyledInput>
+                                                )}
+                                            />
+                                        </Grid>
+
+                                    </Grid>
+                                </Grid>
+
+                            </Grid>
+                        </>
+                    )}
+
+                    {activeStep === 1 && (
+                        <>
+                            <Grid container xs={4} bgcolor={''}> {/* First vertical page 2 Container */}
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Reporting Manager <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+
+                                    <Grid item xs={7}>
+
                                         <Controller
-                                            name="physicallyChallenged"
+                                            name="reportingmanager"
                                             control={control}
-                                            defaultValue={formData.physicallyChallenged}
+                                            defaultValue={formData.reportingmanager}
                                             render={({ field }) => (
-                                                <DarkTextField
+                                                <Autocomplete
                                                     {...field}
-                                                    label="Physically Challenged (Yes/No)"
+                                                    options={[
+                                                        { label: 'Kannan R  ', value: 'Kannan R' },
+                                                        { label: 'Shamala Nagaveni ', value: 'Shamala Nagaveni' },
+                                                        { label: 'Sathis Kumar ', value: 'Sathis Kumar' },
+                                                        { label: 'Santhosh ', value: 'Santhosh' }
+                                                    ]}
+                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    renderInput={(params) => (
+                                                        <StyledInput
+                                                            {...params}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="normal"
+                                                            // label={<span>Reporting Manager <span style={{ color: 'red' }}> * </span></span>}
+                                                            error={!!errors.reportingmanager}
+                                                            helperText={errors.reportingmanager ? errors.reportingmanager.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            )}
+                                        />
+
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Reporting Team Lead <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="reportingteamlead"
+                                            control={control}
+                                            defaultValue={formData.reportingteamlead}
+                                            render={({ field }) => (
+
+                                                <Autocomplete
+                                                    {...field}
+                                                    options={[
+                                                        { label: 'Kannan R  ', value: 'Kannan R' },
+                                                        { label: 'Shamala Nagaveni ', value: 'Shamala Nagaveni' },
+                                                        { label: 'Sathis Kumar ', value: 'Sathis Kumar' },
+                                                        { label: 'Santhosh ', value: 'Santhosh' }
+                                                    ]}
+                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    renderInput={(params) => (
+                                                        <StyledInput
+                                                            {...params}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="normal"
+                                                            // label={<span>Reporting Manager <span style={{ color: 'red' }}> * </span></span>}
+                                                            error={!!errors.reportingteamlead}
+                                                            helperText={errors.reportingteamlead ? errors.reportingteamlead.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Designation <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="designation"
+                                            control={control}
+                                            defaultValue={formData.designation}
+                                            render={({ field }) => (
+
+                                                <Autocomplete
+                                                    {...field}
+                                                    options={mapOptions(Designations)}
+                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    renderInput={(params) => (
+                                                        <StyledInput
+                                                            {...params}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="normal"
+                                                            error={!!errors.designation}
+                                                            helperText={errors.designation ? errors.designation.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Department <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="department"
+                                            control={control}
+                                            defaultValue={formData.department}
+                                            render={({ field }) => (
+
+                                                <Autocomplete
+                                                    {...field}
+                                                    options={mapOptions(Department)}
+                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    renderInput={(params) => (
+                                                        <StyledInput
+                                                            {...params}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="normal"
+                                                            error={!!errors.department}
+                                                            helperText={errors.department ? errors.department.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Team <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="team"
+                                            control={control}
+                                            defaultValue={formData.team}
+                                            render={({ field }) => (
+                                                <Autocomplete
+                                                    {...field}
+                                                    options={mapOptions(Teams)}
+                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    renderInput={(params) => (
+                                                        <StyledInput
+                                                            {...params}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="normal"
+                                                            error={!!errors.team}
+                                                            helperText={errors.team ? errors.team.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Referred By <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="referrdby"
+                                            control={control}
+                                            defaultValue={formData.referrdby}
+                                            render={({ field }) => (
+
+                                                <Autocomplete
+                                                    {...field}
+                                                    options={[
+                                                        { label: 'Kannan R  ', value: 'Kannan R' },
+                                                        { label: 'Shamala Nagaveni ', value: 'Shamala Nagaveni' },
+                                                        { label: 'Sathis Kumar ', value: 'Sathis Kumar' },
+                                                        { label: 'Santhosh ', value: 'Santhosh' }
+                                                    ]}
+                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    renderInput={(params) => (
+                                                        <StyledInput
+                                                            {...params}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="normal"
+                                                            // label={<span>Reporting Manager <span style={{ color: 'red' }}> * </span></span>}
+                                                            error={!!errors.referrdby}
+                                                            helperText={errors.referrdby ? errors.referrdby.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Employment Status <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="employmentstatus"
+                                            control={control}
+                                            defaultValue={formData.employmentstatus}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    {...field}
                                                     select
                                                     variant="outlined"
                                                     fullWidth
                                                     margin="normal"
-                                                    error={!!errors.physicallyChallenged}
-                                                    helperText={errors.physicallyChallenged ? errors.physicallyChallenged.message : ''}
+                                                    error={!!errors.employmentstatus}
+                                                    helperText={errors.employmentstatus ? errors.employmentstatus.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                >
+                                                    <MenuItem value="Probation">Probation</MenuItem>
+                                                    <MenuItem value="Confirmed">Confirmed</MenuItem>
+                                                </StyledInput>
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                            </Grid>
+
+                            <Grid container xs={4} bgcolor={''}> {/* Second vertical page 2 Container */}
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Employee Status <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="employeestatus"
+                                            control={control}
+                                            defaultValue={formData.employeestatus}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    {...field}
+                                                    select
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.employeestatus}
+                                                    helperText={errors.employeestatus ? errors.employeestatus.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                >
+                                                    <MenuItem value="Active">Active</MenuItem>
+                                                    <MenuItem value="In Active">In Active</MenuItem>
+                                                </StyledInput>
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Shift <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="shift"
+                                            control={control}
+                                            defaultValue={formData.shift}
+                                            render={({ field }) => (
+
+                                                <Autocomplete
+                                                    {...field}
+                                                    options={mapOptions(shifts)}
+                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    renderInput={(params) => (
+                                                        <StyledInput
+                                                            {...params}
+                                                            variant="outlined"
+                                                            fullWidth
+                                                            margin="normal"
+                                                            error={!!errors.shift}
+                                                            helperText={errors.shift ? errors.shift.message : ''}
+                                                            FormHelperTextProps={{
+                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Grade <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="grade"
+                                            control={control}
+                                            defaultValue={formData.grade}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    {...field}
+                                                    select
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.grade}
+                                                    helperText={errors.grade ? errors.grade.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                >
+                                                    <MenuItem value="L1">L1</MenuItem>
+                                                    <MenuItem value="L2">L2</MenuItem>
+                                                    <MenuItem value="L3">L3</MenuItem>
+                                                    <MenuItem value="L4">L4</MenuItem>
+                                                    <MenuItem value="L5">L5</MenuItem>
+                                                </StyledInput>
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Probation Period <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="probabationperiod"
+                                            control={control}
+                                            defaultValue={formData.probabationperiod}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    {...field}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.probabationperiod}
+                                                    helperText={errors.probabationperiod ? errors.probabationperiod.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Salary Offered <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="salaryofferred"
+                                            control={control}
+                                            defaultValue={formData.salaryofferred}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    {...field}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.salaryofferred}
+                                                    helperText={errors.salaryofferred ? errors.salaryofferred.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Attendance Bonus <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="attendancebonus"
+                                            control={control}
+                                            defaultValue={formData.attendancebonus}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    {...field}
+                                                    select
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.attendancebonus}
+                                                    helperText={errors.attendancebonus ? errors.attendancebonus.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
                                                 >
                                                     <MenuItem value="Yes">Yes</MenuItem>
                                                     <MenuItem value="No">No</MenuItem>
-                                                </DarkTextField>
+                                                </StyledInput>
                                             )}
                                         />
                                     </Grid>
-
-
-
                                 </Grid>
 
                             </Grid>
 
+                            <Grid container xs={4} bgcolor={''}> {/* Third vertical page 2 Container */}
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Total Monthly CTC <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="totalmonthlyctc"
+                                            control={control}
+                                            defaultValue={formData.totalmonthlyctc}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    {...field}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.totalmonthlyctc}
+                                                    helperText={errors.totalmonthlyctc ? errors.totalmonthlyctc.message : ''}
+                                                    disabled
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Upload Address Prof <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="fileupload"
+                                            control={control}
+                                            defaultValue={formData.fileupload}
+                                            render={({ field }) => (
+                                                <div>
+                                                    <Button
+                                                        variant="outlined"
+                                                        component="label"
+                                                        fullWidth
+                                                        color="primary"
+                                                        style={{ marginBottom: '8px' }}
+                                                    >
+                                                        Upload File
+                                                        <input
+                                                            type="file"
+                                                            hidden
+                                                            onChange={(e) => {
+                                                                const file = e.target.files[0];
+                                                                field.onChange(file);
+                                                                // onFileChange(file); // Optional function for handling file change
+                                                            }}
+                                                        />
+                                                    </Button>
+                                                    <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
+                                                        {field.value ? field.value.name : 'No file selected'}
+                                                    </FormHelperText>
+
+                                                    <FormHelperText style={{ color: 'red' }}>
+                                                        {errors.fileupload?.message}
+                                                    </FormHelperText>
+                                                    {/* <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
+                                                        {errors.fileupload ? errors.fileupload.message : formData.fileupload?.name}
+                                                    </FormHelperText> */}
+                                                </div>
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Total Yearly CTC <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="totalyearlyctc"
+                                            control={control}
+                                            defaultValue={formData.totalyearlyctc}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    {...field}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.totalyearlyctc}
+                                                    helperText={errors.totalyearlyctc ? errors.totalyearlyctc.message : ''}
+                                                    disabled
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Billable Status <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="billablestatus"
+                                            control={control}
+                                            defaultValue={formData.billablestatus}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    {...field}
+                                                    select
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    margin="normal"
+                                                    error={!!errors.billablestatus}
+                                                    helperText={errors.billablestatus ? errors.billablestatus.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                >
+                                                    <MenuItem value="Billable">Billable</MenuItem>
+                                                    <MenuItem value="Non-Billable">Non-Billable</MenuItem>
+                                                    <MenuItem value="Partially">Partially Billed</MenuItem>
+                                                </StyledInput>
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                            </Grid>
+                        </>
+                    )}
+
+                    {activeStep === 2 && (
+                        <>
+                            <Grid container xs={12} bgcolor={''}> {/* First Horizontal view page - 3 container */}
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Previous Organization Name 1 <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="previousOrganizationName1"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.previousOrganizationName1}
+                                                    helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Designation <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="designation"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.designation}
+                                                    helperText={errors.designation ? errors.designation.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Start Date <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="dateOfBirth"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    type="date"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    error={!!errors.dateOfBirth}
+                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Total Experience (Years) <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="totalExperience"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.totalExperience}
+                                                    helperText={errors.totalExperience ? errors.totalExperience.message : ''}
+                                                    disabled // Read-only input
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
 
 
 
+                            </Grid>
+
+                            <Grid container xs={12} bgcolor={''}> {/* Second Horizontal view page - 3 container */}
+
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Previous Organization Name 1 <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="previousOrganizationName1"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.previousOrganizationName1}
+                                                    helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Designation <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="designation"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.designation}
+                                                    helperText={errors.designation ? errors.designation.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Start Date <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="dateOfBirth"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    type="date"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    error={!!errors.dateOfBirth}
+                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Total Experience (Years) <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="totalExperience"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.totalExperience}
+                                                    helperText={errors.totalExperience ? errors.totalExperience.message : ''}
+                                                    disabled // Read-only input
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
 
 
 
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
 
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
+
+
+
+                            </Grid>
+                            <Grid container xs={12} bgcolor={''}> {/* Third Horizontal view page - 3 container */}
+
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Previous Organization Name 1 <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="previousOrganizationName1"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.previousOrganizationName1}
+                                                    helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Designation <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="designation"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.designation}
+                                                    helperText={errors.designation ? errors.designation.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Start Date <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="dateOfBirth"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    type="date"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    error={!!errors.dateOfBirth}
+                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Total Experience (Years) <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="totalExperience"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.totalExperience}
+                                                    helperText={errors.totalExperience ? errors.totalExperience.message : ''}
+                                                    disabled // Read-only input
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+
+                            </Grid>
 
                         </>
                     )}
+
+                    {activeStep === 3 && (
+                        <>
+                            <Grid xs={12} container > {/* First Horizontal View page - 4 regarding... */}
+
+                                <Grid xs={6} container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Aadhaar Number <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="aadhaarnumber"
+                                            control={control}
+                                            defaultValue={formData.aadhaarnumber}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    {...field}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    error={!!errors.aadhaarnumber}
+                                                    helperText={errors.aadhaarnumber ? errors.aadhaarnumber.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid xs={6} container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            PAN Number <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="pannumber"
+                                            control={control}
+                                            defaultValue={formData.pannumber}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    {...field}
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    error={!!errors.pannumber}
+                                                    helperText={errors.pannumber ? errors.pannumber.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid xs={6} container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Passport Number <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="passportnumber"
+                                            control={control}
+                                            defaultValue={formData.passportnumber}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.passportnumber}
+                                                    helperText={errors.passportnumber ? errors.passportnumber.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid xs={6} container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            UAN Number <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="uannumber"
+                                            control={control}
+                                            defaultValue={formData.uannumber}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.uannumber}
+                                                    helperText={errors.uannumber ? errors.uannumber.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+
+                            </Grid>
+                            <Grid xs={12} container paddingTop={3}> {/* First Horizontal View page - 4 regarding... */}
+
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={isPFChecked}
+                                                    onChange={handleCheckboxChange}
+                                                    color="primary"
+                                                />
+                                            }
+                                            label="Include PF"
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={isESIChecked}
+                                                    onChange={handleCheckboxESIChange}
+                                                    color="primary"
+                                                />
+                                            }
+                                            label="Include ESI"
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={4}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={isLWFChecked}
+                                                    onChange={handleCheckboxLWFChange}
+                                                    color="primary"
+                                                />
+                                            }
+                                            label="Include LWF"
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid xs={4} container alignItems="center" paddingBottom={2} style={{ visibility: isPFChecked ? 'visible' : 'hidden' }} >
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            PF Number
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="pfnumber"
+                                            control={control}
+                                            defaultValue={formData.pfnumber || ''}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.pfnumber}
+                                                    helperText={errors.pfnumber ? errors.pfnumber.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid xs={4} container alignItems="center" paddingBottom={2} style={{ visibility: isESIChecked ? 'visible' : 'hidden' }}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            ESI Number
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="esinumber"
+                                            control={control}
+                                            defaultValue={formData.esinumber || ''}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.esinumber}
+                                                    helperText={errors.esinumber ? errors.esinumber.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid xs={4} container alignItems="center" paddingBottom={2} style={{ visibility: isLWFChecked ? 'visible' : 'hidden' }} >
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            LWF Number
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="lwfnumber"
+                                            control={control}
+                                            defaultValue={formData.lwfnumber || ''}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.lwfnumber}
+                                                    helperText={errors.lwfnumber ? errors.lwfnumber.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid xs={4} container alignItems="center" paddingBottom={2} style={{ visibility: isPFChecked ? 'visible' : 'hidden', }} >
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            PF Join Date <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="pfjoinddate"
+                                            control={control}
+                                            defaultValue={formData.pfjoinddate}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    type="date"
+                                                    variant="outlined"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    error={!!errors.pfjoinddate}
+                                                    helperText={errors.pfjoinddate ? errors.pfjoinddate.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                            </Grid>
+                        </>
+                    )}
+
+                    {activeStep === 4 && (
+                        <>
+                            <Grid container xs={3}>
+                                <Grid>
+
+                                </Grid>
+                            </Grid>
+                            <Grid container xs={6} >
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Mention the mode of payment <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="paymenttype"
+                                            control={control}
+                                            defaultValue={formData.paymenttype}
+                                            render={({ field }) => (
+                                                <FormControl fullWidth variant="outlined" margin="normal" error={!!errors.paymenttype}>
+                                                    <InputLabel>
+                                                        Payment Type <span style={{ color: 'red' }}>*</span>
+                                                    </InputLabel>
+                                                    <Select
+                                                        {...field}
+                                                        value={selectedPaymentType}
+                                                        onChange={(e) => {
+                                                            field.onChange(e);
+                                                            handlePaymentTypeChange(e);
+                                                        }}
+                                                        label="Payment Type"
+                                                    >
+                                                        <MenuItem value="cash">Cash</MenuItem>
+                                                        <MenuItem value="bank_transfer">Bank Transfer</MenuItem>
+                                                        <MenuItem value="cheque">Cheque</MenuItem>
+                                                        <MenuItem value="demand_draft">Demand Draft</MenuItem>
+                                                    </Select>
+                                                    <FormHelperText>
+                                                        {errors.paymenttype ? errors.paymenttype.message : ''}
+                                                    </FormHelperText>
+                                                </FormControl>
+                                            )}
+                                        />
+                                    </Grid>
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+
+                                        {selectedPaymentType === 'bank_transfer' && (
+                                            <Grid container paddingTop={2}>
+                                                <Grid container alignItems="center" paddingBottom={2}>
+                                                    <Grid item xs={4}>
+                                                        <StyledLabel>
+                                                            Bank Name <span style={{ color: 'red' }}>*</span>
+                                                        </StyledLabel>
+                                                    </Grid>
+                                                    <Grid item xs={7}>
+                                                        <Controller
+                                                            name="bankname"
+                                                            control={control}
+                                                            defaultValue={formData.bankname}
+                                                            render={({ field }) => (
+                                                                <StyledInput
+                                                                    {...field}
+                                                                    variant="outlined"
+                                                                    fullWidth
+                                                                    error={!!errors.bankname}
+                                                                    helperText={errors.bankname ? errors.bankname.message : ''}
+                                                                    FormHelperTextProps={{
+                                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+
+                                                <Grid container alignItems="center" paddingBottom={2}>
+                                                    <Grid item xs={4}>
+                                                        <StyledLabel>
+                                                            Branch Name <span style={{ color: 'red' }}>*</span>
+                                                        </StyledLabel>
+                                                    </Grid>
+                                                    <Grid item xs={7}>
+                                                        <Controller
+                                                            name="branchname"
+                                                            control={control}
+                                                            defaultValue={formData.branchname}
+                                                            render={({ field }) => (
+                                                                <StyledInput
+                                                                    {...field}
+                                                                    variant="outlined"
+                                                                    fullWidth
+                                                                    error={!!errors.branchname}
+                                                                    helperText={errors.branchname ? errors.branchname.message : ''}
+                                                                    FormHelperTextProps={{
+                                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+
+                                                <Grid container alignItems="center" paddingBottom={2}>
+                                                    <Grid item xs={4}>
+                                                        <StyledLabel>
+                                                            IFSC Code <span style={{ color: 'red' }}>*</span>
+                                                        </StyledLabel>
+                                                    </Grid>
+                                                    <Grid item xs={7}>
+                                                        <Controller
+                                                            name="ifsccode"
+                                                            control={control}
+                                                            defaultValue={formData.ifsccode}
+                                                            render={({ field }) => (
+                                                                <StyledInput
+                                                                    {...field}
+                                                                    variant="outlined"
+                                                                    fullWidth
+                                                                    error={!!errors.ifsccode}
+                                                                    helperText={errors.ifsccode ? errors.ifsccode.message : ''}
+                                                                    FormHelperTextProps={{
+                                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+
+                                                <Grid container alignItems="center" paddingBottom={2}>
+                                                    <Grid item xs={4}>
+                                                        <StyledLabel>
+                                                            Account Number <span style={{ color: 'red', fontSize: '1.5rem', marginLeft: '0.25rem' }}>*</span>
+                                                        </StyledLabel>
+                                                    </Grid>
+                                                    <Grid item xs={7}>
+                                                        <Controller
+                                                            name="accountnumber"
+                                                            control={control}
+                                                            defaultValue={formData.accountnumber}
+                                                            render={({ field }) => (
+                                                                <StyledInput
+                                                                    {...field}
+                                                                    variant="outlined"
+                                                                    fullWidth
+                                                                    error={!!errors.accountnumber}
+                                                                    helperText={errors.accountnumber ? errors.accountnumber.message : ''}
+                                                                    FormHelperTextProps={{
+                                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+
+
+                                                <Grid container alignItems="center" paddingBottom={2}>
+                                                    <Grid item xs={4}>
+                                                        <StyledLabel>
+                                                            Beneficiary Code <span style={{ color: 'red', fontSize: '1.5rem', marginLeft: '0.25rem' }}>*</span>
+                                                        </StyledLabel>
+                                                    </Grid>
+
+                                                    <Grid item xs={0}>
+                                                        <StyledLabel>
+                                                            :
+                                                        </StyledLabel>
+                                                    </Grid>
+
+                                                    <Grid item xs={0} alignItems='flex-start'>
+                                                        <StyledLabel>
+                                                            Sathiskumar-200027-09/09/24
+                                                        </StyledLabel>
+                                                    </Grid>
+
+                                                    {/* <Grid item xs={7}>
+                                                        <Controller
+                                                            name="accountnumber"
+                                                            control={control}
+                                                            defaultValue={formData.accountnumber}
+                                                            render={({ field }) => (
+                                                                <StyledInput
+                                                                    {...field}
+                                                                    variant="outlined"
+                                                                    fullWidth
+                                                                    error={!!errors.accountnumber}
+                                                                    helperText={errors.accountnumber ? errors.accountnumber.message : ''}
+                                                                    FormHelperTextProps={{
+                                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        />
+                                                    </Grid> */}
+                                                </Grid>
+
+                                            </Grid>
+
+                                        )}
+                                    </Grid>
+
+                                </Grid>
+
+                            </Grid>
+                        </>
+                    )}
+
                 </Grid>
 
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        px: 12,
-                        pb: 3,
-                        position: 'fixed',
-                        bottom: 0,
-                        left: 0,
-                        width: '100%',
-                    }}
-                >
-                    <Button
-                        color="inherit"
-                        disabled={activeStep === 0}
-                        onClick={handleBack}
-                        sx={{ mr: 1 }}
-                        variant='outlined'
-                    >
-                        Back
-                    </Button>
-                    <Box sx={{ flex: '1 1 auto' }} />
-                    {activeStep === steps.length - 1 ? (
-                        <Button variant="contained" color="primary" type="submit">
-                            Submit
-                        </Button>
-                    ) : (
-                        <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
-                            Next
-                        </Button>
-                    )}
-                </Box>
             </Box>
-        </Box>
+
+
+
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    px: 12,
+                    pb: 3,
+                    position: 'fixed',
+                    bottom: 0,
+                    left: 0,
+                    width: '100%',
+                }}
+            >
+                <Button
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                    variant='outlined'
+                >
+                    Back
+                </Button>
+                <Box sx={{ flex: '1 1 auto' }} />
+                {activeStep === steps.length - 1 ? (
+                    <Button variant="contained" color="primary" type="submit" onClick={handleSubmit2}>
+                        Submit
+                    </Button>
+                ) : (
+                    <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
+                        Next
+                    </Button>
+                )}
+            </Box>
+        </Box >
     );
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-    <Button
-        color="inherit"
-        disabled={activeStep === 0}
-        onClick={handleBack}
-        sx={{ mr: 1 }}
-        variant='outlined'
-    >
-        Back
-    </Button>
-    <Box sx={{ flex: '1 1 auto' }} />
-    {activeStep === steps.length - 1 ? (
-        <Button variant="contained" color="primary" type="submit">
-            Submit
-        </Button>
-    ) : (
-        <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
-            Next
-        </Button>
-    )}
-</Box> */}
-
-
-
-
-{/* <Grid item xs={6}> */ }
-{/* <FormControl component="fieldset" error={hasError}> */ }
-{/* <FormControl component="fieldset" >
-                                <FormLabel component="legend">Gender</FormLabel>
-                                <RadioGroup
-                                    aria-label="gender"
-                                    name="gender" */}
-{/* // value={gender}
-                                // onChange={handleChange}
-                                > */}
-{/* <FormControlLabel value="male" control={<Radio />} label="Male" />
-                                    <FormControlLabel value="female" control={<Radio />} label="Female" />
-                                    <FormControlLabel value="other" control={<Radio />} label="Other" />
-                                </RadioGroup> */}
-{/* {hasError && <FormHelperText>Please select your gender</FormHelperText>} */ }
-{/* </FormControl> */ }
-{/* </Grid> */ }
-
-
-
-
-
-{/* <DarkTextField
-    required
-    id='employee_number'
-    // size='medium'
-    fullWidth
-    label="Employee Number"
-    // value={}
-    variant='outlined'
-    placeholder='Enter Employee Number'
-    error={true}
-    // onChange={}
-    // type='number'
-    // onFocus={} //This is to handle the error...
-    // onBlur={} //This for calling api to check if the employee Number is already exists...
-    helperText={"Employee Id is required"}
-    inputMode='numeric'
-    inputProps={{
-        maxLength: 10,
-        // pattern: "[a-zA-Z0-9]*",
-    }}
-    onInput={(e) => {
-        e.target.value = e.target.value.replace(/[^0-9]/g, '');  // Replace any non-digit characters
-    }}
-    InputProps={{
-        startAdornment: (
-            <InputAdornment position="start">
-                $
-            </InputAdornment>
-        ),
-        endAdornment: (
-            <InputAdornment position="end">
-                .com
-            </InputAdornment>
-        ),
-        disableUnderline: false,
-    }}
-/> */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-// if (isStepOptional(index)) {
-//     labelProps.optional = (
-//         <Typography variant="caption">Optional</Typography>
-//     );
-// }

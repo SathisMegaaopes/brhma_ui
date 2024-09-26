@@ -49,7 +49,7 @@ export default function Employee() {
 
   return (
     <>
-      <Grid container spacing={4} paddingLeft={5}>
+      {/* <Grid container spacing={4} paddingLeft={5}>
         <Grid item >
           <CardComponent
             name="Add Employee"
@@ -66,7 +66,7 @@ export default function Employee() {
             value={2}
           />
         </Grid>
-      </Grid>
+      </Grid> */}
 
       <Grid container paddingX={5} paddingY={2}>
         <Grid item xs={12}>
