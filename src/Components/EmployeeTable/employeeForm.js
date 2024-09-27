@@ -8,8 +8,7 @@ import StepLabel from '@mui/material/StepLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { Autocomplete, Avatar, Checkbox, FormControl, FormControlLabel, FormHelperText, FormLabel, Grid, InputAdornment, InputLabel, MenuItem, OutlinedInput, Radio, RadioGroup, Select, TextField } from '@mui/material';
+import { Autocomplete, Avatar, Checkbox, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -18,14 +17,12 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import PersonIcon from '@mui/icons-material/Person';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
-import dayjs from 'dayjs';
-import { DatePicker } from '@mui/x-date-pickers';
-import Component from './demofile';
-import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-import { blue, red } from '@mui/material/colors';
+import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 
-// const DarkTextField = styled(TextField)(({ theme }) => ({
+
+
 const DarkTextField = styled((props) => <TextField {...props} size="small" sx={{}} />)(({ theme }) => ({
     '& .MuiOutlinedInput-root': {
         color: '#555555',
@@ -49,9 +46,6 @@ const DarkTextField = styled((props) => <TextField {...props} size="small" sx={{
         },
     },
 }));
-
-
-
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -117,9 +111,10 @@ function ColorlibStepIcon(props) {
     const icons = {
         1: <PersonIcon />,
         2: <BusinessCenterIcon />,
-        3: <HistoryEduIcon />,
-        4: <AssignmentIcon />,
-        5: <PaymentIcon />,
+        3: <HomeOutlinedIcon />,
+        4: <HistoryEduIcon />,
+        5: <AssignmentIcon />,
+        6: <PaymentIcon />,
     };
 
     return (
@@ -147,7 +142,7 @@ ColorlibStepIcon.propTypes = {
     icon: PropTypes.node,
 };
 
-const steps = ['BASIC INFORMATION', 'EMPLOYEE POSITION', 'EXPERIENCE', ' STATUTORY INFO', 'PAYMENT MODE']
+const steps = ['BASIC INFORMATION', 'EMPLOYEE POSITION', 'ADDRESS', 'EXPERIENCE', ' STATUTORY INFO', 'PAYMENT MODE']
 
 const Designations = ['CEO', 'Software Developer', 'Vice President - HR Operations', 'Team Leader', 'HR - Telecaller', 'HR Executive', 'Front Desk Executive', 'System Admin', 'Admin Executive', 'Quality Analyst', 'Business Development Executive']
 
@@ -297,39 +292,53 @@ const getValidationSchema = (page) => {
     return Yup.object().shape({});
 };
 
-const StyledContainer = styled(Grid)`
-  display: flex;
-  align-items: center;
-`;
-
-// Styled label
 const StyledLabel = styled('label')`
   font-weight: bold;
   margin-right: 16px; 
 `;
 
-// const StyledInput = styled(TextField)(({ theme }) => ({
-
-//     '& .MuiInputBase-root': {
-//         height: '40px',
-//     },
-
-// }));
-
-
 const StyledInput = styled(TextField)(({ theme }) => ({
     '& .MuiInputBase-root': {
         height: '40px',
-        width: '100%',  // Ensure the input takes full width
+        width: '100%',
+    },
+    '& .MuiSelect-icon': {
+        color: '#2196f3',
+        transition: 'transform 0.3s ease',
+    },
+    '& .MuiAutocomplete-popupIndicator': {
+        color: '#2196f3',
+        transition: 'transform 0.3s ease',
     },
 }));
+
+
+const MultilineTextField = styled(TextField)(({ theme }) => ({
+    '& .MuiInputBase-root': {
+        height: 'auto',
+        width: '100%',
+    },
+    '& .MuiInputBase-input': {
+        padding: theme.spacing(1),
+    },
+    '& .MuiSelect-icon': {
+        color: '#2196f3',
+        transition: 'transform 0.3s ease',
+    },
+    '& .MuiAutocomplete-popupIndicator': {
+        color: '#2196f3',
+        transition: 'transform 0.3s ease',
+    },
+}));
+
+
 
 
 export default function EmployeeForm() {
 
     const [activeStep, setActiveStep] = React.useState(0);
 
-    const { control, handleSubmit, getValues, setValue, trigger, formState: { errors, isValid, isSubmitting ,isSubmitSuccessful } } = useForm({
+    const { control, handleSubmit, getValues, setValue, trigger, formState: { errors, isValid, isSubmitting, isSubmitSuccessful } } = useForm({
         mode: 'onChange',
         resolver: yupResolver(getValidationSchema(activeStep)),
     });
@@ -337,6 +346,8 @@ export default function EmployeeForm() {
     const [isPFChecked, setIsPFChecked] = React.useState(false);
     const [isESIChecked, setIsESIChecked] = React.useState(false);
     const [isLWFChecked, setIsLWFChecked] = React.useState(false);
+    const [copyToPermanent, setCopyToPermanent] = React.useState(false);
+
 
     // const [formData, setFormData] = React.useState({
     //     email: '',
@@ -454,6 +465,15 @@ export default function EmployeeForm() {
     }, [salaryOfferred]);
 
 
+    React.useEffect(() => {
+        if (formData.currentAddress) {
+            console.log('Yes it is available')
+        } else {
+            console.log('Not available dude...')
+        }
+
+    }, [copyToPermanent])
+
 
     const handleNext = async () => {
         const isStepValid = await trigger();
@@ -467,9 +487,6 @@ export default function EmployeeForm() {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleReset = () => {
-        setActiveStep(0);
-    };
 
     const onSubmit = (data) => {
         setFormData((prevData) => ({ ...prevData, ...data }));
@@ -486,18 +503,41 @@ export default function EmployeeForm() {
 
     const mapOptions = (data) => {
         return data.map(item => ({
-            label: item, // Adjust as needed
-            value: item    // Adjust as needed
+            label: item,
+            value: item
         }));
     }
-
-    // console.log(mapOptions(Designations), 'important dude....')
 
     const handleSubmit2 = () => {
         console.log('this is formData', formData)
         console.log('this is isSubmitting', isSubmitting)
         console.log('this is isSubmitSuccessful', isSubmitSuccessful)
     }
+
+
+
+    const percentagefunction = () => {
+        let percentageValue
+        if (activeStep === 0) {
+            percentageValue = 0
+        } else if (activeStep === 1) {
+            percentageValue = 20
+        } else if (activeStep === 2) {
+            percentageValue = 40
+        } else if (activeStep === 3) {
+            percentageValue = 60
+        } else if (activeStep === 4) {
+            percentageValue = 80
+        } else if (activeStep === 5) {
+            percentageValue = 100
+        }
+        return percentageValue;
+    }
+
+    const handleCheckboxChange2 = (event) => {
+        setCopyToPermanent(event.target.checked);
+    };
+
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -695,6 +735,12 @@ export default function EmployeeForm() {
                                                             helperText={errors.gender ? errors.gender.message : ''}
                                                             FormHelperTextProps={{
                                                                 style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                            }}
+                                                            sx={{
+                                                                '& .MuiSelect-icon': {
+                                                                    fontSize: '30px',
+                                                                    color: '#2196f3'
+                                                                }
                                                             }}
                                                         >
                                                             <MenuItem value="Male">Male</MenuItem>
@@ -1184,7 +1230,6 @@ export default function EmployeeForm() {
                                                             variant="outlined"
                                                             fullWidth
                                                             margin="normal"
-                                                            // label={<span>Reporting Manager <span style={{ color: 'red' }}> * </span></span>}
                                                             error={!!errors.reportingmanager}
                                                             helperText={errors.reportingmanager ? errors.reportingmanager.message : ''}
                                                             FormHelperTextProps={{
@@ -1525,6 +1570,8 @@ export default function EmployeeForm() {
                                                     <MenuItem value="L3">L3</MenuItem>
                                                     <MenuItem value="L4">L4</MenuItem>
                                                     <MenuItem value="L5">L5</MenuItem>
+                                                    <MenuItem value="L5">L6</MenuItem>
+                                                    <MenuItem value="L5">L7</MenuItem>
                                                 </StyledInput>
                                             )}
                                         />
@@ -1766,9 +1813,238 @@ export default function EmployeeForm() {
                         </>
                     )}
 
+
                     {activeStep === 2 && (
                         <>
-                            <Grid container xs={12} bgcolor={''}> {/* First Horizontal view page - 3 container */}
+                            <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                <Grid item xs={4}>
+                                    <StyledLabel>
+                                        Current Address <span style={{ color: 'red' }}>*</span>
+                                    </StyledLabel>
+                                </Grid>
+                                <Grid item xs={7}>
+                                    <Controller
+                                        name="currentAddress"
+                                        control={control}
+                                        defaultValue={formData.currentAddress || ''}
+                                        render={({ field }) => (
+                                            <MultilineTextField
+                                                fullWidth
+                                                multiline
+                                                rows={4}
+                                                {...field}
+                                                variant="outlined"
+                                                error={!!errors.currentAddress}
+                                                helperText={errors.currentAddress ? errors.currentAddress.message : ''}
+                                                FormHelperTextProps={{
+                                                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+                            </Grid>
+
+
+                            <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                <Grid item xs={4}>
+                                    <StyledLabel>
+                                        Permanent Address <span style={{ color: 'red' }}>*</span>
+                                    </StyledLabel>
+                                </Grid>
+                                <Grid item xs={7}>
+                                    <Controller
+                                        name="permanentAddress"
+                                        control={control}
+                                        defaultValue={formData.permanentAddress}
+                                        render={({ field }) => (
+                                            <MultilineTextField
+                                                fullWidth
+                                                multiline
+                                                rows={4}
+                                                {...field}
+                                                variant="outlined"
+                                                error={!!errors.permanentAddress}
+                                                helperText={errors.permanentAddress ? errors.permanentAddress.message : ''}
+                                                FormHelperTextProps={{
+                                                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+                            </Grid>
+
+
+                            <Grid container alignItems="center" paddingBottom={2}>
+                                <Grid item xs={4}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={copyToPermanent}
+                                                onChange={handleCheckboxChange2}
+                                            />
+                                        }
+                                        label="Same as Current Address"
+                                    />
+                                </Grid>
+                            </Grid>
+                        </>
+                    )}
+
+                    {activeStep === 3 && (
+                        < >
+
+                            <Grid container xs={12} bgcolor={''} sx={{ borderBottom: '1px solid black', width: '20%' }}> {/* First Horizontal view page - 3 container */}
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
+
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Previous Organization Name 1 <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="previousOrganizationName1"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.previousOrganizationName1}
+                                                    helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Designation <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="designation"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.designation}
+                                                    helperText={errors.designation ? errors.designation.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Start Date <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="dateOfBirth"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    type="date"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    error={!!errors.dateOfBirth}
+                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Total Experience (Years) <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="totalExperience"
+                                            control={control}
+                                            defaultValue=""
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.totalExperience}
+                                                    helperText={errors.totalExperience ? errors.totalExperience.message : ''}
+                                                    disabled // Read-only input
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
+
+
+                            </Grid>
+
+
+                            <Grid container xs={12} bgcolor={''} sx={{ borderBottom: '1px solid black' }} > {/* Second Horizontal view page - 3 container */}
+
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
 
                                 <Grid container xs={6} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
@@ -1880,19 +2156,6 @@ export default function EmployeeForm() {
                                     </Grid>
                                 </Grid>
 
-                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
-                                    <Grid item xs={4}>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
-                                    <Grid item xs={4}>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                    </Grid>
-                                </Grid>
 
                                 <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
                                     <Grid item xs={4}>
@@ -1905,147 +2168,23 @@ export default function EmployeeForm() {
 
                             </Grid>
 
-                            <Grid container xs={12} bgcolor={''}> {/* Second Horizontal view page - 3 container */}
 
-
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
-                                    <Grid item xs={4}>
-                                        <StyledLabel>
-                                            Previous Organization Name 1 <span style={{ color: 'red' }}>*</span>
-                                        </StyledLabel>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                        <Controller
-                                            name="previousOrganizationName1"
-                                            control={control}
-                                            defaultValue=""
-                                            render={({ field }) => (
-                                                <StyledInput
-                                                    fullWidth
-                                                    {...field}
-                                                    variant="outlined"
-                                                    error={!!errors.previousOrganizationName1}
-                                                    helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
-                                                    FormHelperTextProps={{
-                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                </Grid>
-
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
-                                    <Grid item xs={4}>
-                                        <StyledLabel>
-                                            Designation <span style={{ color: 'red' }}>*</span>
-                                        </StyledLabel>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                        <Controller
-                                            name="designation"
-                                            control={control}
-                                            defaultValue=""
-                                            render={({ field }) => (
-                                                <StyledInput
-                                                    fullWidth
-                                                    {...field}
-                                                    variant="outlined"
-                                                    error={!!errors.designation}
-                                                    helperText={errors.designation ? errors.designation.message : ''}
-                                                    FormHelperTextProps={{
-                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                </Grid>
-
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
-                                    <Grid item xs={4}>
-                                        <StyledLabel>
-                                            Start Date <span style={{ color: 'red' }}>*</span>
-                                        </StyledLabel>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                        <Controller
-                                            name="dateOfBirth"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <StyledInput
-                                                    fullWidth
-                                                    {...field}
-                                                    variant="outlined"
-                                                    type="date"
-                                                    InputLabelProps={{ shrink: true }}
-                                                    error={!!errors.dateOfBirth}
-                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
-                                                    FormHelperTextProps={{
-                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                </Grid>
-
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
-                                    <Grid item xs={4}>
-                                        <StyledLabel>
-                                            Total Experience (Years) <span style={{ color: 'red' }}>*</span>
-                                        </StyledLabel>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                        <Controller
-                                            name="totalExperience"
-                                            control={control}
-                                            defaultValue=""
-                                            render={({ field }) => (
-                                                <StyledInput
-                                                    fullWidth
-                                                    {...field}
-                                                    variant="outlined"
-                                                    error={!!errors.totalExperience}
-                                                    helperText={errors.totalExperience ? errors.totalExperience.message : ''}
-                                                    disabled // Read-only input
-                                                    FormHelperTextProps={{
-                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                                                    }}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                </Grid>
-
-
-
-                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
-                                    <Grid item xs={4}>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
-                                    <Grid item xs={4}>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
-                                    <Grid item xs={4}>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                    </Grid>
-                                </Grid>
-
-
-
-                            </Grid>
                             <Grid container xs={12} bgcolor={''}> {/* Third Horizontal view page - 3 container */}
 
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
+                                    <Grid item xs={4}>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                    </Grid>
+                                </Grid>
 
                                 <Grid container xs={6} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
@@ -2163,7 +2302,7 @@ export default function EmployeeForm() {
                         </>
                     )}
 
-                    {activeStep === 3 && (
+                    {activeStep === 4 && (
                         <>
                             <Grid xs={12} container > {/* First Horizontal View page - 4 regarding... */}
 
@@ -2224,7 +2363,7 @@ export default function EmployeeForm() {
                                 <Grid xs={6} container alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Passport Number <span style={{ color: 'red' }}>*</span>
+                                            Passport Number
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
@@ -2251,7 +2390,7 @@ export default function EmployeeForm() {
                                 <Grid xs={6} container alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            UAN Number <span style={{ color: 'red' }}>*</span>
+                                            UAN Number
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
@@ -2404,7 +2543,7 @@ export default function EmployeeForm() {
                                 <Grid xs={4} container alignItems="center" paddingBottom={2} style={{ visibility: isPFChecked ? 'visible' : 'hidden', }} >
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            PF Join Date <span style={{ color: 'red' }}>*</span>
+                                            PF Join Date
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
@@ -2434,7 +2573,7 @@ export default function EmployeeForm() {
                         </>
                     )}
 
-                    {activeStep === 4 && (
+                    {activeStep === 5 && (
                         <>
                             <Grid container xs={3}>
                                 <Grid>
@@ -2568,7 +2707,7 @@ export default function EmployeeForm() {
                                                 <Grid container alignItems="center" paddingBottom={2}>
                                                     <Grid item xs={4}>
                                                         <StyledLabel>
-                                                            Account Number <span style={{ color: 'red', fontSize: '1.5rem', marginLeft: '0.25rem' }}>*</span>
+                                                            Account Number <span style={{ color: 'red' }}>*</span>
                                                         </StyledLabel>
                                                     </Grid>
                                                     <Grid item xs={7}>
@@ -2596,7 +2735,7 @@ export default function EmployeeForm() {
                                                 <Grid container alignItems="center" paddingBottom={2}>
                                                     <Grid item xs={4}>
                                                         <StyledLabel>
-                                                            Beneficiary Code <span style={{ color: 'red', fontSize: '1.5rem', marginLeft: '0.25rem' }}>*</span>
+                                                            Beneficiary Code <span style={{ color: 'red' }}>*</span>
                                                         </StyledLabel>
                                                     </Grid>
 
@@ -2608,7 +2747,7 @@ export default function EmployeeForm() {
 
                                                     <Grid item xs={0} alignItems='flex-start'>
                                                         <StyledLabel>
-                                                            Sathiskumar-200027-09/09/24
+                                                            Sathiskumar20027090924
                                                         </StyledLabel>
                                                     </Grid>
 
@@ -2649,7 +2788,7 @@ export default function EmployeeForm() {
             </Box>
 
 
-
+            {/* 
             <Box
                 sx={{
                     display: 'flex',
@@ -2672,6 +2811,83 @@ export default function EmployeeForm() {
                     Back
                 </Button>
                 <Box sx={{ flex: '1 1 auto' }} />
+
+                <Gauge
+                    width={70}
+                    height={70}
+                    value={60}
+                    cornerRadius="50%"
+                    sx={(theme) => ({
+                        [`& .${gaugeClasses.valueText}`]: {
+                            fontSize: 30,
+                        },
+                        [`& .${gaugeClasses.valueArc}`]: {
+                            fill: '#52b202',
+                        },
+                        [`& .${gaugeClasses.referenceArc}`]: {
+                            fill: theme.palette.text.disabled,
+                        },
+                    })}
+                />
+
+                {activeStep === steps.length - 1 ? (
+                    <Button variant="contained" color="primary" type="submit" onClick={handleSubmit2}>
+                        Submit
+                    </Button>
+                ) : (
+                    <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
+                        Next
+                    </Button>
+                )}
+            </Box> */}
+
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    px: 12,
+                    pb: 3,
+                    position: 'fixed',
+                    bottom: 0,
+                    left: 0,
+                    width: '100%',
+                    alignItems: 'center',
+                }}
+            >
+                <Button
+                    color="inherit"
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    sx={{ mr: 1 }}
+                    variant='outlined'
+                >
+                    Back
+                </Button>
+
+                <Box sx={{ flex: '1 1 auto' }} />
+
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mx: 2 }}>
+                    <Gauge
+                        width={70}
+                        height={80}
+                        value={percentagefunction()}
+                        cornerRadius="50%"
+                        sx={(theme) => ({
+                            [`& .${gaugeClasses.valueText}`]: {
+                                fontSize: 18,
+                            },
+                            [`& .${gaugeClasses.valueArc}`]: {
+                                strokeWidth: 50,
+                                fill: '#52b202',
+                            },
+                            [`& .${gaugeClasses.referenceArc}`]: {
+                                fill: theme.palette.text.disabled,
+                                strokeWidth: 15,
+                            },
+                        })}
+                    />
+                </Box>
+
                 {activeStep === steps.length - 1 ? (
                     <Button variant="contained" color="primary" type="submit" onClick={handleSubmit2}>
                         Submit
@@ -2682,6 +2898,7 @@ export default function EmployeeForm() {
                     </Button>
                 )}
             </Box>
+
         </Box >
     );
 }
