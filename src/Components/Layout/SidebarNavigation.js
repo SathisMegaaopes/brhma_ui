@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/system";
 import IconButton from "@mui/material/IconButton";
 import { useLocation } from 'react-router-dom';
@@ -21,7 +21,6 @@ const SidebarContainer = styled('div')(({ isOpen, isActive }) => ({
     position: "fixed",
     zIndex: 3,
     left: 0,
-    // backgroundColor: isOpen ? "#808080" : "#272727",
     backgroundColor: isOpen ? "#749BC2" : "#749BC2",
     overflowX: "hidden",
     overflowY: "auto",
@@ -41,7 +40,7 @@ const SidebarIcon = styled(IconButton)(({ theme, isOpen, isActive }) => ({
     justifyContent: "flex-start",
     alignContent: 'center',
     padding: "25px 15px",
-    fontSize: "20px",   
+    fontSize: "20px",
     transition: "color 0.5s",
     "&:hover": {
         color: isOpen ? "white" : "#f1f1f1",
@@ -54,57 +53,46 @@ function Sidebar() {
     const { sharedTab, setSharedTab } = useSharedContext();
     const { search } = useLocation();
     const queryParams = new URLSearchParams(search);
+
+    const [activeTab, setActiveTab] = useState(queryParams.get('tab') || 'info');
     const [isOpen, setIsOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState('tasks');
 
     const navigate = useNavigate();
 
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
+    const AuthorizedPerson = userinfo?.user_role;
 
-    const AuthorizedPerson = userinfo.user_role 
-
-    React.useEffect(() => {
+    useEffect(() => {
         if (sharedTab.active === 1) {
-            setActiveTab('particularEmployee')
-        } else {
-            setActiveTab('tasks')
+            setActiveTab('particularEmployee');
         }
-    }, [sharedTab.active])
+    }, [sharedTab.active]);
 
-    React.useEffect(() => {
-        // localStorage.setItem('activeTab', activeTab);
+    useEffect(() => {
+
+        const tabParam = `?tab=${activeTab}`;
+
         switch (activeTab) {
-            case 'tasks':
-                navigate("/dashboard");
+            case 'info':
+                navigate(`/dashboard${tabParam}`);
                 break;
             case 'CandidateEvaluation':
-                navigate("/dashboard/evalution");
+                navigate(`/dashboard${tabParam}`);
                 break;
             case 'CandidateDatabase':
-                navigate("/dashboard/candidate-master");
+                navigate(`/dashboard${tabParam}`);
                 break;
             case 'particularEmployee':
-                navigate(sharedTab.TabUrl);
+                navigate(`${sharedTab.TabUrl}${tabParam}`);
                 break;
             case 'EmployeeMaster':
-                navigate('/dashboard/employee-master');
+                navigate(`/dashboard${tabParam}`);
                 break;
             default:
-                navigate("/");
+                navigate(`/dashboard${tabParam}`);
         }
     }, [activeTab, navigate]);
 
-
-    const handleMouseEnter = () => {
-        setIsOpen(true);
-    };
-
-
-    const handleMouseLeave = () => {
-        setIsOpen(false);
-    };
-    
-    
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSharedTab({
@@ -112,28 +100,28 @@ function Sidebar() {
             TabUrl: null,
             active: 0,
             backendUrl: null
-        })
+        });
     };
 
+    const handleMouseEnter = () => setIsOpen(true);
+    const handleMouseLeave = () => setIsOpen(false);
 
     const renderContent = () => {
         switch (activeTab) {
-            case 'tasks':
+            case 'info':
                 return <MOSDashboard />;
             case 'CandidateEvaluation':
                 return <CandidateInterview />;
             case 'CandidateDatabase':
                 return <MOSCandidate />;
-            case 'particularEmployee':
-
+            case 'particularEmployee': {
                 const employid = queryParams.get('employid');
                 const fromdate = queryParams.get('fromdate');
                 const todate = queryParams.get('todate');
-
                 return <MOSCandidate emp_id={employid} fromDate={fromdate} toDate={todate} />;
+            }
             case 'EmployeeMaster':
-                return <EmployeeTable />
-
+                return <EmployeeTable />;
             default:
                 return <MOSDashboard />;
         }
@@ -147,7 +135,7 @@ function Sidebar() {
                 onMouseLeave={handleMouseLeave}
                 isOpen={isOpen}
             >
-                <SidebarIcon disableRipple aria-label="tasks" isOpen={isOpen} onClick={() => handleTabChange('tasks')} isActive={activeTab === 'tasks'} >
+                <SidebarIcon disableRipple aria-label="info" isOpen={isOpen} onClick={() => handleTabChange('info')} isActive={activeTab === 'info'} >
                     <AddTaskIcon sx={{ fontSize: 30 }} />
                     {isOpen && <span>&nbsp;&nbsp;&nbsp;Dashboard</span>}
                 </SidebarIcon>
@@ -164,7 +152,7 @@ function Sidebar() {
                 {AuthorizedPerson === 1 &&
                     <SidebarIcon disableRipple aria-label="EmployeeMaster" isOpen={isOpen} onClick={() => handleTabChange('EmployeeMaster')} isActive={activeTab === 'EmployeeMaster'} >
                         <SupervisorAccountIcon sx={{ fontSize: 30 }} />
-                        {isOpen && <span>&nbsp;&nbsp;&nbsp;Employee </span>}
+                        {isOpen && <span>&nbsp;&nbsp;&nbsp;Employee Master </span>}
                     </SidebarIcon>}
 
             </SidebarContainer>

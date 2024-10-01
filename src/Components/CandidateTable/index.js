@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import URL from "../Global/Utils/url_route.js";
 import { useSharedContext } from "../../Context.js";
+import GroupAddSharpIcon from '@mui/icons-material/GroupAddSharp';
 
 
 function MOSCandiateTable(props) {
@@ -54,9 +55,7 @@ function MOSCandiateTable(props) {
 
 
     const handledeleteCandidate = async () => {
-
         try {
-
             let url = `${URL}candidates`;
 
             const response = await axios.delete(url, {
@@ -67,19 +66,26 @@ function MOSCandiateTable(props) {
             setDeleteStatusVal(response.data.status)
             setnotification(true)
             setRerender(!rerender)
-
-
         } catch (err) {
-
             console.log(err)
-
         } finally {
             setDeletemodal(false)
             setcandidateid(null)
-
         }
-
     }
+
+
+    const hadleNavigatetoOnboard = () => {
+        console.log('Navigation Started');
+        const tabParam = `?tab=${'EmployeeMaster'}`;
+
+        window.location.href = `/dashboard${tabParam}`;
+
+        // navigate(`/dashboard/${tabParam}`);
+        // window.location.reload();
+        console.log('Navigation Ended...')
+    }
+
 
     const handlenotification = (event, reason) => {
         if (reason === 'clickaway') {
@@ -92,7 +98,7 @@ function MOSCandiateTable(props) {
     return (
         <>
             <Grid item sx={12} sm={12} md={12} lg={12} xl={12}>
-                <TableContainer component={Paper} >
+                <TableContainer component={Paper} variant="outlined" >
                     <Table size='small'>
                         <TableHead >
                             <TableRow>
@@ -104,6 +110,7 @@ function MOSCandiateTable(props) {
                                 <TableCell>eMail</TableCell>
                                 <TableCell>Status</TableCell>
                                 <TableCell align="center">Delete</TableCell>
+                                <TableCell align="center">On Board</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -134,6 +141,11 @@ function MOSCandiateTable(props) {
                                             }>
                                                 <Button >
                                                     <DeleteIcon />
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell align="center" onClick={() => hadleNavigatetoOnboard()} >
+                                                <Button>
+                                                    <GroupAddSharpIcon />  
                                                 </Button>
                                             </TableCell>
                                         </TableRow>

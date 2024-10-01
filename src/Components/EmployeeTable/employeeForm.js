@@ -20,32 +20,10 @@ import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import { useQuery } from '@tanstack/react-query';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import dayjs from 'dayjs';
+import URL from '../Global/Utils/url_route';
+import axios from 'axios';
 
-
-
-const DarkTextField = styled((props) => <TextField {...props} size="small" sx={{}} />)(({ theme }) => ({
-    '& .MuiOutlinedInput-root': {
-        color: '#555555',
-        '&.Mui-disabled': {
-            color: '#cccccc',
-        },
-    },
-    '& .MuiInputLabel-root': {
-        color: '#555555',
-        '&.Mui-focused': {
-            color: theme.palette.primary.main,
-        },
-        '&.Mui-disabled': {
-            color: '#cccccc',
-        },
-    },
-    '& .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#555555',
-        '&.Mui-disabled': {
-            borderColor: '#cccccc',
-        },
-    },
-}));
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
     [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -142,6 +120,7 @@ ColorlibStepIcon.propTypes = {
     icon: PropTypes.node,
 };
 
+
 const steps = ['BASIC INFORMATION', 'EMPLOYEE POSITION', 'ADDRESS', 'EXPERIENCE', ' STATUTORY INFO', 'PAYMENT MODE']
 
 const Designations = ['CEO', 'Software Developer', 'Vice President - HR Operations', 'Team Leader', 'HR - Telecaller', 'HR Executive', 'Front Desk Executive', 'System Admin', 'Admin Executive', 'Quality Analyst', 'Business Development Executive']
@@ -149,6 +128,8 @@ const Designations = ['CEO', 'Software Developer', 'Vice President - HR Operatio
 const Department = ['Executive', 'Operations', 'Human Resource', 'IT Infrastructure', 'Facility Management', 'Learning and Development', 'Business Development', 'Software Development']
 
 const Teams = ['Management', 'Supervisor/Manager', 'Documentation and Recruitment', 'Recruitment', 'Front Office', 'IT Team', 'Admin and Facility', 'Quality Control', 'Sales', 'Software Team']
+
+
 
 const shifts = [
     "00:00 - 09:00",
@@ -208,7 +189,12 @@ const schemaValidationForForm = Yup.object().shape({
         .min(4, 'At least four digit is required')
         .max(6, 'No more than 6 digits allowed')
     ,
-    employeeName: Yup.string()
+    firstname: Yup.string()
+        .required('Employee Name is required')
+        .matches(/^[a-zA-Z\s]+$/, 'Employee Name must contain only characters..')
+        .min(5, 'At least fives digit is required')
+    ,
+    lastname: Yup.string()
         .required('Employee Name is required')
         .matches(/^[a-zA-Z\s]+$/, 'Employee Name must contain only characters..')
         .min(5, 'At least fives digit is required')
@@ -280,6 +266,42 @@ const schemaValidationForForm2 = Yup.object().shape({
     billablestatus: Yup.string().required('Billable Status is required'),
 })
 
+const schemaValidationForForm3 = Yup.object().shape({
+    currentaddress: Yup.string().required('Current Address is required'),
+    permanentAddress: Yup.string().required('Permanent Address is required'),
+    currentCity: Yup.string()
+        .required('Current city field is required .')
+        .max(15, 'It cannot more than 15 characters.')
+    ,
+    permanentcity: Yup.string()
+        .required('Current city field is required .')
+        .max(15, 'It cannot more than 15 characters.'),
+    currentPincode: Yup.string()
+        .matches(/^\d+$/, 'Pincode must contain only digits')
+        .min(6, 'It should not be less than 6 digits.')
+        .max(6, 'It cannot be more than 6 characters')
+    ,
+    permanentPincode: Yup.string()
+        .matches(/^\d+$/, 'Pincode must contain only digits')
+        .min(6, 'It should not be less than 6 digits.')
+        .max(6, 'It cannot be more than 6 characters')
+    ,
+})
+
+const schemaValidationForForm4 = Yup.object().shape({
+    aadhaarnumber: Yup.string()
+        .required('Aadhaar number is required.'),
+    pannumber: Yup.string()
+        .required('PAN number is required.')
+})
+
+
+const schemaValidationForForm5 = Yup.object().shape({
+    modeofpayment: Yup.string()
+        .required()
+})
+
+
 //need to check here  ///What means in terms of the Confirmation Date.....
 //employeeconfirmationstatus , this also I have to check again . all are come around one thing only....
 
@@ -288,6 +310,12 @@ const getValidationSchema = (page) => {
         return schemaValidationForForm;
     } else if (page === 1) {
         return schemaValidationForForm2;
+    } else if (page === 2) {
+        return schemaValidationForForm3;
+    } else if (page === 4) {
+        return schemaValidationForForm4;
+    } else if (page === 5) {
+        return schemaValidationForForm5;
     }
     return Yup.object().shape({});
 };
@@ -334,7 +362,11 @@ const MultilineTextField = styled(TextField)(({ theme }) => ({
 
 
 
+
+
 export default function EmployeeForm() {
+
+    let url = `${URL}employeeonboard`
 
     const [activeStep, setActiveStep] = React.useState(0);
 
@@ -349,85 +381,176 @@ export default function EmployeeForm() {
     const [copyToPermanent, setCopyToPermanent] = React.useState(false);
 
 
-    // const [formData, setFormData] = React.useState({
-    //     email: '',
-    //     employeeNumber: '',
-    //     employeeName: '',
-    //     dateOfBirth: '',
-    //     dateOfJoining: '',
-    //     gender: '',
-    //     phone: '',
-    //     mobileNumber: '',
-    //     emergencyContactName: '',
-    //     emergencyContactNumber: '',
-    //     emergencyContactRelation: '',
-    //     fathersName: '',
-    //     fathersOccupation: '',
-    //     spouseName: '',
-    //     bloodGroup: '',
-    //     countryOfOrigin: '',
-    //     nationality: '',
-    //     physicallyChallenged: '',
-    //     //new code....
-    //     reportingmanager: '',
-    //     reportingteamlead: '',
-    //     designation: '',
-    //     department: '',
-    //     team: '',
-    //     referrdby: '',
-    //     employmentstatus: '',
-    //     employeestatus: '',
-    //     shift: '',
-    //     grade: '',
-    //     probabationperiod: '',
-    //     salaryofferred: '',
-    //     totalmonthlyctc: '',
-    //     totalyearlyctc: '',
-    //     attendancebonus: '',
-    //     billablestatus: '',
-    // });
-
 
     const [formData, setFormData] = React.useState({
-        email: 'test@gmail.com',
-        employeeNumber: '',
-        employeeName: '',
-        dateOfBirth: '2024-09-26',
-        dateOfJoining: '2024-09-26',
+        //First Page ---
+        firstname: 'sssssss',
+        lastname: 'sssssss',
+        dateOfBirth: '2024-09-17', //Format of a data -( 2024/09/26 ) 
+        employeeNumber: '0000',
         gender: 'Male',
-        phone: '',
-        mobileNumber: '8778164504',
-        emergencyContactName: 'sssssss',
-        emergencyContactNumber: '8778164504',
-        emergencyContactRelation: 'sssssssss',
-        fathersName: 'iiiiiiiiiiiii',
-        fathersOccupation: '',
-        spouseName: '',
-        bloodGroup: '',
-        countryOfOrigin: '',
-        nationality: '',
-        physicallyChallenged: '',
-        //new code....
-        reportingmanager: '',
+        email: 'test34@gmail.com',
+        mobileNumber: '9778164504',
+        phone: '9778164504',
+        bloodGroup: 'A',
+        dateOfJoining: '2024-09-18',
+        fathersName: 'testfathername',
+        fathersOccupation: 'testfatheroccupation',
+        countryOfOrigin: 'testindia',
+        nationality: 'testIndian',
+        emergencyContactName: 'testemergencycontactname',
+        emergencyContactNumber: '8777842222',
+        emergencyContactRelation: 'testemergencycontactrelation',
+        spouseName: 'testspousename',
+        physicallyChallenged: 'No',
+        education: 'B.E.,',
+        addressprofType: '',     // 21  // 17 // 6  // 15 // 8 // 6 
+
+        //Second Page ---
+
+        // reportingmanager: 'Kannan R',
+        // reportingteamlead: 'Kannan R',
+        // designation: 'CEO',
+        // department: 'Executive',
+        // team: 'IT Team',
+        // referrdby: 'Santhosh',
+        // employmentstatus: 'Probation',
+        // employeestatus: 'Active',
+        // shift: '00:00 - 09:00',
+        // grade: 'L1',
+        // probabationperiod: '180',
+        // salaryofferred: '12000',
+        // totalmonthlyctc: '12000',
+        // attendancebonus: 'Yes',
+        // totalyearlyctc: '144000',
+        // billablestatus: 'Billable',
+        // addresprofpath: '',
+
+        //Third page ---
+
+        // currentaddress: '',
+        // permanentAddress: '',
+        // currentCity: '',
+        // currentPincode: '',
+        // permanentcity: '',
+        // permanentPincode: '',
+
+
+        //Fouth Page ---
+
+        // organization1: '',
+        // designation1: '',
+        // startdate1: '',
+        // enddate1: '',
+        // totalExperience1: '',
+
+        // organization2: '',
+        // designation2: '',
+        // startdate2: '',
+        // enddate2: '',
+        // totalExperience2: '',
+
+        // organization3: '',
+        // designation3: '',
+        // startdate3: '',
+        // enddate3: '',
+        // totalExperience3: '',
+
+        //Fiveth page ----
+
+        // aadhaarnumber: '',
+        // pannumber: '',
+        // passportnumber: '',
+        // uannumber: '',
+        // pfnumber: '',
+        // pfjoindate: '',
+        // esinumber: '',
+        // lwfnumber: '',
+
+
+        //Sixth page ----
+
+        // modeofpayment: '',
+        // bankname: '',
+        // branchname: '',
+        // ifsccode: '',
+        // accountNumber: '',
+        // beneficiarycode: '',
+
+    });
+
+    const [formData2, setFormData2] = React.useState({
+        reportingmanager: 'Kannan R',
         reportingteamlead: 'Kannan R',
         designation: 'CEO',
         department: 'Executive',
-        team: 'Supervisor/Manager',
-        referrdby: 'Male',
-        employmentstatus: 'Male',
-        employeestatus: 'Male',
-        shift: '07:00 - 16:00',
+        team: 'IT Team',
+        referrdby: 'Santhosh',
+        employmentstatus: 'Probation',
+        employeestatus: 'Active',
+        shift: '00:00 - 09:00',
         grade: 'L1',
         probabationperiod: '180',
         salaryofferred: '12000',
         totalmonthlyctc: '12000',
-        totalyearlyctc: '12000',
         attendancebonus: 'Yes',
+        totalyearlyctc: '144000',
         billablestatus: 'Billable',
-    });
+        addresprofpath: '',
+
+    })
+
+
+    const [formData3, setFormData3] = React.useState({
+        currentaddress: '',
+        permanentAddress: '',
+        currentCity: '',
+        currentPincode: '',
+        permanentcity: '',
+        permanentPincode: '',
+    })
+
+    const [formData4, setFormData4] = React.useState({
+        organization1: '',
+        designation1: '',
+        startdate1: '',
+        enddate1: '',
+        totalExperience1: '',
+
+        organization2: '',
+        designation2: '',
+        startdate2: '',
+        enddate2: '',
+        totalExperience2: '',
+
+        organization3: '',
+        designation3: '',
+        startdate3: '',
+        enddate3: '',
+        totalExperience3: '',
+    })
+
+    const [formData5, setFormData5] = React.useState({
+        aadhaarnumber: '',
+        pannumber: '',
+        passportnumber: '',
+        uannumber: '',
+        pfnumber: '',
+        pfjoindate: '',
+        esinumber: '',
+        lwfnumber: '',
+    })
+
+    const [formData6, setFormData6] = React.useState({
+        modeofpayment: '',
+        bankname: '',
+        branchname: '',
+        ifsccode: '',
+        accountNumber: '',
+        beneficiarycode: '',
+    })
 
     const [selectedPaymentType, setSelectedPaymentType] = React.useState('');
-
 
     const salaryOfferred = useWatch({ control, name: 'salaryofferred' });
 
@@ -435,6 +558,7 @@ export default function EmployeeForm() {
     const handleCheckboxChange = (event) => {
         setIsPFChecked(event.target.checked);
     };
+
 
     const handleCheckboxESIChange = (event) => {
         setIsESIChecked(event.target.checked);
@@ -456,7 +580,7 @@ export default function EmployeeForm() {
         setValue('totalmonthlyctc', totalMonthlyCTC, { shouldValidate: true });
         setValue('totalyearlyctc', totalYearlyCTC, { shouldValidate: true });
 
-        setFormData(preState => ({
+        setFormData2(preState => ({
             ...preState,
             totalmonthlyctc: totalMonthlyCTC,
             totalyearlyctc: totalYearlyCTC,
@@ -466,22 +590,182 @@ export default function EmployeeForm() {
 
 
     React.useEffect(() => {
-        if (formData.currentAddress) {
-            console.log('Yes it is available')
+        if (selectedPaymentType !== 'banktransfer') {
+
+
+            setValue('bankname', '', { shouldValidate: true });
+            setValue('branchname', '', { shouldValidate: true });
+            setValue('ifsccode', '', { shouldValidate: true });
+            setValue('accountNumber', '', { shouldValidate: true });
+            setValue('beneficiarycode', '', { shouldValidate: true });
+
+            setFormData6(preState => ({
+                ...preState,
+                bankname: '',
+                branchname: '',
+                ifsccode: '',
+                accountNumber: '',
+                beneficiarycode: '',
+            }))
+
+        }
+
+    }, [selectedPaymentType])
+
+
+    React.useEffect(() => {
+
+        if (copyToPermanent) {
+
+            setValue('permanentAddress', formData3.currentaddress, { shouldValidate: true });
+            setValue('permanentcity', formData3.currentCity, { shouldValidate: true });
+            setValue('permanentPincode', formData3.currentPincode, { shouldValidate: true });
+
+            setFormData3(preState => ({
+                ...preState,
+                permanentAddress: formData3.currentaddress,
+                permanentcity: formData3.currentCity,
+                permanentPincode: formData3.currentPincode,
+            }))
         } else {
-            console.log('Not available dude...')
+
+            setValue('permanentAddress', '', { shouldValidate: true });
+            setValue('permanentcity', '', { shouldValidate: true });
+            setValue('permanentPincode', '', { shouldValidate: true });
+
+            setFormData(preState => ({
+                ...preState,
+                permanentAddress: '',
+                permanentcity: '',
+                permanentPincode: '',
+            }))
+
         }
 
     }, [copyToPermanent])
 
 
+    function calculateExperience(startDate, endDate) {
+        const start = dayjs(startDate);
+        const end = dayjs(endDate);
+
+        const years = Math.max(0, end.diff(start, 'year'));
+        const months = Math.max(0, end.diff(start.add(years, 'year'), 'month'));
+        const days = Math.max(0, end.diff(start.add(years, 'year').add(months, 'month'), 'day'));
+
+        return `${years}.${months}`
+    }
+
+
+    React.useEffect(() => {
+
+        if (formData4.startdate1 && formData4.enddate1) {
+            const experience1 = calculateExperience(formData4.startdate1, formData4.enddate1);
+
+            setValue('totalExperience1', experience1, { shouldValidate: true });
+
+            setFormData4(preState => ({
+                ...preState,
+                totalExperience1: experience1,
+            }))
+
+
+        } else if (formData4.startdate2 && formData4.enddate2) {
+
+            const experience2 = calculateExperience(formData4.startdate2, formData4.enddate2);
+
+            setValue('totalExperience2', experience2, { shouldValidate: true });
+
+            setFormData4(preState => ({
+                ...preState,
+                totalExperience2: experience2,
+            }))
+
+
+
+        } else if (formData4.startdate3 && formData4.enddate3) {
+
+            const experience3 = calculateExperience(formData4.startdate3, formData4.enddate3);
+
+            setValue('totalExperience3', experience3, { shouldValidate: true });
+
+            setFormData4(preState => ({
+                ...preState,
+                totalExperience3: experience3,
+            }))
+
+        }
+
+    }, [formData4.startdate1, formData4.enddate1, formData4.startdate2, formData4.enddate2, formData4.startdate3, formData4.enddate3])
+
+
+    React.useEffect(() => {
+
+        if (!isPFChecked) {
+            setValue('pfnumber', '', { shouldValidate: true });
+            setValue('pfjoindate', '', { shouldValidate: true });
+
+            setFormData5(preState => ({
+                ...preState,
+                pfnumber: '',
+                pfjoindate: '',
+            }))
+        } else if (!isESIChecked) {
+            setValue('esinumber', '', { shouldValidate: true });
+
+            setFormData5(preState => ({
+                ...preState,
+                esinumber: '',
+            }))
+        } else if (!isLWFChecked) {
+            setValue('lwfnumber', '', { shouldValidate: true });
+
+            setFormData5(preState => ({
+                ...preState,
+                lwfnumber: '',
+            }))
+        }
+
+    }, [isESIChecked, isPFChecked, isLWFChecked])
+
+
     const handleNext = async () => {
+
+        console.log(activeStep, 'This is the current page .... ')
+
+        let data;
+
+        if (activeStep === 0) {
+            data = formData;
+        } else if (activeStep === 1) {
+            data = formData2;
+        } else if (activeStep === 2) {
+            data = formData3;
+        } else if (activeStep === 3) {
+            data = formData4;
+        } else if (activeStep === 4) {
+            data = formData5;
+        }
+
+        try {
+            const response = await axios.post(url, {formData : data , anotherData : 'anotherData'})
+            console.log(response)
+
+        } catch (error) {
+            console.log(error, 'Youre getting error da sathis uh.... ')
+        } finally {
+            console.log('Achieved dude ....')
+        }
+
         const isStepValid = await trigger();
         if (isStepValid) {
             setFormData((prevData) => ({ ...prevData, ...getValues() }));
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         }
+
     };
+
+
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -494,13 +778,6 @@ export default function EmployeeForm() {
     };
 
 
-    const options = [
-        { label: 'Kannan R', value: 'Kannan R' },
-        { label: 'Shamala Nagaveni', value: 'Shamala Nagaveni' },
-        { label: 'Sathis Kumar', value: 'Sathis Kumar' },
-        { label: 'Santhosh', value: 'Santhosh' }
-    ];
-
     const mapOptions = (data) => {
         return data.map(item => ({
             label: item,
@@ -508,10 +785,15 @@ export default function EmployeeForm() {
         }));
     }
 
+
     const handleSubmit2 = () => {
+
         console.log('this is formData', formData)
-        console.log('this is isSubmitting', isSubmitting)
-        console.log('this is isSubmitSuccessful', isSubmitSuccessful)
+
+        // setActiveStep(0)
+
+        // console.log('this is isSubmitting', isSubmitting)
+        // console.log('this is isSubmitSuccessful', isSubmitSuccessful)
     }
 
 
@@ -539,6 +821,8 @@ export default function EmployeeForm() {
     };
 
 
+
+
     return (
         <Box sx={{ width: '100%' }}>
             <Stack sx={{ width: '100%' }} spacing={4}>
@@ -552,7 +836,9 @@ export default function EmployeeForm() {
             </Stack>
 
             <Box component="form" sx={{ mt: 6, }} onSubmit={handleSubmit(onSubmit)}  >
+
                 <Grid container >  {/* Whole Parent Container */}
+
                     {activeStep === 0 && (
                         <>
                             <Grid container xs={12} paddingLeft={0}  > {/* First Half  Parent Container */}
@@ -564,7 +850,9 @@ export default function EmployeeForm() {
                                             sx={{ width: 200, height: 200 }}
                                             alt="Profile Image"
                                             src="https://images.pexels.com/photos/4629633/pexels-photo-4629633.jpeg?cs=srgb&dl=pexels-cottonbro-4629633.jpg&fm=jpg"
+                                        // src='Uploads/2024/10/ProfileFolder/MOS20241001426_Screenshot from 2024-08-12 20-30-00.png'
                                         />
+
                                     </Grid>
 
                                 </Grid>
@@ -573,30 +861,73 @@ export default function EmployeeForm() {
 
                                     <Grid container xs={6} spacing={1} >  {/* First Half container */}
 
-                                        <Grid container alignItems="center" paddingBottom={2} >
-                                            <Grid item xs={4}>
-                                                <StyledLabel>
-                                                    Employee Name <span style={{ color: 'red' }}>*</span>
-                                                </StyledLabel>
+                                        <Grid container >
+                                            <Grid xs={6} container alignItems="center" paddingBottom={2} >
+                                                <Grid item xs={4}>
+                                                    <StyledLabel>
+                                                        First Name <span style={{ color: 'red' }}>*</span>
+                                                    </StyledLabel>
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <Controller
+                                                        name="firstname"
+                                                        control={control}
+                                                        defaultValue={formData.firstname}
+                                                        render={({ field }) => (
+                                                            <StyledInput
+                                                                fullWidth
+                                                                {...field}
+                                                                variant="outlined"
+                                                                error={!!errors.firstname}
+                                                                helperText={errors.firstname ? errors.firstname.message : ''}
+                                                                FormHelperTextProps={{
+                                                                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                }}
+                                                                onChange={(e) => {
+                                                                    field.onChange(e);
+                                                                    setFormData((prev) => ({
+                                                                        ...prev,
+                                                                        firstname: e.target.value,
+                                                                    }));
+                                                                }}
+                                                            />
+                                                        )}
+                                                    />
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={7}>
-                                                <Controller
-                                                    name="employeeName"
-                                                    control={control}
-                                                    defaultValue={formData.employeeName}
-                                                    render={({ field }) => (
-                                                        <StyledInput
-                                                            fullWidth
-                                                            {...field}
-                                                            variant="outlined"
-                                                            error={!!errors.employeeName}
-                                                            helperText={errors.employeeName ? errors.employeeName.message : ''}
-                                                            FormHelperTextProps={{
-                                                                style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                                                            }}
-                                                        />
-                                                    )}
-                                                />
+
+                                            <Grid xs={6} container alignItems="center" paddingBottom={2} >
+                                                <Grid item xs={4}>
+                                                    <StyledLabel>
+                                                        Last Name <span style={{ color: 'red' }}>*</span>
+                                                    </StyledLabel>
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <Controller
+                                                        name="lastname"
+                                                        control={control}
+                                                        defaultValue={formData.lastname}
+                                                        render={({ field }) => (
+                                                            <StyledInput
+                                                                fullWidth
+                                                                {...field}
+                                                                variant="outlined"
+                                                                error={!!errors.lastname}
+                                                                helperText={errors.lastname ? errors.lastname.message : ''}
+                                                                FormHelperTextProps={{
+                                                                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                }}
+                                                                onChange={(e) => {
+                                                                    field.onChange(e);
+                                                                    setFormData((prev) => ({
+                                                                        ...prev,
+                                                                        lastname: e.target.value,
+                                                                    }));
+                                                                }}
+                                                            />
+                                                        )}
+                                                    />
+                                                </Grid>
                                             </Grid>
                                         </Grid>
 
@@ -1163,9 +1494,9 @@ export default function EmployeeForm() {
                                         </Grid>
                                         <Grid item xs={7}>
                                             <Controller
-                                                name="addressprof"
+                                                name="addressprofType"
                                                 control={control}
-                                                defaultValue={formData.addressprof}
+                                                defaultValue={formData.addressprofType}
                                                 render={({ field }) => (
                                                     <StyledInput
                                                         {...field}
@@ -1173,18 +1504,25 @@ export default function EmployeeForm() {
                                                         variant="outlined"
                                                         fullWidth
                                                         margin="normal"
-                                                        error={!!errors.addressprof}
-                                                        helperText={errors.addressprof ? errors.addressprof.message : ''}
+                                                        error={!!errors.addressprofType}
+                                                        helperText={errors.addressprofType ? errors.addressprofType.message : ''}
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
-                                                    // label={<span>Address Proof <span style={{ color: 'red' }}>*</span></span>}
+                                                        onChange={(e) => {
+                                                            field.onChange(e);
+                                                            setFormData((prev) => ({
+                                                                ...prev,
+                                                                addressprofType: e.target.value,
+                                                            }));
+                                                        }}
                                                     >
                                                         <MenuItem value="Aadhaar">Aadhaar</MenuItem>
                                                         <MenuItem value="Driving License">Driving License</MenuItem>
                                                         <MenuItem value="Bank Statement">Bank Statement</MenuItem>
                                                         <MenuItem value="Phone Bill">Phone Bill</MenuItem>
                                                         <MenuItem value="Gas Bill">Gas Bill</MenuItem>
+                                                        <MenuItem value="Gas Bill">Passport</MenuItem>
                                                     </StyledInput>
                                                 )}
                                             />
@@ -1213,17 +1551,20 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="reportingmanager"
                                             control={control}
-                                            defaultValue={formData.reportingmanager}
+                                            defaultValue={formData2.reportingmanager}
                                             render={({ field }) => (
                                                 <Autocomplete
                                                     {...field}
                                                     options={[
-                                                        { label: 'Kannan R  ', value: 'Kannan R' },
-                                                        { label: 'Shamala Nagaveni ', value: 'Shamala Nagaveni' },
-                                                        { label: 'Sathis Kumar ', value: 'Sathis Kumar' },
-                                                        { label: 'Santhosh ', value: 'Santhosh' }
+                                                        { label: 'Kannan R', value: 'Kannan R' },
+                                                        { label: 'Shamala Nagaveni', value: 'Shamala Nagaveni' },
+                                                        { label: 'Sathis Kumar', value: 'Sathis Kumar' },
+                                                        { label: 'Santhosh', value: 'Santhosh' }
                                                     ]}
-                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    isOptionEqualToValue={(option, value) => option.value === value}
+
+                                                    onChange={(event, value) => field.onChange(value ? value.value : '')}
+
                                                     renderInput={(params) => (
                                                         <StyledInput
                                                             {...params}
@@ -1254,7 +1595,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="reportingteamlead"
                                             control={control}
-                                            defaultValue={formData.reportingteamlead}
+                                            defaultValue={formData2.reportingteamlead}
                                             render={({ field }) => (
 
                                                 <Autocomplete
@@ -1265,6 +1606,7 @@ export default function EmployeeForm() {
                                                         { label: 'Sathis Kumar ', value: 'Sathis Kumar' },
                                                         { label: 'Santhosh ', value: 'Santhosh' }
                                                     ]}
+                                                    isOptionEqualToValue={(option, value) => option.value === value}
                                                     onChange={(event, value) => field.onChange(value?.value)}
                                                     renderInput={(params) => (
                                                         <StyledInput
@@ -1296,13 +1638,14 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="designation"
                                             control={control}
-                                            defaultValue={formData.designation}
+                                            defaultValue={formData2.designation}
                                             render={({ field }) => (
 
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(Designations)}
                                                     onChange={(event, value) => field.onChange(value?.value)}
+                                                    isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
                                                             {...params}
@@ -1332,13 +1675,14 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="department"
                                             control={control}
-                                            defaultValue={formData.department}
+                                            defaultValue={formData2.department}
                                             render={({ field }) => (
 
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(Department)}
                                                     onChange={(event, value) => field.onChange(value?.value)}
+                                                    isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
                                                             {...params}
@@ -1368,12 +1712,13 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="team"
                                             control={control}
-                                            defaultValue={formData.team}
+                                            defaultValue={formData2.team}
                                             render={({ field }) => (
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(Teams)}
                                                     onChange={(event, value) => field.onChange(value?.value)}
+                                                    isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
                                                             {...params}
@@ -1404,7 +1749,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="referrdby"
                                             control={control}
-                                            defaultValue={formData.referrdby}
+                                            defaultValue={formData2.referrdby}
                                             render={({ field }) => (
 
                                                 <Autocomplete
@@ -1416,6 +1761,7 @@ export default function EmployeeForm() {
                                                         { label: 'Santhosh ', value: 'Santhosh' }
                                                     ]}
                                                     onChange={(event, value) => field.onChange(value?.value)}
+                                                    isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
                                                             {...params}
@@ -1447,7 +1793,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="employmentstatus"
                                             control={control}
-                                            defaultValue={formData.employmentstatus}
+                                            defaultValue={formData2.employmentstatus}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     {...field}
@@ -1483,7 +1829,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="employeestatus"
                                             control={control}
-                                            defaultValue={formData.employeestatus}
+                                            defaultValue={formData2.employeestatus}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     {...field}
@@ -1515,13 +1861,14 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="shift"
                                             control={control}
-                                            defaultValue={formData.shift}
+                                            defaultValue={formData2.shift}
                                             render={({ field }) => (
 
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(shifts)}
                                                     onChange={(event, value) => field.onChange(value?.value)}
+                                                    isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
                                                             {...params}
@@ -1551,7 +1898,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="grade"
                                             control={control}
-                                            defaultValue={formData.grade}
+                                            defaultValue={formData2.grade}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     {...field}
@@ -1588,7 +1935,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="probabationperiod"
                                             control={control}
-                                            defaultValue={formData.probabationperiod}
+                                            defaultValue={formData2.probabationperiod}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     {...field}
@@ -1616,7 +1963,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="salaryofferred"
                                             control={control}
-                                            defaultValue={formData.salaryofferred}
+                                            defaultValue={formData2.salaryofferred}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     {...field}
@@ -1634,7 +1981,6 @@ export default function EmployeeForm() {
                                     </Grid>
                                 </Grid>
 
-
                                 <Grid container alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
@@ -1645,7 +1991,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="attendancebonus"
                                             control={control}
-                                            defaultValue={formData.attendancebonus}
+                                            defaultValue={formData2.attendancebonus}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     {...field}
@@ -1681,7 +2027,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="totalmonthlyctc"
                                             control={control}
-                                            defaultValue={formData.totalmonthlyctc}
+                                            defaultValue={formData2.totalmonthlyctc}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     {...field}
@@ -1710,7 +2056,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="fileupload"
                                             control={control}
-                                            defaultValue={formData.fileupload}
+                                            // defaultValue={formData2.addresprofpath}
                                             render={({ field }) => (
                                                 <div>
                                                     <Button
@@ -1727,6 +2073,10 @@ export default function EmployeeForm() {
                                                             onChange={(e) => {
                                                                 const file = e.target.files[0];
                                                                 field.onChange(file);
+                                                                setFormData2((prev) => ({
+                                                                    ...prev,
+                                                                    addresprofpath: e.target.files[0].size,
+                                                                }))
                                                                 // onFileChange(file); // Optional function for handling file change
                                                             }}
                                                         />
@@ -1739,8 +2089,8 @@ export default function EmployeeForm() {
                                                         {errors.fileupload?.message}
                                                     </FormHelperText>
                                                     {/* <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
-                                                        {errors.fileupload ? errors.fileupload.message : formData.fileupload?.name}
-                                                    </FormHelperText> */}
+                                                    {errors.fileupload ? errors.fileupload.message : formData.fileupload?.name}
+                                                </FormHelperText> */}
                                                 </div>
                                             )}
                                         />
@@ -1757,7 +2107,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="totalyearlyctc"
                                             control={control}
-                                            defaultValue={formData.totalyearlyctc}
+                                            defaultValue={formData2.totalyearlyctc}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     {...field}
@@ -1786,7 +2136,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="billablestatus"
                                             control={control}
-                                            defaultValue={formData.billablestatus}
+                                            defaultValue={formData2.billablestatus}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     {...field}
@@ -1813,76 +2163,239 @@ export default function EmployeeForm() {
                         </>
                     )}
 
-
                     {activeStep === 2 && (
+
                         <>
-                            <Grid container xs={6} alignItems="center" paddingBottom={2}>
-                                <Grid item xs={4}>
-                                    <StyledLabel>
-                                        Current Address <span style={{ color: 'red' }}>*</span>
-                                    </StyledLabel>
+
+                            <Grid container xs={6} >
+                                <Grid container xs={12} alignItems="center" paddingBottom={3}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Current Address <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="currentaddress"
+                                            control={control}
+                                            defaultValue={formData3.currentaddress || ''}
+                                            render={({ field }) => (
+                                                <MultilineTextField
+                                                    fullWidth
+                                                    multiline
+                                                    rows={4}
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.currentaddress}
+                                                    helperText={errors.currentaddress ? errors.currentaddress.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData3((prev) => ({
+                                                            ...prev,
+                                                            currentaddress: e.target.value,
+                                                        }));
+                                                    }} />
+                                            )}
+                                        />
+                                    </Grid>
+
                                 </Grid>
-                                <Grid item xs={7}>
-                                    <Controller
-                                        name="currentAddress"
-                                        control={control}
-                                        defaultValue={formData.currentAddress || ''}
-                                        render={({ field }) => (
-                                            <MultilineTextField
-                                                fullWidth
-                                                multiline
-                                                rows={4}
-                                                {...field}
-                                                variant="outlined"
-                                                error={!!errors.currentAddress}
-                                                helperText={errors.currentAddress ? errors.currentAddress.message : ''}
-                                                FormHelperTextProps={{
-                                                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                                                }}
-                                            />
-                                        )}
-                                    />
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={3}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Current City <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="currentCity"
+                                            control={control}
+                                            defaultValue={formData3.currentCity}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.currentCity}
+                                                    helperText={errors.currentCity ? errors.currentCity.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData3((prev) => ({
+                                                            ...prev,
+                                                            currentCity: e.target.value,
+                                                        }));
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
                                 </Grid>
+
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={3}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Pincode <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="currentPincode"
+                                            control={control}
+                                            defaultValue={formData3.currentPincode}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.currentPincode}
+                                                    helperText={errors.currentPincode ? errors.currentPincode.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData3((prev) => ({
+                                                            ...prev,
+                                                            currentPincode: e.target.value,
+                                                        }));
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                            </Grid>
+
+                            <Grid container xs={6} >
+                                <Grid container xs={12} alignItems="center" paddingBottom={3}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Permanent Address <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="permanentAddress"
+                                            control={control}
+                                            defaultValue={formData3.permanentAddress}
+                                            render={({ field }) => (
+                                                <MultilineTextField
+                                                    fullWidth
+                                                    multiline
+                                                    rows={4}
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.permanentAddress}
+                                                    helperText={errors.permanentAddress ? errors.permanentAddress.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData3((prev) => ({
+                                                            ...prev,
+                                                            permanentAddress: e.target.value,
+                                                        }));
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={3}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Permanent City <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="permanentcity"
+                                            control={control}
+                                            defaultValue={formData3.permanentcity}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.permanentcity}
+                                                    helperText={errors.permanentcity ? errors.permanentcity.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData3((prev) => ({
+                                                            ...prev,
+                                                            permanentcity: e.target.value,
+                                                        }));
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={12} alignItems="center" paddingBottom={3}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Pincode <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="permanentPincode"
+                                            control={control}
+                                            defaultValue={formData3.permanentPincode}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.permanentPincode}
+                                                    helperText={errors.permanentPincode ? errors.permanentPincode.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData3((prev) => ({
+                                                            ...prev,
+                                                            permanentPincode: e.target.value,
+                                                        }));
+                                                    }}
+                                                />
+
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+
                             </Grid>
 
 
-                            <Grid container xs={6} alignItems="center" paddingBottom={2}>
-                                <Grid item xs={4}>
-                                    <StyledLabel>
-                                        Permanent Address <span style={{ color: 'red' }}>*</span>
-                                    </StyledLabel>
-                                </Grid>
-                                <Grid item xs={7}>
-                                    <Controller
-                                        name="permanentAddress"
-                                        control={control}
-                                        defaultValue={formData.permanentAddress}
-                                        render={({ field }) => (
-                                            <MultilineTextField
-                                                fullWidth
-                                                multiline
-                                                rows={4}
-                                                {...field}
-                                                variant="outlined"
-                                                error={!!errors.permanentAddress}
-                                                helperText={errors.permanentAddress ? errors.permanentAddress.message : ''}
-                                                FormHelperTextProps={{
-                                                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                </Grid>
-                            </Grid>
 
 
-                            <Grid container alignItems="center" paddingBottom={2}>
+                            <Grid container alignItems="center" paddingBottom={3}>
                                 <Grid item xs={4}>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
                                                 checked={copyToPermanent}
                                                 onChange={handleCheckboxChange2}
+                                                disabled={!(formData3.currentaddress && formData3.currentCity && formData3.currentPincode)}
                                             />
                                         }
                                         label="Same as Current Address"
@@ -1905,17 +2418,17 @@ export default function EmployeeForm() {
                                 </Grid>
 
 
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Previous Organization Name 1 <span style={{ color: 'red' }}>*</span>
+                                            Previous Organization Name 1
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="previousOrganizationName1"
+                                            name="organization1"
                                             control={control}
-                                            defaultValue=""
+                                            defaultValue={formData4.organization1}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -1926,33 +2439,12 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                </Grid>
-
-
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
-                                    <Grid item xs={4}>
-                                        <StyledLabel>
-                                            Designation <span style={{ color: 'red' }}>*</span>
-                                        </StyledLabel>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                        <Controller
-                                            name="designation"
-                                            control={control}
-                                            defaultValue=""
-                                            render={({ field }) => (
-                                                <StyledInput
-                                                    fullWidth
-                                                    {...field}
-                                                    variant="outlined"
-                                                    error={!!errors.designation}
-                                                    helperText={errors.designation ? errors.designation.message : ''}
-                                                    FormHelperTextProps={{
-                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            organization1: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -1961,16 +2453,52 @@ export default function EmployeeForm() {
                                 </Grid>
 
 
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Start Date <span style={{ color: 'red' }}>*</span>
+                                            Designation
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="dateOfBirth"
+                                            name="designation1"
                                             control={control}
+                                            defaultValue={formData4.designation1}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.designation1}
+                                                    helperText={errors.designation1 ? errors.designation1.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            designation1: e.target.value,
+                                                        }));
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Start Date
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="startdate1"
+                                            control={control}
+                                            defaultValue={formData4.startdate1}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -1983,23 +2511,67 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            startdate1: e.target.value,
+                                                        }));
+                                                    }}
                                                 />
                                             )}
                                         />
                                     </Grid>
                                 </Grid>
 
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Total Experience (Years) <span style={{ color: 'red' }}>*</span>
+                                            End Date
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="totalExperience"
+                                            name="enddate1"
                                             control={control}
-                                            defaultValue=""
+                                            defaultValue={formData4.enddate1}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    type="date"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    error={!!errors.dateOfBirth}
+                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            enddate1: e.target.value,
+                                                        }));
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Total Experience ( In Years)
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="totalExperience1"
+                                            control={control}
+                                            defaultValue={formData4.totalExperience1}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2010,6 +2582,13 @@ export default function EmployeeForm() {
                                                     disabled // Read-only input
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            totalExperience: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2046,26 +2625,33 @@ export default function EmployeeForm() {
                                     </Grid>
                                 </Grid>
 
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Previous Organization Name 1 <span style={{ color: 'red' }}>*</span>
+                                            Previous Organization Name 2
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="previousOrganizationName1"
+                                            name="organization2"
                                             control={control}
-                                            defaultValue=""
+                                            defaultValue={formData4.organization2}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
                                                     {...field}
                                                     variant="outlined"
-                                                    error={!!errors.previousOrganizationName1}
-                                                    helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
+                                                    error={!!errors.organization1}
+                                                    helperText={errors.organization1 ? errors.organization1.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            organization2: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2073,17 +2659,17 @@ export default function EmployeeForm() {
                                     </Grid>
                                 </Grid>
 
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Designation <span style={{ color: 'red' }}>*</span>
+                                            Designation
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="designation"
+                                            name="designation2"
                                             control={control}
-                                            defaultValue=""
+                                            defaultValue={formData4.designation2}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2094,22 +2680,30 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            designation2: e.target.value,
+                                                        }));
+                                                    }}
                                                 />
                                             )}
                                         />
                                     </Grid>
                                 </Grid>
 
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Start Date <span style={{ color: 'red' }}>*</span>
+                                            Start Date
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="dateOfBirth"
+                                            name="startdate2"
                                             control={control}
+                                            defaultValue={formData4.startdate2}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2122,23 +2716,67 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            startdate2: e.target.value,
+                                                        }));
+                                                    }}
                                                 />
                                             )}
                                         />
                                     </Grid>
                                 </Grid>
 
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Total Experience (Years) <span style={{ color: 'red' }}>*</span>
+                                            End Date
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="totalExperience"
+                                            name="enddate2"
                                             control={control}
-                                            defaultValue=""
+                                            defaultValue={formData4.enddate2}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    type="date"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    error={!!errors.dateOfBirth}
+                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            enddate2: e.target.value,
+                                                        }));
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Total Experience ( In Years)
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="totalExperience2"
+                                            control={control}
+                                            defaultValue={formData4.totalExperience2}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2149,6 +2787,13 @@ export default function EmployeeForm() {
                                                     disabled // Read-only input
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            totalExperience2: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2163,15 +2808,13 @@ export default function EmployeeForm() {
                                     <Grid item xs={7}>
                                     </Grid>
                                 </Grid>
-
-
 
                             </Grid>
 
 
+
                             <Grid container xs={12} bgcolor={''}> {/* Third Horizontal view page - 3 container */}
 
-
                                 <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
                                     <Grid item xs={4}>
                                     </Grid>
@@ -2186,17 +2829,17 @@ export default function EmployeeForm() {
                                     </Grid>
                                 </Grid>
 
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Previous Organization Name 1 <span style={{ color: 'red' }}>*</span>
+                                            Previous Organization Name 3
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="previousOrganizationName1"
+                                            name="organization3"
                                             control={control}
-                                            defaultValue=""
+                                            defaultValue={formData4.organization3}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2207,23 +2850,30 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            organization3: e.target.value,
+                                                        }));
+                                                    }}
                                                 />
                                             )}
                                         />
                                     </Grid>
                                 </Grid>
 
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Designation <span style={{ color: 'red' }}>*</span>
+                                            Designation
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="designation"
+                                            name="designation3"
                                             control={control}
-                                            defaultValue=""
+                                            defaultValue={formData4.designation3}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2234,22 +2884,30 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            designation3: e.target.value,
+                                                        }));
+                                                    }}
                                                 />
                                             )}
                                         />
                                     </Grid>
                                 </Grid>
 
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Start Date <span style={{ color: 'red' }}>*</span>
+                                            Start Date
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="dateOfBirth"
+                                            name="startdate3"
                                             control={control}
+                                            defaultValue={formData4.startdate3}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2262,33 +2920,12 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
-                                                />
-                                            )}
-                                        />
-                                    </Grid>
-                                </Grid>
-
-                                <Grid container xs={6} alignItems="center" paddingBottom={2}>
-                                    <Grid item xs={4}>
-                                        <StyledLabel>
-                                            Total Experience (Years) <span style={{ color: 'red' }}>*</span>
-                                        </StyledLabel>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                        <Controller
-                                            name="totalExperience"
-                                            control={control}
-                                            defaultValue=""
-                                            render={({ field }) => (
-                                                <StyledInput
-                                                    fullWidth
-                                                    {...field}
-                                                    variant="outlined"
-                                                    error={!!errors.totalExperience}
-                                                    helperText={errors.totalExperience ? errors.totalExperience.message : ''}
-                                                    disabled // Read-only input
-                                                    FormHelperTextProps={{
-                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            startdate3: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2296,6 +2933,76 @@ export default function EmployeeForm() {
                                     </Grid>
                                 </Grid>
 
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            End Date
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="enddate3"
+                                            control={control}
+                                            defaultValue={formData4.enddate3}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    type="date"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    error={!!errors.dateOfBirth}
+                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            enddate3: e.target.value,
+                                                        }));
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                <Grid container xs={4} alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Total Experience ( In Years)
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="totalExperience3"
+                                            control={control}
+                                            defaultValue={formData4.totalExperience3}
+                                            render={({ field }) => (
+                                                <StyledInput
+                                                    fullWidth
+                                                    {...field}
+                                                    variant="outlined"
+                                                    error={!!errors.totalExperience}
+                                                    helperText={errors.totalExperience ? errors.totalExperience.message : ''}
+                                                    disabled
+                                                    FormHelperTextProps={{
+                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData4((prev) => ({
+                                                            ...prev,
+                                                            totalExperience3: e.target.value,
+                                                        }));
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
 
                             </Grid>
 
@@ -2316,7 +3023,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="aadhaarnumber"
                                             control={control}
-                                            defaultValue={formData.aadhaarnumber}
+                                            defaultValue={formData5.aadhaarnumber}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     {...field}
@@ -2326,6 +3033,13 @@ export default function EmployeeForm() {
                                                     helperText={errors.aadhaarnumber ? errors.aadhaarnumber.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData5((prev) => ({
+                                                            ...prev,
+                                                            aadhaarnumber: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2343,7 +3057,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="pannumber"
                                             control={control}
-                                            defaultValue={formData.pannumber}
+                                            defaultValue={formData5.pannumber}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     {...field}
@@ -2353,6 +3067,13 @@ export default function EmployeeForm() {
                                                     helperText={errors.pannumber ? errors.pannumber.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData5((prev) => ({
+                                                            ...prev,
+                                                            pannumber: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2370,7 +3091,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="passportnumber"
                                             control={control}
-                                            defaultValue={formData.passportnumber}
+                                            defaultValue={formData5.passportnumber}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2380,6 +3101,13 @@ export default function EmployeeForm() {
                                                     helperText={errors.passportnumber ? errors.passportnumber.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData5((prev) => ({
+                                                            ...prev,
+                                                            passportnumber: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2397,7 +3125,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="uannumber"
                                             control={control}
-                                            defaultValue={formData.uannumber}
+                                            defaultValue={formData5.uannumber}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2407,6 +3135,13 @@ export default function EmployeeForm() {
                                                     helperText={errors.uannumber ? errors.uannumber.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData5((prev) => ({
+                                                            ...prev,
+                                                            uannumber: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2469,7 +3204,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="pfnumber"
                                             control={control}
-                                            defaultValue={formData.pfnumber || ''}
+                                            defaultValue={formData5.pfnumber || ''}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2479,6 +3214,13 @@ export default function EmployeeForm() {
                                                     helperText={errors.pfnumber ? errors.pfnumber.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData5((prev) => ({
+                                                            ...prev,
+                                                            pfnumber: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2496,7 +3238,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="esinumber"
                                             control={control}
-                                            defaultValue={formData.esinumber || ''}
+                                            defaultValue={formData5.esinumber || ''}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2506,6 +3248,13 @@ export default function EmployeeForm() {
                                                     helperText={errors.esinumber ? errors.esinumber.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData5((prev) => ({
+                                                            ...prev,
+                                                            esinumber: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2523,7 +3272,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="lwfnumber"
                                             control={control}
-                                            defaultValue={formData.lwfnumber || ''}
+                                            defaultValue={formData5.lwfnumber || ''}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2533,6 +3282,13 @@ export default function EmployeeForm() {
                                                     helperText={errors.lwfnumber ? errors.lwfnumber.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData5((prev) => ({
+                                                            ...prev,
+                                                            lwfnumber: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2548,9 +3304,9 @@ export default function EmployeeForm() {
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="pfjoinddate"
+                                            name="pfjoindate"
                                             control={control}
-                                            defaultValue={formData.pfjoinddate}
+                                            defaultValue={formData5.pfjoindate}
                                             render={({ field }) => (
                                                 <StyledInput
                                                     fullWidth
@@ -2558,10 +3314,17 @@ export default function EmployeeForm() {
                                                     type="date"
                                                     variant="outlined"
                                                     InputLabelProps={{ shrink: true }}
-                                                    error={!!errors.pfjoinddate}
-                                                    helperText={errors.pfjoinddate ? errors.pfjoinddate.message : ''}
+                                                    error={!!errors.pfjoindate}
+                                                    helperText={errors.pfjoindate ? errors.pfjoindate.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData5((prev) => ({
+                                                            ...prev,
+                                                            pfjoindate: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2589,11 +3352,11 @@ export default function EmployeeForm() {
                                     </Grid>
                                     <Grid item xs={7}>
                                         <Controller
-                                            name="paymenttype"
+                                            name="modeofpayment"
                                             control={control}
-                                            defaultValue={formData.paymenttype}
+                                            defaultValue={formData6.modeofpayment}
                                             render={({ field }) => (
-                                                <FormControl fullWidth variant="outlined" margin="normal" error={!!errors.paymenttype}>
+                                                <FormControl fullWidth variant="outlined" margin="normal" error={!!errors.modeofpayment}>
                                                     <InputLabel>
                                                         Payment Type <span style={{ color: 'red' }}>*</span>
                                                     </InputLabel>
@@ -2603,16 +3366,20 @@ export default function EmployeeForm() {
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             handlePaymentTypeChange(e);
+                                                            setFormData6((prev) => ({
+                                                                ...prev,
+                                                                modeofpayment: e.target.value,
+                                                            }));
                                                         }}
                                                         label="Payment Type"
                                                     >
                                                         <MenuItem value="cash">Cash</MenuItem>
-                                                        <MenuItem value="bank_transfer">Bank Transfer</MenuItem>
+                                                        <MenuItem value="banktransfer">Bank Transfer</MenuItem>
                                                         <MenuItem value="cheque">Cheque</MenuItem>
-                                                        <MenuItem value="demand_draft">Demand Draft</MenuItem>
+                                                        <MenuItem value="demanddraft">Demand Draft</MenuItem>
                                                     </Select>
                                                     <FormHelperText>
-                                                        {errors.paymenttype ? errors.paymenttype.message : ''}
+                                                        {errors.modeofpayment ? errors.modeofpayment.message : ''}
                                                     </FormHelperText>
                                                 </FormControl>
                                             )}
@@ -2621,8 +3388,10 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
 
-                                        {selectedPaymentType === 'bank_transfer' && (
+                                        {selectedPaymentType === 'banktransfer' && (
+
                                             <Grid container paddingTop={2}>
+
                                                 <Grid container alignItems="center" paddingBottom={2}>
                                                     <Grid item xs={4}>
                                                         <StyledLabel>
@@ -2633,7 +3402,7 @@ export default function EmployeeForm() {
                                                         <Controller
                                                             name="bankname"
                                                             control={control}
-                                                            defaultValue={formData.bankname}
+                                                            defaultValue={formData6.bankname}
                                                             render={({ field }) => (
                                                                 <StyledInput
                                                                     {...field}
@@ -2643,6 +3412,13 @@ export default function EmployeeForm() {
                                                                     helperText={errors.bankname ? errors.bankname.message : ''}
                                                                     FormHelperTextProps={{
                                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                    }}
+                                                                    onChange={(e) => {
+                                                                        field.onChange(e);
+                                                                        setFormData6((prev) => ({
+                                                                            ...prev,
+                                                                            bankname: e.target.value,
+                                                                        }));
                                                                     }}
                                                                 />
                                                             )}
@@ -2660,7 +3436,7 @@ export default function EmployeeForm() {
                                                         <Controller
                                                             name="branchname"
                                                             control={control}
-                                                            defaultValue={formData.branchname}
+                                                            defaultValue={formData6.branchname}
                                                             render={({ field }) => (
                                                                 <StyledInput
                                                                     {...field}
@@ -2670,6 +3446,13 @@ export default function EmployeeForm() {
                                                                     helperText={errors.branchname ? errors.branchname.message : ''}
                                                                     FormHelperTextProps={{
                                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                    }}
+                                                                    onChange={(e) => {
+                                                                        field.onChange(e);
+                                                                        setFormData6((prev) => ({
+                                                                            ...prev,
+                                                                            branchname: e.target.value,
+                                                                        }));
                                                                     }}
                                                                 />
                                                             )}
@@ -2687,7 +3470,7 @@ export default function EmployeeForm() {
                                                         <Controller
                                                             name="ifsccode"
                                                             control={control}
-                                                            defaultValue={formData.ifsccode}
+                                                            defaultValue={formData6.ifsccode}
                                                             render={({ field }) => (
                                                                 <StyledInput
                                                                     {...field}
@@ -2697,6 +3480,13 @@ export default function EmployeeForm() {
                                                                     helperText={errors.ifsccode ? errors.ifsccode.message : ''}
                                                                     FormHelperTextProps={{
                                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                    }}
+                                                                    onChange={(e) => {
+                                                                        field.onChange(e);
+                                                                        setFormData6((prev) => ({
+                                                                            ...prev,
+                                                                            ifsccode: e.target.value,
+                                                                        }));
                                                                     }}
                                                                 />
                                                             )}
@@ -2712,25 +3502,31 @@ export default function EmployeeForm() {
                                                     </Grid>
                                                     <Grid item xs={7}>
                                                         <Controller
-                                                            name="accountnumber"
+                                                            name="accountNumber"
                                                             control={control}
-                                                            defaultValue={formData.accountnumber}
+                                                            defaultValue={formData6.accountNumber}
                                                             render={({ field }) => (
                                                                 <StyledInput
                                                                     {...field}
                                                                     variant="outlined"
                                                                     fullWidth
-                                                                    error={!!errors.accountnumber}
-                                                                    helperText={errors.accountnumber ? errors.accountnumber.message : ''}
+                                                                    error={!!errors.accountNumber}
+                                                                    helperText={errors.accountNumber ? errors.accountNumber.message : ''}
                                                                     FormHelperTextProps={{
                                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                    }}
+                                                                    onChange={(e) => {
+                                                                        field.onChange(e);
+                                                                        setFormData6((prev) => ({
+                                                                            ...prev,
+                                                                            accountNumber: e.target.value,
+                                                                        }));
                                                                     }}
                                                                 />
                                                             )}
                                                         />
                                                     </Grid>
                                                 </Grid>
-
 
                                                 <Grid container alignItems="center" paddingBottom={2}>
                                                     <Grid item xs={4}>
@@ -2752,24 +3548,24 @@ export default function EmployeeForm() {
                                                     </Grid>
 
                                                     {/* <Grid item xs={7}>
-                                                        <Controller
-                                                            name="accountnumber"
-                                                            control={control}
-                                                            defaultValue={formData.accountnumber}
-                                                            render={({ field }) => (
-                                                                <StyledInput
-                                                                    {...field}
-                                                                    variant="outlined"
-                                                                    fullWidth
-                                                                    error={!!errors.accountnumber}
-                                                                    helperText={errors.accountnumber ? errors.accountnumber.message : ''}
-                                                                    FormHelperTextProps={{
-                                                                        style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        />
-                                                    </Grid> */}
+                                                    <Controller
+                                                        name="accountnumber"
+                                                        control={control}
+                                                        defaultValue={formData.accountnumber}
+                                                        render={({ field }) => (
+                                                            <StyledInput
+                                                                {...field}
+                                                                variant="outlined"
+                                                                fullWidth
+                                                                error={!!errors.accountnumber}
+                                                                helperText={errors.accountnumber ? errors.accountnumber.message : ''}
+                                                                FormHelperTextProps={{
+                                                                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                }}
+                                                            />
+                                                        )}
+                                                    />
+                                                </Grid> */}
                                                 </Grid>
 
                                             </Grid>
@@ -2786,60 +3582,6 @@ export default function EmployeeForm() {
                 </Grid>
 
             </Box>
-
-
-            {/* 
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    px: 12,
-                    pb: 3,
-                    position: 'fixed',
-                    bottom: 0,
-                    left: 0,
-                    width: '100%',
-                }}
-            >
-                <Button
-                    color="inherit"
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    sx={{ mr: 1 }}
-                    variant='outlined'
-                >
-                    Back
-                </Button>
-                <Box sx={{ flex: '1 1 auto' }} />
-
-                <Gauge
-                    width={70}
-                    height={70}
-                    value={60}
-                    cornerRadius="50%"
-                    sx={(theme) => ({
-                        [`& .${gaugeClasses.valueText}`]: {
-                            fontSize: 30,
-                        },
-                        [`& .${gaugeClasses.valueArc}`]: {
-                            fill: '#52b202',
-                        },
-                        [`& .${gaugeClasses.referenceArc}`]: {
-                            fill: theme.palette.text.disabled,
-                        },
-                    })}
-                />
-
-                {activeStep === steps.length - 1 ? (
-                    <Button variant="contained" color="primary" type="submit" onClick={handleSubmit2}>
-                        Submit
-                    </Button>
-                ) : (
-                    <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
-                        Next
-                    </Button>
-                )}
-            </Box> */}
 
             <Box
                 sx={{
@@ -2889,7 +3631,7 @@ export default function EmployeeForm() {
                 </Box>
 
                 {activeStep === steps.length - 1 ? (
-                    <Button variant="contained" color="primary" type="submit" onClick={handleSubmit2}>
+                    <Button variant="contained" color="primary" type="submit" onClick={handleSubmit2} disabled={!isValid}>
                         Submit
                     </Button>
                 ) : (
@@ -2900,7 +3642,9 @@ export default function EmployeeForm() {
             </Box>
 
         </Box >
+
     );
 }
+
 
 
