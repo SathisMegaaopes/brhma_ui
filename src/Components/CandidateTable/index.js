@@ -143,11 +143,13 @@ function MOSCandiateTable(props) {
                                                     <DeleteIcon />
                                                 </Button>
                                             </TableCell>
+                                            {/* result */}
                                             <TableCell align="center" onClick={() => hadleNavigatetoOnboard()} >
-                                                <Button>
-                                                    <GroupAddSharpIcon />  
-                                                </Button>
+                                                {item.result === 1 && <Button>
+                                                    <GroupAddSharpIcon />
+                                                </Button>}
                                             </TableCell>
+
                                         </TableRow>
                                     )
                                 })

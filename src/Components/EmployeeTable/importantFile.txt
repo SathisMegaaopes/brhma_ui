@@ -3946,3 +3946,77 @@ important dude , Sathis dude ......
         beneficiarycode: '',
         
     });
+
+
+
+
+     //Second Page ---
+
+        // reportingmanager: 'Kannan R',
+        // reportingteamlead: 'Kannan R',
+        // designation: 'CEO',
+        // department: 'Executive',
+        // team: 'IT Team',
+        // referrdby: 'Santhosh',
+        // employmentstatus: 'Probation',
+        // employeestatus: 'Active',
+        // shift: '00:00 - 09:00',
+        // grade: 'L1',
+        // probabationperiod: '180',
+        // salaryofferred: '12000',
+        // totalmonthlyctc: '12000',
+        // attendancebonus: 'Yes',
+        // totalyearlyctc: '144000',
+        // billablestatus: 'Billable',
+        // addresprofpath: '',
+
+        //Third page ---
+
+        // currentaddress: '',
+        // permanentAddress: '',
+        // currentCity: '',
+        // currentPincode: '',
+        // permanentcity: '',
+        // permanentPincode: '',
+
+
+        //Fouth Page ---
+
+        // organization1: '',
+        // designation1: '',
+        // startdate1: '',
+        // enddate1: '',
+        // totalExperience1: '',
+
+        // organization2: '',
+        // designation2: '',
+        // startdate2: '',
+        // enddate2: '',
+        // totalExperience2: '',
+
+        // organization3: '',
+        // designation3: '',
+        // startdate3: '',
+        // enddate3: '',
+        // totalExperience3: '',
+
+        //Fiveth page ----
+
+        // aadhaarnumber: '',
+        // pannumber: '',
+        // passportnumber: '',
+        // uannumber: '',
+        // pfnumber: '',
+        // pfjoindate: '',
+        // esinumber: '',
+        // lwfnumber: '',
+
+
+        //Sixth page ----
+
+        // modeofpayment: '',
+        // bankname: '',
+        // branchname: '',
+        // ifsccode: '',
+        // accountNumber: '',
+        // beneficiarycode: '',
