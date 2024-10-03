@@ -28,7 +28,7 @@ const UploadDetails = (props) => {
     const [id, setId] = useState(props.id)
 
     const [alertMessage, setAlertMessage] = useState('');
-    const [alertSeverity, setAlertSeverity] = useState(''); 
+    const [alertSeverity, setAlertSeverity] = useState('');
 
 
     useEffect(() => {
@@ -140,9 +140,9 @@ const UploadDetails = (props) => {
                     <Stack
                         sx={{
                             width: 'fit-content',
-                            margin: 'auto', 
+                            margin: 'auto',
                             alignItems: 'center',
-                            justifyContent: 'center', 
+                            justifyContent: 'center',
                             minHeight: '20px'
                         }}
                         spacing={2}
@@ -151,24 +151,24 @@ const UploadDetails = (props) => {
                             <Alert
                                 severity={alertSeverity}
                                 sx={{
-                                    width: '100%', 
+                                    width: '100%',
                                     maxWidth: { xs: '100%', sm: '100%', md: '100%' },
-                                    height: 'auto', 
-                                    maxHeight: { xs: '40px', sm: '40px', md: '40px' }, 
-                                    fontSize: { xs: '0.875rem', sm: '1rem', md: '1.2rem' }, 
+                                    height: 'auto',
+                                    maxHeight: { xs: '40px', sm: '40px', md: '40px' },
+                                    fontSize: { xs: '0.875rem', sm: '1rem', md: '1.2rem' },
                                     textAlign: 'center',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    padding: { xs: '0.5rem 1rem', sm: '0.5rem 1rem', md: '0.5rem 1rem' }, 
-                                    overflow: 'hidden', 
-                                    boxSizing: 'border-box', 
+                                    padding: { xs: '0.5rem 1rem', sm: '0.5rem 1rem', md: '0.5rem 1rem' },
+                                    overflow: 'hidden',
+                                    boxSizing: 'border-box',
                                     backgroundColor: alertSeverity === 'error'
-                                        ? '#f5c6cb' 
-                                        : '#c3e6cb', 
+                                        ? '#f5c6cb'
+                                        : '#c3e6cb',
                                     color: alertSeverity === 'error'
-                                        ? '#721c24' 
-                                        : '#155724', 
+                                        ? '#721c24'
+                                        : '#155724',
                                 }}
                             >
                                 {alertMessage}

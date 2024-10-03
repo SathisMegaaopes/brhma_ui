@@ -8,7 +8,7 @@ import StepLabel from '@mui/material/StepLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { Autocomplete, Avatar, Checkbox, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Autocomplete, Avatar, Checkbox, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -23,6 +23,9 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import dayjs from 'dayjs';
 import URL from '../Global/Utils/url_route';
 import axios from 'axios';
+import { useFetchData } from './customHook';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
@@ -125,62 +128,62 @@ const steps = ['BASIC INFORMATION', 'EMPLOYEE POSITION', 'ADDRESS', 'EXPERIENCE'
 
 const Designations = ['CEO', 'Software Developer', 'Vice President - HR Operations', 'Team Leader', 'HR - Telecaller', 'HR Executive', 'Front Desk Executive', 'System Admin', 'Admin Executive', 'Quality Analyst', 'Business Development Executive']
 
-const Department = ['Executive', 'Operations', 'Human Resource', 'IT Infrastructure', 'Facility Management', 'Learning and Development', 'Business Development', 'Software Development']
+// const Department = ['Executive', 'Operations', 'Human Resource', 'IT Infrastructure', 'Facility Management', 'Learning and Development', 'Business Development', 'Software Development']
 
-const Teams = ['Management', 'Supervisor/Manager', 'Documentation and Recruitment', 'Recruitment', 'Front Office', 'IT Team', 'Admin and Facility', 'Quality Control', 'Sales', 'Software Team']
+// const Teams = ['Management', 'Supervisor/Manager', 'Documentation and Recruitment', 'Recruitment', 'Front Office', 'IT Team', 'Admin and Facility', 'Quality Control', 'Sales', 'Software Team']
 
 
 
-const shifts = [
-    "00:00 - 09:00",
-    "00:30 - 09:30",
-    "01:00 - 10:00",
-    "01:30 - 10:30",
-    "02:00 - 11:00",
-    "02:30 - 11:30",
-    "03:00 - 12:00",
-    "03:30 - 12:30",
-    "04:00 - 13:00",
-    "04:30 - 13:30",
-    "05:00 - 14:00",
-    "05:30 - 14:30",
-    "06:00 - 15:00",
-    "06:30 - 15:30",
-    "07:00 - 16:00",
-    "07:30 - 16:30",
-    "08:00 - 17:00",
-    "08:30 - 17:30",
-    "09:00 - 18:00",
-    "09:30 - 18:30",
-    "10:00 - 19:00",
-    "10:30 - 19:30",
-    "11:00 - 20:00",
-    "11:30 - 20:30",
-    "12:00 - 21:00",
-    "12:30 - 21:30",
-    "13:00 - 22:00",
-    "13:30 - 22:30",
-    "14:00 - 23:00",
-    "14:30 - 23:30",
-    "15:00 - 00:00",
-    "15:30 - 00:30",
-    "16:00 - 01:00",
-    "16:30 - 01:30",
-    "17:00 - 02:00",
-    "17:30 - 02:30",
-    "18:00 - 03:00",
-    "18:30 - 03:30",
-    "19:00 - 04:00",
-    "19:30 - 04:30",
-    "20:00 - 05:00",
-    "20:30 - 05:30",
-    "21:00 - 06:00",
-    "21:30 - 06:30",
-    "22:00 - 07:00",
-    "22:30 - 07:30",
-    "23:00 - 08:00",
-    "23:30 - 08:30"
-];
+// const shifts = [
+//     "00:00 - 09:00",
+//     "00:30 - 09:30",
+//     "01:00 - 10:00",
+//     "01:30 - 10:30",
+//     "02:00 - 11:00",
+//     "02:30 - 11:30",
+//     "03:00 - 12:00",
+//     "03:30 - 12:30",
+//     "04:00 - 13:00",
+//     "04:30 - 13:30",
+//     "05:00 - 14:00",
+//     "05:30 - 14:30",
+//     "06:00 - 15:00",
+//     "06:30 - 15:30",
+//     "07:00 - 16:00",
+//     "07:30 - 16:30",
+//     "08:00 - 17:00",
+//     "08:30 - 17:30",
+//     "09:00 - 18:00",
+//     "09:30 - 18:30",
+//     "10:00 - 19:00",
+//     "10:30 - 19:30",
+//     "11:00 - 20:00",
+//     "11:30 - 20:30",
+//     "12:00 - 21:00",
+//     "12:30 - 21:30",
+//     "13:00 - 22:00",
+//     "13:30 - 22:30",
+//     "14:00 - 23:00",
+//     "14:30 - 23:30",
+//     "15:00 - 00:00",
+//     "15:30 - 00:30",
+//     "16:00 - 01:00",
+//     "16:30 - 01:30",
+//     "17:00 - 02:00",
+//     "17:30 - 02:30",
+//     "18:00 - 03:00",
+//     "18:30 - 03:30",
+//     "19:00 - 04:00",
+//     "19:30 - 04:30",
+//     "20:00 - 05:00",
+//     "20:30 - 05:30",
+//     "21:00 - 06:00",
+//     "21:30 - 06:30",
+//     "22:00 - 07:00",
+//     "22:30 - 07:30",
+//     "23:00 - 08:00",
+//     "23:30 - 08:30"
+// ];
 
 const schemaValidationForForm = Yup.object().shape({
     employeeNumber: Yup.string()
@@ -378,30 +381,59 @@ export default function EmployeeForm() {
     const [isLWFChecked, setIsLWFChecked] = React.useState(false);
     const [copyToPermanent, setCopyToPermanent] = React.useState(false);
 
+    const [departments, setDepartments] = React.useState([]);
+    const [teams, setTeams] = React.useState([]);
+    const [employees, setEmployees] = React.useState([]);
+    const [shifts, setShifts] = React.useState([]);
+    const [grade, setgrade] = React.useState([]);
+
+    const [uploadFileName, setUploadFileName] = React.useState(null)
 
 
     const [formData1, setFormData1] = React.useState({
-        firstname: null,
-        lastname: null,
-        dateOfBirth: null, //Format of a data -( 2024/09/26 ) 
-        employeeNumber: null,
-        gender: null,
-        email: null,
-        mobileNumber: null,
-        phone: null,
-        bloodGroup: null,
-        dateOfJoining: null,
-        fathersName: null,
-        fathersOccupation: null,
-        countryOfOrigin: null,
-        nationality: null,
-        emergencyContactName: null,
-        emergencyContactNumber: null,
-        emergencyContactRelation: null,
-        spouseName: null,
-        physicallyChallenged: null,
-        education: null,
-        addressprofType: null,
+        // firstname: null,
+        // lastname: null,
+        // dateOfBirth: null, //Format of a data -( 2024/09/26 ) 
+        // employeeNumber: null,
+        // gender: null,
+        // email: null,
+        // mobileNumber: null,
+        // phone: null,
+        // bloodGroup: null,
+        // dateOfJoining: null,
+        // fathersName: null,
+        // fathersOccupation: null,
+        // countryOfOrigin: null,
+        // nationality: null,
+        // emergencyContactName: null,
+        // emergencyContactNumber: null,
+        // emergencyContactRelation: null,
+        // spouseName: null,
+        // physicallyChallenged: null,
+        // education: null,
+        // addressprofType: null,
+
+        firstname: 'firstname',
+        lastname: 'lastname',
+        dateOfBirth: '2024-10-02',
+        employeeNumber: '20002',
+        gender: 'Male',
+        email: 'samatap26@gmail.com',
+        mobileNumber: '9778164504',
+        phone: '87781645077',
+        bloodGroup: 'A',
+        dateOfJoining: '2024-10-04',
+        fathersName: 'qqqqqqqqqqq',
+        fathersOccupation: 'testfatheroccupation',
+        countryOfOrigin: 'testindia',
+        nationality: 'testIndian',
+        emergencyContactName: 'qqqqqq',
+        emergencyContactNumber: '8777842222',
+        emergencyContactRelation: 'testemergencycontactrelation',
+        spouseName: 'testspousename',
+        physicallyChallenged: 'Yes',
+        education: 'B.E.,',
+        addressprofType: null
     });
 
     const [formData2, setFormData2] = React.useState({
@@ -421,7 +453,7 @@ export default function EmployeeForm() {
         attendancebonus: 'Yes',
         totalyearlyctc: '144000',
         billablestatus: 'Billable',
-        addresprofpath: '',
+        addresprofpath: null,
 
     })
 
@@ -497,6 +529,75 @@ export default function EmployeeForm() {
         setSelectedPaymentType(event.target.value);
     };
 
+
+    React.useEffect(() => {
+
+        let url = `${URL}todolist/department`;
+
+        try {
+            const response = axios.get(url)
+            setDepartments(response.data.data)
+        } catch (error) {
+            console.error(error, 'This is the error... ');
+        }
+
+    }, [])
+
+
+    const teamUrl = `${URL}todolist/teams`;
+    const departmentUrl = `${URL}todolist/department`;
+    const employeeUrl = `${URL}todolist/employee`;
+    const shiftUrl = `${URL}employeeonboard/shift`;
+    const gradeUrl = `${URL}employeeonboard/grade`;
+
+
+    const { data, loading, error } = useFetchData(teamUrl);
+
+    const { data: departmentData, loading: departmentLoading, error: departError } = useFetchData(departmentUrl);
+
+    const { data: employeeData, loading: employeeLoading, error: employeeError } = useFetchData(employeeUrl);
+
+    const { data: shiftData, loading: shiftLoading, error: shiftError } = useFetchData(shiftUrl);
+
+    const { data: gradeData, loading: gradeLoading, error: gradeError } = useFetchData(gradeUrl);
+
+
+
+    React.useEffect(() => {
+
+        setTeams(data?.data);
+
+    }, [data])
+
+
+    React.useEffect(() => {
+
+        setDepartments(departmentData?.data);
+
+    }, [departmentData])
+
+
+    React.useEffect(() => {
+
+        setEmployees(employeeData?.data);
+
+    }, [employeeData])
+
+
+    React.useEffect(() => {
+
+        setShifts(shiftData?.data);
+
+    }, [shiftData])
+
+    React.useEffect(() => {
+
+        setgrade(gradeData?.data);
+
+    }, [gradeData])
+
+
+
     React.useEffect(() => {
         const salary = parseFloat(salaryOfferred) || '';
         const totalMonthlyCTC = salary;
@@ -516,21 +617,19 @@ export default function EmployeeForm() {
 
     React.useEffect(() => {
         if (selectedPaymentType !== 'banktransfer') {
-
-
-            setValue('bankname', '', { shouldValidate: true });
-            setValue('branchname', '', { shouldValidate: true });
-            setValue('ifsccode', '', { shouldValidate: true });
-            setValue('accountNumber', '', { shouldValidate: true });
-            setValue('beneficiarycode', '', { shouldValidate: true });
+            setValue('bankname', null, { shouldValidate: true });
+            setValue('branchname', null, { shouldValidate: true });
+            setValue('ifsccode', null, { shouldValidate: true });
+            setValue('accountNumber', null, { shouldValidate: true });
+            setValue('beneficiarycode', null, { shouldValidate: true });
 
             setFormData6(preState => ({
                 ...preState,
-                bankname: '',
-                branchname: '',
-                ifsccode: '',
-                accountNumber: '',
-                beneficiarycode: '',
+                bankname: null,
+                branchname: null,
+                ifsccode: null,
+                accountNumber: null,
+                beneficiarycode: null,
             }))
 
         }
@@ -627,27 +726,27 @@ export default function EmployeeForm() {
     React.useEffect(() => {
 
         if (!isPFChecked) {
-            setValue('pfnumber', '', { shouldValidate: true });
-            setValue('pfjoindate', '', { shouldValidate: true });
+            setValue('pfnumber', null, { shouldValidate: true });
+            setValue('pfjoindate', null, { shouldValidate: true });
 
             setFormData5(preState => ({
                 ...preState,
-                pfnumber: '',
-                pfjoindate: '',
+                pfnumber: null,
+                pfjoindate: null,
             }))
         } else if (!isESIChecked) {
-            setValue('esinumber', '', { shouldValidate: true });
+            setValue('esinumber', null, { shouldValidate: true });
 
             setFormData5(preState => ({
                 ...preState,
-                esinumber: '',
+                esinumber: null,
             }))
         } else if (!isLWFChecked) {
-            setValue('lwfnumber', '', { shouldValidate: true });
+            setValue('lwfnumber', null, { shouldValidate: true });
 
             setFormData5(preState => ({
                 ...preState,
-                lwfnumber: '',
+                lwfnumber: null,
             }))
         }
 
@@ -655,8 +754,6 @@ export default function EmployeeForm() {
 
 
     const handleNext = async () => {
-
-        console.log(activeStep, 'This is the current page .... ')
 
         let data;
 
@@ -674,12 +771,9 @@ export default function EmployeeForm() {
 
         try {
             const response = await axios.post(url, { formData: data, anotherData: 'anotherData' })
-            console.log(response)
 
         } catch (error) {
             console.log(error, 'Youre getting error da sathis uh.... ')
-        } finally {
-            console.log('Achieved dude ....')
         }
 
         const isStepValid = await trigger();
@@ -699,26 +793,27 @@ export default function EmployeeForm() {
 
     const onSubmit = (data) => {
         // setFormData((prevData) => ({ ...prevData, ...data }));
-        console.log('Form submitted');
     };
 
 
     const mapOptions = (data) => {
         return data.map(item => ({
-            label: item,
-            value: item
+            label: item.name,
+            value: item.name
         }));
+    }
+
+    const employeeMap = (data) => {
+        return data.map((item) => ({
+            label: item.f_name + " " + item.l_name,
+            value: item.f_name + " " + item.l_name
+        }))
     }
 
 
     const handleSubmit2 = () => {
 
-        console.log('this is formData')
 
-        // setActiveStep(0)
-
-        // console.log('this is isSubmitting', isSubmitting)
-        // console.log('this is isSubmitSuccessful', isSubmitSuccessful)
     }
 
 
@@ -744,6 +839,92 @@ export default function EmployeeForm() {
     const handleCheckboxChange2 = (event) => {
         setCopyToPermanent(event.target.checked);
     };
+
+
+    const handleFileUpload = async (event) => {
+        const selectedFile = event.target.files[0];
+
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('id', id)
+        formData.append('type', type);
+
+
+        let personal_url = URL + "candidateupload";
+
+        try {
+            const response = await axios.post(personal_url, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            if (type === 'file') {
+                setUploadStatus(prevStatus => ({
+                    ...prevStatus,
+                    resumeUploaded: true
+                }));
+            } else if (type === 'image') {
+                setUploadStatus(prevStatus => ({
+                    ...prevStatus,
+                    profileUploaded: true
+                }));
+            }
+
+            setAlertMessage(`${type} uploaded successfully!`);
+            setAlertSeverity('success');
+
+        } catch (error) {
+            console.log('An error occurred:', error.message);
+            setAlertMessage('Upload failed.');
+            setAlertSeverity('error');
+        }
+    };
+
+    const handleProofUpload = async (event) => {
+
+        const selectedFile = event.target.files[0];
+
+        setUploadFileName(selectedFile.name);
+
+        console.log(selectedFile.name, 'selectedFile')
+        const addressData = new FormData();
+        addressData.append('file', selectedFile);
+
+        let url = URL + "employeeonboard/addressprof";
+
+        try {
+
+            const response = await axios.post(url, addressData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+
+            console.log(response.data.url)
+
+            setFormData2((prev) => ({
+                ...prev,
+                addresprofpath: response.data.url,
+            }))
+
+
+            // onChange={(e) => {
+            //     const file = e.target.files[0];
+            //     field.onChange(file);
+            //     setFormData2((prev) => ({
+            //         ...prev,
+            //         addresprofpath: e.target.files[0].size,
+            //     }))
+
+            // }}
+
+        } catch (error) {
+            console.log(error, 'This is the error in the uploadfile')
+        }
+
+    }
 
 
     return (
@@ -1565,6 +1746,7 @@ export default function EmployeeForm() {
                                                                 addressprofType: e.target.value,
                                                             }));
                                                         }}
+
                                                     >
                                                         <MenuItem value="Aadhaar">Aadhaar</MenuItem>
                                                         <MenuItem value="Driving License">Driving License</MenuItem>
@@ -1729,7 +1911,7 @@ export default function EmployeeForm() {
 
                                                 <Autocomplete
                                                     {...field}
-                                                    options={mapOptions(Department)}
+                                                    options={mapOptions(departments)}
                                                     onChange={(event, value) => field.onChange(value?.value)}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
@@ -1765,7 +1947,7 @@ export default function EmployeeForm() {
                                             render={({ field }) => (
                                                 <Autocomplete
                                                     {...field}
-                                                    options={mapOptions(Teams)}
+                                                    options={mapOptions(teams)}
                                                     onChange={(event, value) => field.onChange(value?.value)}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
@@ -1803,12 +1985,7 @@ export default function EmployeeForm() {
 
                                                 <Autocomplete
                                                     {...field}
-                                                    options={[
-                                                        { label: 'Kannan R  ', value: 'Kannan R' },
-                                                        { label: 'Shamala Nagaveni ', value: 'Shamala Nagaveni' },
-                                                        { label: 'Sathis Kumar ', value: 'Sathis Kumar' },
-                                                        { label: 'Santhosh ', value: 'Santhosh' }
-                                                    ]}
+                                                    options={employeeMap(employees)}
                                                     onChange={(event, value) => field.onChange(value?.value)}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
@@ -1961,13 +2138,9 @@ export default function EmployeeForm() {
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
                                                 >
-                                                    <MenuItem value="L1">L1</MenuItem>
-                                                    <MenuItem value="L2">L2</MenuItem>
-                                                    <MenuItem value="L3">L3</MenuItem>
-                                                    <MenuItem value="L4">L4</MenuItem>
-                                                    <MenuItem value="L5">L5</MenuItem>
-                                                    <MenuItem value="L5">L6</MenuItem>
-                                                    <MenuItem value="L5">L7</MenuItem>
+                                                    {grade.map(item => (
+                                                        <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>
+                                                    ))}
                                                 </StyledInput>
                                             )}
                                         />
@@ -2105,7 +2278,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="fileupload"
                                             control={control}
-                                            // defaultValue={formData2.addresprofpath}
+                                            defaultValue={formData2.addresprofpath}
                                             render={({ field }) => (
                                                 <div>
                                                     <Button
@@ -2119,32 +2292,68 @@ export default function EmployeeForm() {
                                                         <input
                                                             type="file"
                                                             hidden
-                                                            onChange={(e) => {
-                                                                const file = e.target.files[0];
-                                                                field.onChange(file);
-                                                                setFormData2((prev) => ({
-                                                                    ...prev,
-                                                                    addresprofpath: e.target.files[0].size,
-                                                                }))
-                                                                // onFileChange(file); // Optional function for handling file change
-                                                            }}
+                                                            onChange={(e) => { handleProofUpload(e) }}
                                                         />
                                                     </Button>
                                                     <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
-                                                        {field.value ? field.value.name : 'No file selected'}
+                                                        {uploadFileName ? uploadFileName : 'No file selected'}
                                                     </FormHelperText>
 
                                                     <FormHelperText style={{ color: 'red' }}>
                                                         {errors.fileupload?.message}
                                                     </FormHelperText>
-                                                    {/* <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
-                                                    {errors.fileupload ? errors.fileupload.message : formData.fileupload?.name}
-                                                </FormHelperText> */}
                                                 </div>
                                             )}
                                         />
                                     </Grid>
                                 </Grid>
+
+                                {/* <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Upload Address Prof <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
+                                    </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="fileupload"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <div>
+                                                    <Button
+                                                        variant="outlined"
+                                                        component="label"
+                                                        fullWidth
+                                                        color="primary"
+                                                        style={{ marginBottom: '8px' }}
+                                                    >
+                                                        Upload File
+                                                        <input
+                                                            type="file"
+                                                            hidden
+                                                            onChange={handleProofUpload}
+                                                        />
+                                                    </Button>
+                                                    <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
+                                                        {uploadFileName ? uploadFileName : 'No file selected'}
+                                                    </FormHelperText>
+
+                                                    <FormHelperText style={{ color: 'red' }}>
+                                                        {errors.fileupload?.message}
+                                                    </FormHelperText>
+
+                                                    {uploadStatus === 'success' && (
+                                                        <CheckCircleIcon style={{ color: 'green', marginTop: '8px' }} />
+                                                    )}
+                                                    {uploadStatus === 'error' && (
+                                                        <CancelIcon style={{ color: 'red', marginTop: '8px' }} />
+                                                    )}
+                                                </div>
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid> */}
+
 
                                 <Grid container alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
