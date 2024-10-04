@@ -26,6 +26,8 @@ import axios from 'axios';
 import { useFetchData } from './customHook';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { useSharedContext } from '../../Context';
+import { reference } from '@popperjs/core';
 
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
@@ -128,62 +130,6 @@ const steps = ['BASIC INFORMATION', 'EMPLOYEE POSITION', 'ADDRESS', 'EXPERIENCE'
 
 const Designations = ['CEO', 'Software Developer', 'Vice President - HR Operations', 'Team Leader', 'HR - Telecaller', 'HR Executive', 'Front Desk Executive', 'System Admin', 'Admin Executive', 'Quality Analyst', 'Business Development Executive']
 
-// const Department = ['Executive', 'Operations', 'Human Resource', 'IT Infrastructure', 'Facility Management', 'Learning and Development', 'Business Development', 'Software Development']
-
-// const Teams = ['Management', 'Supervisor/Manager', 'Documentation and Recruitment', 'Recruitment', 'Front Office', 'IT Team', 'Admin and Facility', 'Quality Control', 'Sales', 'Software Team']
-
-
-
-// const shifts = [
-//     "00:00 - 09:00",
-//     "00:30 - 09:30",
-//     "01:00 - 10:00",
-//     "01:30 - 10:30",
-//     "02:00 - 11:00",
-//     "02:30 - 11:30",
-//     "03:00 - 12:00",
-//     "03:30 - 12:30",
-//     "04:00 - 13:00",
-//     "04:30 - 13:30",
-//     "05:00 - 14:00",
-//     "05:30 - 14:30",
-//     "06:00 - 15:00",
-//     "06:30 - 15:30",
-//     "07:00 - 16:00",
-//     "07:30 - 16:30",
-//     "08:00 - 17:00",
-//     "08:30 - 17:30",
-//     "09:00 - 18:00",
-//     "09:30 - 18:30",
-//     "10:00 - 19:00",
-//     "10:30 - 19:30",
-//     "11:00 - 20:00",
-//     "11:30 - 20:30",
-//     "12:00 - 21:00",
-//     "12:30 - 21:30",
-//     "13:00 - 22:00",
-//     "13:30 - 22:30",
-//     "14:00 - 23:00",
-//     "14:30 - 23:30",
-//     "15:00 - 00:00",
-//     "15:30 - 00:30",
-//     "16:00 - 01:00",
-//     "16:30 - 01:30",
-//     "17:00 - 02:00",
-//     "17:30 - 02:30",
-//     "18:00 - 03:00",
-//     "18:30 - 03:30",
-//     "19:00 - 04:00",
-//     "19:30 - 04:30",
-//     "20:00 - 05:00",
-//     "20:30 - 05:30",
-//     "21:00 - 06:00",
-//     "21:30 - 06:30",
-//     "22:00 - 07:00",
-//     "22:30 - 07:30",
-//     "23:00 - 08:00",
-//     "23:30 - 08:30"
-// ];
 
 const schemaValidationForForm = Yup.object().shape({
     employeeNumber: Yup.string()
@@ -369,6 +315,8 @@ export default function EmployeeForm() {
 
     let url = `${URL}employeeonboard`
 
+    const { insertRequest, setInsertRequest, employeeAddTab } = useSharedContext();
+
     const [activeStep, setActiveStep] = React.useState(0);
 
     const { control, handleSubmit, getValues, setValue, trigger, formState: { errors, isValid, isSubmitting, isSubmitSuccessful } } = useForm({
@@ -381,60 +329,70 @@ export default function EmployeeForm() {
     const [isLWFChecked, setIsLWFChecked] = React.useState(false);
     const [copyToPermanent, setCopyToPermanent] = React.useState(false);
 
+    const [requesType, setRequestType] = React.useState(null)
+    const [interRequest, setInterRequest] = React.useState(0)
+
     const [departments, setDepartments] = React.useState([]);
     const [teams, setTeams] = React.useState([]);
     const [employees, setEmployees] = React.useState([]);
     const [shifts, setShifts] = React.useState([]);
     const [grade, setgrade] = React.useState([]);
+    const [designation, setDesignation] = React.useState([]);
+    const [addressprof, setAddressprof] = React.useState([]);
+
+    const [candidatePopulate, setCandidatePopulate] = React.useState([]);
 
     const [uploadFileName, setUploadFileName] = React.useState(null)
 
+    const [uploadStatus, setUploadStatus] = React.useState(false)
+
 
     const [formData1, setFormData1] = React.useState({
-        // firstname: null,
-        // lastname: null,
-        // dateOfBirth: null, //Format of a data -( 2024/09/26 ) 
-        // employeeNumber: null,
-        // gender: null,
-        // email: null,
-        // mobileNumber: null,
-        // phone: null,
-        // bloodGroup: null,
-        // dateOfJoining: null,
-        // fathersName: null,
-        // fathersOccupation: null,
-        // countryOfOrigin: null,
-        // nationality: null,
-        // emergencyContactName: null,
-        // emergencyContactNumber: null,
-        // emergencyContactRelation: null,
-        // spouseName: null,
-        // physicallyChallenged: null,
-        // education: null,
-        // addressprofType: null,
+        firstname: null,
+        lastname: null,
+        dateOfBirth: null, //Format of a data -( 2024/09/26 ) 
+        employeeNumber: null,
+        gender: null,
+        email: null,
+        mobileNumber: null,
+        phone: null,
+        bloodGroup: null,
+        dateOfJoining: null,
+        fathersName: null,
+        fathersOccupation: null,
+        countryOfOrigin: null,
+        nationality: null,
+        emergencyContactName: null,
+        emergencyContactNumber: null,
+        emergencyContactRelation: null,
+        spouseName: null,
+        physicallyChallenged: null,
+        education: null,
+        addressprofType: null,
 
-        firstname: 'firstname',
-        lastname: 'lastname',
-        dateOfBirth: '2024-10-02',
-        employeeNumber: '20002',
-        gender: 'Male',
-        email: 'samatap26@gmail.com',
-        mobileNumber: '9778164504',
-        phone: '87781645077',
-        bloodGroup: 'A',
-        dateOfJoining: '2024-10-04',
-        fathersName: 'qqqqqqqqqqq',
-        fathersOccupation: 'testfatheroccupation',
-        countryOfOrigin: 'testindia',
-        nationality: 'testIndian',
-        emergencyContactName: 'qqqqqq',
-        emergencyContactNumber: '8777842222',
-        emergencyContactRelation: 'testemergencycontactrelation',
-        spouseName: 'testspousename',
-        physicallyChallenged: 'Yes',
-        education: 'B.E.,',
-        addressprofType: null
+        // firstname: candidatePopulate?.firstname || 'firstname',
+        // lastname: candidatePopulate?.lastname || 'lastname',
+        // dateOfBirth:candidatePopulate?.dateOfBirth || '2024-10-02',
+        // employeeNumber: '20002',
+        // gender: candidatePopulate?.gender || 'Male',
+        // email: candidatePopulate?.email || 'samatap26@gmail.com',
+        // mobileNumber:candidatePopulate?.mobileNumber || '9778164504',
+        // phone: '87781645077',
+        // bloodGroup: 'A',
+        // dateOfJoining: '2024-10-04',
+        // fathersName: 'qqqqqqqqqqq',
+        // fathersOccupation: 'testfatheroccupation',
+        // countryOfOrigin: 'testindia',
+        // nationality: 'testIndian',
+        // emergencyContactName: 'qqqqqq',
+        // emergencyContactNumber: '8777842222',
+        // emergencyContactRelation: 'testemergencycontactrelation',
+        // spouseName: 'testspousename',
+        // physicallyChallenged: 'Yes',
+        // education: 'B.E.,',
+        // addressprofType: null
     });
+
 
     const [formData2, setFormData2] = React.useState({
         reportingmanager: 'Kannan R',
@@ -512,6 +470,8 @@ export default function EmployeeForm() {
     const salaryOfferred = useWatch({ control, name: 'salaryofferred' });
 
 
+    // console.log(candidatePopulate,'HIiiiiiiiiiiiiiiiiiiiiiiiiiii')
+
     const handleCheckboxChange = (event) => {
         setIsPFChecked(event.target.checked);
     };
@@ -529,6 +489,14 @@ export default function EmployeeForm() {
         setSelectedPaymentType(event.target.value);
     };
 
+
+    React.useEffect(() => {
+        if (insertRequest === 1) {
+            setInterRequest(1);
+        } else {
+            setInterRequest(0);
+        }
+    }, [insertRequest])
 
     React.useEffect(() => {
 
@@ -549,7 +517,10 @@ export default function EmployeeForm() {
     const employeeUrl = `${URL}todolist/employee`;
     const shiftUrl = `${URL}employeeonboard/shift`;
     const gradeUrl = `${URL}employeeonboard/grade`;
+    const desginationUrl = `${URL}employeeonboard/designations`;
+    const addressprofUrl = `${URL}employeeonboard/addressprof`;
 
+    const getCandidate = `${URL}employeeonboard/getCandidate`;
 
     const { data, loading, error } = useFetchData(teamUrl);
 
@@ -560,6 +531,12 @@ export default function EmployeeForm() {
     const { data: shiftData, loading: shiftLoading, error: shiftError } = useFetchData(shiftUrl);
 
     const { data: gradeData, loading: gradeLoading, error: gradeError } = useFetchData(gradeUrl);
+
+    const { data: designationData, loading: designationLoading, error: designationError } = useFetchData(desginationUrl)
+
+    const { data: addressprofData, loading: addressprofLoading, error: addressprofError } = useFetchData(addressprofUrl)
+
+    const { data: candidateData, loading: candidateLoading, error: candidateError } = useFetchData(getCandidate)
 
 
 
@@ -596,6 +573,26 @@ export default function EmployeeForm() {
 
     }, [gradeData])
 
+
+    React.useEffect(() => {
+
+        setDesignation(designationData?.data);
+
+    }, [designationData])
+
+
+    React.useEffect(() => {
+
+        setAddressprof(addressprofData?.data);
+
+    }, [addressprofData])
+
+
+    React.useEffect(() => {
+
+        setCandidatePopulate(candidateData?.data[0]);
+
+    }, [candidateData])
 
 
     React.useEffect(() => {
@@ -653,20 +650,23 @@ export default function EmployeeForm() {
             }))
         } else {
 
-            setValue('permanentAddress', '', { shouldValidate: true });
-            setValue('permanentcity', '', { shouldValidate: true });
-            setValue('permanentPincode', '', { shouldValidate: true });
+            setValue('permanentAddress', null, { shouldValidate: true });
+            setValue('permanentcity', null, { shouldValidate: true });
+            setValue('permanentPincode', null, { shouldValidate: true });
 
             setFormData3(preState => ({
                 ...preState,
-                permanentAddress: '',
-                permanentcity: '',
-                permanentPincode: '',
+                permanentAddress: null,
+                permanentcity: null,
+                permanentPincode: null,
             }))
 
         }
 
     }, [copyToPermanent])
+
+
+
 
 
     function calculateExperience(startDate, endDate) {
@@ -753,9 +753,32 @@ export default function EmployeeForm() {
     }, [isESIChecked, isPFChecked, isLWFChecked])
 
 
+
+    React.useEffect(() => {  //AutoPopulate Function
+
+        if (candidatePopulate) {
+            
+            setValue('firstname', candidatePopulate.firstname, { shouldValidate: true });
+            setValue('lastname', candidatePopulate.lastname, { shouldValidate: true });
+            setValue('dateOfBirth', candidatePopulate.dateOfBirth, { shouldValidate: true });
+
+            setFormData1((prev) => ({
+                ...prev,
+                firstname: candidatePopulate.firstname,
+                lastname: candidatePopulate.lastname,
+                dateOfBirth: candidatePopulate.dateOfBirth,
+            }))
+        }
+
+    }, [candidatePopulate])
+
+
     const handleNext = async () => {
 
+        // insertRequest, setInsertRequest,
         let data;
+
+        /// Ithu vandhu url base panni ,, based on this "http://localhost:3000/dashboard?tab=EmployeeMaster"
 
         if (activeStep === 0) {
             data = formData1;
@@ -770,7 +793,7 @@ export default function EmployeeForm() {
         }
 
         try {
-            const response = await axios.post(url, { formData: data, anotherData: 'anotherData' })
+            const response = await axios.post(url, { formData: data, reqType: insertRequest, requestType: interRequest, emp_id: formData1.employeeNumber, referenceid: employeeAddTab.candidateId })
 
         } catch (error) {
             console.log(error, 'Youre getting error da sathis uh.... ')
@@ -778,12 +801,10 @@ export default function EmployeeForm() {
 
         const isStepValid = await trigger();
         if (isStepValid) {
-            // setFormData((prevData) => ({ ...prevData, ...getValues() }));
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         }
 
     };
-
 
 
     const handleBack = () => {
@@ -813,9 +834,7 @@ export default function EmployeeForm() {
 
     const handleSubmit2 = () => {
 
-
     }
-
 
 
     const percentagefunction = () => {
@@ -841,46 +860,6 @@ export default function EmployeeForm() {
     };
 
 
-    const handleFileUpload = async (event) => {
-        const selectedFile = event.target.files[0];
-
-
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        formData.append('id', id)
-        formData.append('type', type);
-
-
-        let personal_url = URL + "candidateupload";
-
-        try {
-            const response = await axios.post(personal_url, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-
-            if (type === 'file') {
-                setUploadStatus(prevStatus => ({
-                    ...prevStatus,
-                    resumeUploaded: true
-                }));
-            } else if (type === 'image') {
-                setUploadStatus(prevStatus => ({
-                    ...prevStatus,
-                    profileUploaded: true
-                }));
-            }
-
-            setAlertMessage(`${type} uploaded successfully!`);
-            setAlertSeverity('success');
-
-        } catch (error) {
-            console.log('An error occurred:', error.message);
-            setAlertMessage('Upload failed.');
-            setAlertSeverity('error');
-        }
-    };
 
     const handleProofUpload = async (event) => {
 
@@ -888,7 +867,6 @@ export default function EmployeeForm() {
 
         setUploadFileName(selectedFile.name);
 
-        console.log(selectedFile.name, 'selectedFile')
         const addressData = new FormData();
         addressData.append('file', selectedFile);
 
@@ -902,30 +880,24 @@ export default function EmployeeForm() {
                 }
             })
 
-            console.log(response.data.url)
+
+            if (response?.data?.status === 1) {
+                setUploadStatus(!uploadStatus)
+            }
 
             setFormData2((prev) => ({
                 ...prev,
-                addresprofpath: response.data.url,
+                addresprofpath: response?.data?.data?.url,
             }))
-
-
-            // onChange={(e) => {
-            //     const file = e.target.files[0];
-            //     field.onChange(file);
-            //     setFormData2((prev) => ({
-            //         ...prev,
-            //         addresprofpath: e.target.files[0].size,
-            //     }))
-
-            // }}
 
         } catch (error) {
             console.log(error, 'This is the error in the uploadfile')
+            setUploadStatus(false)
         }
 
     }
 
+    console.log(candidatePopulate, ' fine fine fine fine ')
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -945,16 +917,16 @@ export default function EmployeeForm() {
 
                     {activeStep === 0 && (
                         <>
-                            <Grid container xs={12} paddingLeft={0}  > {/* First Half  Parent Container */}
+                            <Grid container paddingLeft={0}  > {/* First Half  Parent Container */}
 
-                                <Grid container xs={2} > {/* Avatar container */}
+                                <Grid item xs={2} > {/* Avatar container */}
 
                                     <Grid item xs={12} paddingLeft={5}>
+
                                         <Avatar
                                             sx={{ width: 200, height: 200 }}
                                             alt="Profile Image"
                                             src="https://images.pexels.com/photos/4629633/pexels-photo-4629633.jpeg?cs=srgb&dl=pexels-cottonbro-4629633.jpg&fm=jpg"
-                                        // src='Uploads/2024/10/ProfileFolder/MOS20241001426_Screenshot from 2024-08-12 20-30-00.png'
                                         />
 
                                     </Grid>
@@ -1331,7 +1303,6 @@ export default function EmployeeForm() {
                                                                 dateOfJoining: e.target.value,
                                                             }));
                                                         }}
-                                                    // label={<span>Date of Joining <span style={{ color: 'red' }}>*</span></span>}
                                                     />
                                                 )}
                                             />
@@ -1367,7 +1338,6 @@ export default function EmployeeForm() {
                                                                 emergencyContactName: e.target.value,
                                                             }));
                                                         }}
-                                                    // label={<span>Emergency Contact Name <span style={{ color: 'red' }}>*</span></span>}
                                                     />
                                                 )}
                                             />
@@ -1403,7 +1373,6 @@ export default function EmployeeForm() {
                                                                 emergencyContactNumber: e.target.value,
                                                             }));
                                                         }}
-                                                    // label={<span>Emergency Contact Number <span style={{ color: 'red' }}>*</span></span>}
                                                     />
                                                 )}
                                             />
@@ -1440,7 +1409,6 @@ export default function EmployeeForm() {
                                                                 emergencyContactRelation: e.target.value,
                                                             }));
                                                         }}
-                                                    // label={<span>Emergency Contact Relation (Should be blood relative) <span style={{ color: 'red' }}>*</span></span>}
                                                     />
                                                 )}
                                             />
@@ -1480,7 +1448,6 @@ export default function EmployeeForm() {
                                                                 fathersName: e.target.value,
                                                             }));
                                                         }}
-                                                    // label={<span>Father's Name <span style={{ color: 'red' }}>*</span></span>}
                                                     />
                                                 )}
                                             />
@@ -1516,7 +1483,6 @@ export default function EmployeeForm() {
                                                                 fathersOccupation: e.target.value,
                                                             }));
                                                         }}
-                                                    // label={<span>Father's Occupation</span>}
                                                     />
                                                 )}
                                             />
@@ -1552,7 +1518,6 @@ export default function EmployeeForm() {
                                                                 spouseName: e.target.value,
                                                             }));
                                                         }}
-                                                    // label={<span>Spouse Name</span>}
                                                     />
                                                 )}
                                             />
@@ -1590,7 +1555,6 @@ export default function EmployeeForm() {
                                                                 education: e.target.value,
                                                             }));
                                                         }}
-                                                    // label={<span>Spouse Name</span>}
                                                     />
                                                 )}
                                             />
@@ -1631,7 +1595,6 @@ export default function EmployeeForm() {
                                                                 countryOfOrigin: e.target.value,
                                                             }));
                                                         }}
-                                                    // label={<span>Country of Origin</span>}
                                                     />
                                                 )}
                                             />
@@ -1667,7 +1630,6 @@ export default function EmployeeForm() {
                                                                 nationality: e.target.value,
                                                             }));
                                                         }}
-                                                    // label={<span>Nationality</span>}
                                                     />
                                                 )}
                                             />
@@ -1704,7 +1666,6 @@ export default function EmployeeForm() {
                                                                 physicallyChallenged: e.target.value,
                                                             }));
                                                         }}
-                                                    // label={<span>Physically Challenged (Yes/No)</span>}
                                                     >
                                                         <MenuItem value="Yes">Yes</MenuItem>
                                                         <MenuItem value="No">No</MenuItem>
@@ -1748,12 +1709,9 @@ export default function EmployeeForm() {
                                                         }}
 
                                                     >
-                                                        <MenuItem value="Aadhaar">Aadhaar</MenuItem>
-                                                        <MenuItem value="Driving License">Driving License</MenuItem>
-                                                        <MenuItem value="Bank Statement">Bank Statement</MenuItem>
-                                                        <MenuItem value="Phone Bill">Phone Bill</MenuItem>
-                                                        <MenuItem value="Gas Bill">Gas Bill</MenuItem>
-                                                        <MenuItem value="Gas Bill">Passport</MenuItem>
+                                                        {addressprof?.map(item => (
+                                                            <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>
+                                                        ))}
                                                     </StyledInput>
                                                 )}
                                             />
@@ -1845,7 +1803,6 @@ export default function EmployeeForm() {
                                                             variant="outlined"
                                                             fullWidth
                                                             margin="normal"
-                                                            // label={<span>Reporting Manager <span style={{ color: 'red' }}> * </span></span>}
                                                             error={!!errors.reportingteamlead}
                                                             helperText={errors.reportingteamlead ? errors.reportingteamlead.message : ''}
                                                             FormHelperTextProps={{
@@ -1874,7 +1831,7 @@ export default function EmployeeForm() {
 
                                                 <Autocomplete
                                                     {...field}
-                                                    options={mapOptions(Designations)}
+                                                    options={mapOptions(designation)}
                                                     onChange={(event, value) => field.onChange(value?.value)}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
@@ -1994,7 +1951,6 @@ export default function EmployeeForm() {
                                                             variant="outlined"
                                                             fullWidth
                                                             margin="normal"
-                                                            // label={<span>Reporting Manager <span style={{ color: 'red' }}> * </span></span>}
                                                             error={!!errors.referrdby}
                                                             helperText={errors.referrdby ? errors.referrdby.message : ''}
                                                             FormHelperTextProps={{
@@ -2286,22 +2242,34 @@ export default function EmployeeForm() {
                                                         component="label"
                                                         fullWidth
                                                         color="primary"
-                                                        style={{ marginBottom: '8px' }}
+                                                        style={{ marginBottom: '3px' }}
                                                     >
-                                                        Upload File
+                                                        {uploadStatus ? 'File Uploaded' : 'Upload File'}
                                                         <input
                                                             type="file"
                                                             hidden
                                                             onChange={(e) => { handleProofUpload(e) }}
                                                         />
+
+                                                        {uploadFileName && (
+                                                            uploadStatus ? <CheckCircleIcon style={{ color: 'green', marginLeft: '12px' }} /> :
+                                                                <CancelIcon style={{ color: 'red', marginLeft: '12px' }} />
+                                                        )}
+
                                                     </Button>
+
                                                     <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
+                                                        {errors.fileupload?.message ? ` - ${errors.fileupload.message}` : uploadFileName ? uploadFileName : 'No file selected'}
+                                                    </FormHelperText>
+
+
+                                                    {/* <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
                                                         {uploadFileName ? uploadFileName : 'No file selected'}
                                                     </FormHelperText>
 
                                                     <FormHelperText style={{ color: 'red' }}>
                                                         {errors.fileupload?.message}
-                                                    </FormHelperText>
+                                                    </FormHelperText> */}
                                                 </div>
                                             )}
                                         />
@@ -3873,7 +3841,7 @@ export default function EmployeeForm() {
                         Submit
                     </Button>
                 ) : (
-                    <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
+                    <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid || (activeStep === 1 && !uploadStatus)}>
                         Next
                     </Button>
                 )}

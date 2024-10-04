@@ -11,17 +11,18 @@ import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
 import PersonSearchSharpIcon from '@mui/icons-material/PersonSearchSharp';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import EmployeeTable from "../EmployeeTable";
+import EmployeeTable1 from "../EmployeeTable";
 import { useSharedContext } from "../../Context";
 
 
 
-const SidebarContainer = styled('div')(({ isOpen, isActive }) => ({
+const SidebarContainer = styled('div')(({ isopen, isactive }) => ({
     height: "100%",
-    width: isOpen ? "280px" : "60px",
+    width: isopen? "280px" : "60px",
     position: "fixed",
     zIndex: 3,
     left: 0,
-    backgroundColor: isOpen ? "#749BC2" : "#749BC2",
+    backgroundColor: isopen ? "#749BC2" : "#749BC2",
     overflowX: "hidden",
     overflowY: "auto",
     transition: "width 0.5s, background-color 0.5s",
@@ -34,8 +35,8 @@ const MainContainer = styled('div')(() => ({
     marginLeft: "40px",
 }));
 
-const SidebarIcon = styled(IconButton)(({ theme, isOpen, isActive }) => ({
-    color: isActive ? 'White' : isOpen ? "#91C8E4" : "#91C8E4",
+const SidebarIcon = styled(IconButton)(({ theme, isopen, isactive }) => ({
+    color: isactive ? 'White' : isopen ? "#91C8E4" : "#91C8E4",
     display: "flex",
     justifyContent: "flex-start",
     alignContent: 'center',
@@ -43,55 +44,82 @@ const SidebarIcon = styled(IconButton)(({ theme, isOpen, isActive }) => ({
     fontSize: "20px",
     transition: "color 0.5s",
     "&:hover": {
-        color: isOpen ? "white" : "#f1f1f1",
+        color: isopen ? "white" : "#f1f1f1",
     },
 }));
 
 
-function Sidebar() {
 
-    const { sharedTab, setSharedTab } = useSharedContext();
+function Sidebar() {
+    const { sharedTab, setSharedTab, employeeAddTab, setEmployeeAddTab } = useSharedContext();
     const { search } = useLocation();
     const queryParams = new URLSearchParams(search);
+    const [isopen, setIsOpen] = useState(false);
 
-    const [activeTab, setActiveTab] = useState(queryParams.get('tab') || 'info');
-    const [isOpen, setIsOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('activeTab') || 'info');
+
 
     const navigate = useNavigate();
-
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
-    const AuthorizedPerson = userinfo?.user_role;
+    const AuthorizedPerson = userinfo.user_role;
 
-    useEffect(() => {
-        if (sharedTab.active === 1) {
-            setActiveTab('particularEmployee');
+    React.useEffect(() => {
+
+        if (activeTab !== 'EmployeeMaster2') {
+            setEmployeeAddTab((prev) => ({
+                ...prev,
+                candidateId: null,
+                status: 0
+            }))
         }
-    }, [sharedTab.active]);
+
+    }, [activeTab])
+
+
+    React.useEffect(() => {
+        if (sharedTab.active === 1) {
+            setActiveTab('particularEmployee')
+        } else if (employeeAddTab.status === 1) {
+            setActiveTab('EmployeeMaster2')
+        }
+
+    }, [sharedTab.active, employeeAddTab])
+
+
 
     useEffect(() => {
-
-        const tabParam = `?tab=${activeTab}`;
-
+        sessionStorage.setItem("activeTab", activeTab);
         switch (activeTab) {
             case 'info':
-                navigate(`/dashboard${tabParam}`);
+                navigate("/dashboard");
                 break;
             case 'CandidateEvaluation':
-                navigate(`/dashboard${tabParam}`);
+                navigate("/dashboard/evalution");
                 break;
             case 'CandidateDatabase':
-                navigate(`/dashboard${tabParam}`);
+                navigate("/dashboard/candidate-master");
                 break;
             case 'particularEmployee':
-                navigate(`${sharedTab.TabUrl}${tabParam}`);
+                navigate(sharedTab.TabUrl);
                 break;
             case 'EmployeeMaster':
-                navigate(`/dashboard${tabParam}`);
+                navigate('/dashboard/employee-master');
+                break;
+            case 'EmployeeMaster2':
+                navigate(`/dashboard/employee-master2`);
                 break;
             default:
-                navigate(`/dashboard${tabParam}`);
+                navigate("/");
         }
     }, [activeTab, navigate]);
+
+    const handleMouseEnter = () => {
+        setIsOpen(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsOpen(false);
+    };
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
@@ -103,9 +131,6 @@ function Sidebar() {
         });
     };
 
-    const handleMouseEnter = () => setIsOpen(true);
-    const handleMouseLeave = () => setIsOpen(false);
-
     const renderContent = () => {
         switch (activeTab) {
             case 'info':
@@ -114,47 +139,71 @@ function Sidebar() {
                 return <CandidateInterview />;
             case 'CandidateDatabase':
                 return <MOSCandidate />;
-            case 'particularEmployee': {
+            case 'particularEmployee':
                 const employid = queryParams.get('employid');
                 const fromdate = queryParams.get('fromdate');
                 const todate = queryParams.get('todate');
                 return <MOSCandidate emp_id={employid} fromDate={fromdate} toDate={todate} />;
-            }
             case 'EmployeeMaster':
                 return <EmployeeTable />;
+            case 'EmployeeMaster2':
+                return <EmployeeTable1 />; // Pass idValue as a prop
             default:
                 return <MOSDashboard />;
         }
     };
-
 
     return (
         <>
             <SidebarContainer
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
-                isOpen={isOpen}
+                isopen={isopen}
             >
-                <SidebarIcon disableRipple aria-label="info" isOpen={isOpen} onClick={() => handleTabChange('info')} isActive={activeTab === 'info'} >
+                <SidebarIcon
+                    disableRipple
+                    aria-label="info"
+                    isopen={isopen}
+                    onClick={() => handleTabChange('info')}
+                    isactive={activeTab === 'info'}
+                >
                     <AddTaskIcon sx={{ fontSize: 30 }} />
-                    {isOpen && <span>&nbsp;&nbsp;&nbsp;Dashboard</span>}
+                    {isopen && <span>&nbsp;&nbsp;&nbsp;Dashboard</span>}
                 </SidebarIcon>
-                <SidebarIcon disableRipple aria-label="CandidateEvaluation" isOpen={isOpen} onClick={() => handleTabChange('CandidateEvaluation')} isActive={activeTab === 'CandidateEvaluation'} >
+                <SidebarIcon
+                    disableRipple
+                    aria-label="CandidateEvaluation"
+                    isopen={isopen}
+                    onClick={() => handleTabChange('CandidateEvaluation')}
+                    isactive={activeTab === 'CandidateEvaluation'}
+                >
                     <PersonSearchSharpIcon sx={{ fontSize: 35 }} />
-                    {isOpen && <span>&nbsp;&nbsp;&nbsp;Candidate Evaluation</span>}
+                    {isopen && <span>&nbsp;&nbsp;&nbsp;Candidate Evaluation</span>}
                 </SidebarIcon>
-                {AuthorizedPerson === 1 ?
-                    <SidebarIcon disableRipple aria-label="CandidateDatabase" isOpen={isOpen} onClick={() => handleTabChange('CandidateDatabase')} isActive={activeTab === 'CandidateDatabase'} >
+                {AuthorizedPerson === 1 && (
+                    <SidebarIcon
+                        disableRipple
+                        aria-label="CandidateDatabase"
+                        isopen={isopen}
+                        onClick={() => handleTabChange('CandidateDatabase')}
+                        isactive={activeTab === 'CandidateDatabase'}
+                    >
                         <StorageRoundedIcon sx={{ fontSize: 30 }} />
-                        {isOpen && <span>&nbsp;&nbsp;&nbsp;Candidate Database</span>}
-                    </SidebarIcon> : ''}
-
-                {AuthorizedPerson === 1 &&
-                    <SidebarIcon disableRipple aria-label="EmployeeMaster" isOpen={isOpen} onClick={() => handleTabChange('EmployeeMaster')} isActive={activeTab === 'EmployeeMaster'} >
+                        {isopen && <span>&nbsp;&nbsp;&nbsp;Candidate Database</span>}
+                    </SidebarIcon>
+                )}
+                {AuthorizedPerson === 1 && (
+                    <SidebarIcon
+                        disableRipple
+                        aria-label="EmployeeMaster"
+                        isopen={isopen}
+                        onClick={() => handleTabChange('EmployeeMaster')}
+                        isactive={activeTab === 'EmployeeMaster'}
+                    >
                         <SupervisorAccountIcon sx={{ fontSize: 30 }} />
-                        {isOpen && <span>&nbsp;&nbsp;&nbsp;Employee Master </span>}
-                    </SidebarIcon>}
-
+                        {isopen && <span>&nbsp;&nbsp;&nbsp;Employee Master</span>}
+                    </SidebarIcon>
+                )}
             </SidebarContainer>
             <MainContainer>
                 {renderContent()}
@@ -167,6 +216,16 @@ function Sidebar() {
 
 
 export default Sidebar;
+
+
+
+
+
+
+
+
+
+
 
 
 

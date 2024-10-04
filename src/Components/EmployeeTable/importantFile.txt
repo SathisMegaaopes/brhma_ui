@@ -990,6 +990,82 @@ important dude , Sathis dude ......
     };
 
 
+    // const { sharedTab, setSharedTab } = useSharedContext();
+    // const { search } = useLocation();
+    // const queryParams = new URLSearchParams(search);
+
+    // const [activeTab, setActiveTab] = useState(queryParams.get('tab') || 'info');
+    // const [isOpen, setIsOpen] = useState(false);
+
+    // const navigate = useNavigate();
+
+    // const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
+    // const AuthorizedPerson = userinfo?.user_role;
+
+    // useEffect(() => {
+    //     if (sharedTab.active === 1) {
+    //         setActiveTab('particularEmployee');
+    //     }
+    // }, [sharedTab.active]);
+
+    // useEffect(() => {
+
+    //     const tabParam = `?tab=${activeTab}`;
+
+    //     switch (activeTab) {
+    //         case 'info':
+    //             navigate(`/dashboard${tabParam}`);
+    //             break;
+    //         case 'CandidateEvaluation':
+    //             navigate(`/dashboard${tabParam}`);
+    //             break;
+    //         case 'CandidateDatabase':
+    //             navigate(`/dashboard${tabParam}`);
+    //             break;
+    //         case 'particularEmployee':
+    //             navigate(`${sharedTab.TabUrl}${tabParam}`);
+    //             break;
+    //         case 'EmployeeMaster':
+    //             navigate(`/dashboard${tabParam}`);
+    //             break;
+    //         default:
+    //             navigate(`/dashboard${tabParam}`);
+    //     }
+    // }, [activeTab, navigate]);
+
+    // const handleTabChange = (tab) => {
+    //     setActiveTab(tab);
+    //     setSharedTab({
+    //         Tabname: null,
+    //         TabUrl: null,
+    //         active: 0,
+    //         backendUrl: null
+    //     });
+    // };
+
+    // const handleMouseEnter = () => setIsOpen(true);
+    // const handleMouseLeave = () => setIsOpen(false);
+
+    // const renderContent = () => {
+    //     switch (activeTab) {
+    //         case 'info':
+    //             return <MOSDashboard />;
+    //         case 'CandidateEvaluation':
+    //             return <CandidateInterview />;
+    //         case 'CandidateDatabase':
+    //             return <MOSCandidate />;
+    //         case 'particularEmployee': {
+    //             const employid = queryParams.get('employid');
+    //             const fromdate = queryParams.get('fromdate');
+    //             const todate = queryParams.get('todate');
+    //             return <MOSCandidate emp_id={employid} fromDate={fromdate} toDate={todate} />;
+    //         }
+    //         case 'EmployeeMaster':
+    //             return <EmployeeTable />;
+    //         default:
+    //             return <MOSDashboard />;
+    //     }
+    // };
 
 
 
@@ -4020,3 +4096,337 @@ important dude , Sathis dude ......
         // ifsccode: '',
         // accountNumber: '',
         // beneficiarycode: '',
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // const Department = ['Executive', 'Operations', 'Human Resource', 'IT Infrastructure', 'Facility Management', 'Learning and Development', 'Business Development', 'Software Development']
+
+// const Teams = ['Management', 'Supervisor/Manager', 'Documentation and Recruitment', 'Recruitment', 'Front Office', 'IT Team', 'Admin and Facility', 'Quality Control', 'Sales', 'Software Team']
+
+
+
+// const shifts = [
+//     "00:00 - 09:00",
+//     "00:30 - 09:30",
+//     "01:00 - 10:00",
+//     "01:30 - 10:30",
+//     "02:00 - 11:00",
+//     "02:30 - 11:30",
+//     "03:00 - 12:00",
+//     "03:30 - 12:30",
+//     "04:00 - 13:00",
+//     "04:30 - 13:30",
+//     "05:00 - 14:00",
+//     "05:30 - 14:30",
+//     "06:00 - 15:00",
+//     "06:30 - 15:30",
+//     "07:00 - 16:00",
+//     "07:30 - 16:30",
+//     "08:00 - 17:00",
+//     "08:30 - 17:30",
+//     "09:00 - 18:00",
+//     "09:30 - 18:30",
+//     "10:00 - 19:00",
+//     "10:30 - 19:30",
+//     "11:00 - 20:00",
+//     "11:30 - 20:30",
+//     "12:00 - 21:00",
+//     "12:30 - 21:30",
+//     "13:00 - 22:00",
+//     "13:30 - 22:30",
+//     "14:00 - 23:00",
+//     "14:30 - 23:30",
+//     "15:00 - 00:00",
+//     "15:30 - 00:30",
+//     "16:00 - 01:00",
+//     "16:30 - 01:30",
+//     "17:00 - 02:00",
+//     "17:30 - 02:30",
+//     "18:00 - 03:00",
+//     "18:30 - 03:30",
+//     "19:00 - 04:00",
+//     "19:30 - 04:30",
+//     "20:00 - 05:00",
+//     "20:30 - 05:30",
+//     "21:00 - 06:00",
+//     "21:30 - 06:30",
+//     "22:00 - 07:00",
+//     "22:30 - 07:30",
+//     "23:00 - 08:00",
+//     "23:30 - 08:30"
+// ];
+
+
+
+
+
+// function Sidebar() {
+//     const { sharedTab, setSharedTab } = useSharedContext();
+//     const { search } = useLocation();
+//     const queryParams = new URLSearchParams(search);
+//     const [isOpen, setIsOpen] = useState(false);
+//     const [activeTab, setActiveTab] = useState(() => {
+//         // Get the active tab from sessionStorage or default to 'info'
+//         return sessionStorage.getItem("activeTab") || 'info';
+//     });
+
+//     const navigate = useNavigate();
+//     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
+//     const AuthorizedPerson = userinfo.user_role;
+
+//     React.useEffect(() => {
+//         // Save the activeTab to sessionStorage whenever it changes
+//         sessionStorage.setItem("activeTab", activeTab);
+
+//         switch (activeTab) {
+//             case 'info':
+//                 navigate("/dashboard");
+//                 break;
+//             case 'CandidateEvaluation':
+//                 navigate("/dashboard/evalution");
+//                 break;
+//             case 'CandidateDatabase':
+//                 navigate("/dashboard/candidate-master");
+//                 break;
+//             case 'particularEmployee':
+//                 navigate(sharedTab.TabUrl);
+//                 break;
+//             case 'EmployeeMaster':
+//                 navigate('/dashboard/employee-master');
+//                 break;
+//             case 'EmployeeMaster2':
+//                 navigate(`/dashboard/employee-master/?id=${idValue}`);
+//                 break;
+//             default:
+//                 navigate("/");
+//         }
+//     }, [activeTab, navigate]);
+
+//     React.useEffect(() => {
+//         if (sharedTab.active === 1) {
+//             setActiveTab('particularEmployee');
+//         } else {
+//             setActiveTab('info');
+//         }
+//     }, [sharedTab.active]);
+
+//     const handleMouseEnter = () => {
+//         setIsOpen(true);
+//     };
+
+//     const handleMouseLeave = () => {
+//         setIsOpen(false);
+//     };
+
+//     const handleTabChange = (tab) => {
+//         setActiveTab(tab);
+//         setSharedTab({
+//             Tabname: null,
+//             TabUrl: null,
+//             active: 0,
+//             backendUrl: null,
+//         });
+//     };
+
+//     const renderContent = () => {
+//         switch (activeTab) {
+//             case 'info':
+//                 return <MOSDashboard />;
+//             case 'CandidateEvaluation':
+//                 return <CandidateInterview />;
+//             case 'CandidateDatabase':
+//                 return <MOSCandidate />;
+//             case 'particularEmployee':
+//                 const employid = queryParams.get('employid');
+//                 const fromdate = queryParams.get('fromdate');
+//                 const todate = queryParams.get('todate');
+//                 return <MOSCandidate emp_id={employid} fromDate={fromdate} toDate={todate} />;
+//             case 'EmployeeMaster':
+//                 return <EmployeeTable />;
+//             case 'EmployeeMaster2':
+//                 return <EmployeeTable1 />;
+//             default:
+//                 return <MOSDashboard />;
+//         }
+//     };
+
+//     return (
+//         <>
+//             <SidebarContainer
+//                 onMouseEnter={handleMouseEnter}
+//                 onMouseLeave={handleMouseLeave}
+//                 isOpen={isOpen}
+//             >
+//                 <SidebarIcon disableRipple aria-label="info" isOpen={isOpen} onClick={() => handleTabChange('info')} isActive={activeTab === 'info'}>
+//                     <AddTaskIcon sx={{ fontSize: 30 }} />
+//                     {isOpen && <span>&nbsp;&nbsp;&nbsp;Dashboard</span>}
+//                 </SidebarIcon>
+//                 <SidebarIcon disableRipple aria-label="CandidateEvaluation" isOpen={isOpen} onClick={() => handleTabChange('CandidateEvaluation')} isActive={activeTab === 'CandidateEvaluation'}>
+//                     <PersonSearchSharpIcon sx={{ fontSize: 35 }} />
+//                     {isOpen && <span>&nbsp;&nbsp;&nbsp;Candidate Evaluation</span>}
+//                 </SidebarIcon>
+//                 {AuthorizedPerson === 1 ? (
+//                     <SidebarIcon disableRipple aria-label="CandidateDatabase" isOpen={isOpen} onClick={() => handleTabChange('CandidateDatabase')} isActive={activeTab === 'CandidateDatabase'}>
+//                         <StorageRoundedIcon sx={{ fontSize: 30 }} />
+//                         {isOpen && <span>&nbsp;&nbsp;&nbsp;Candidate Database</span>}
+//                     </SidebarIcon>
+//                 ) : (
+//                     ''
+//                 )}
+//                 {AuthorizedPerson === 1 && (
+//                     <SidebarIcon disableRipple aria-label="EmployeeMaster" isOpen={isOpen} onClick={() => handleTabChange('EmployeeMaster')} isActive={activeTab === 'EmployeeMaster'}>
+//                         <SupervisorAccountIcon sx={{ fontSize: 30 }} />
+//                         {isOpen && <span>&nbsp;&nbsp;&nbsp;Employee Master</span>}
+//                     </SidebarIcon>
+//                 )}
+//             </SidebarContainer>
+//             <MainContainer>
+//                 {renderContent()}
+//             </MainContainer>
+//         </>
+//     );
+// }
+
+
+
+// function Sidebar() {
+
+//     const { sharedTab, setSharedTab } = useSharedContext();
+//     const { search } = useLocation();
+//     const queryParams = new URLSearchParams(search);
+//     const [isOpen, setIsOpen] = useState(false);
+//     const [activeTab, setActiveTab] = useState('info');
+
+//     const navigate = useNavigate();
+
+//     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
+
+//     const AuthorizedPerson = userinfo.user_role
+
+
+//     React.useEffect(() => {
+//         if (sharedTab.active === 1) {
+//             setActiveTab('particularEmployee')
+//         } else {
+//             setActiveTab('info')
+//         }
+//     }, [sharedTab.active])
+
+
+//     React.useEffect(() => {
+//         switch (activeTab) {
+//             case 'info':
+//                 navigate("/dashboard");
+//                 break;
+//             case 'CandidateEvaluation':
+//                 navigate("/dashboard/evalution");
+//                 break;
+//             case 'CandidateDatabase':
+//                 navigate("/dashboard/candidate-master");
+//                 break;
+//             case 'particularEmployee':
+//                 navigate(sharedTab.TabUrl);
+//                 break;
+//             case 'EmployeeMaster':
+//                 navigate('/dashboard/employee-master');
+//                 break;
+//             case 'EmployeeMaster2':
+//                 navigate(`/dashboard/employee-master/?id=${idValue}`);
+//                 break;
+//             default:
+//                 navigate("/");
+//         }
+//     }, [activeTab, navigate]);
+
+
+//     const handleMouseEnter = () => {
+//         setIsOpen(true);
+//     };
+
+
+//     const handleMouseLeave = () => {
+//         setIsOpen(false);
+//     };
+
+
+//     const handleTabChange = (tab) => {
+//         setActiveTab(tab);
+//         setSharedTab({
+//             Tabname: null,
+//             TabUrl: null,
+//             active: 0,
+//             backendUrl: null
+//         })
+//     };
+
+
+//     const renderContent = () => {
+//         switch (activeTab) {
+//             case 'info':
+//                 return <MOSDashboard />;
+//             case 'CandidateEvaluation':
+//                 return <CandidateInterview />;
+//             case 'CandidateDatabase':
+//                 return <MOSCandidate />;
+//             case 'particularEmployee':
+
+//                 const employid = queryParams.get('employid');
+//                 const fromdate = queryParams.get('fromdate');
+//                 const todate = queryParams.get('todate');
+
+//                 return <MOSCandidate emp_id={employid} fromDate={fromdate} toDate={todate} />;
+//             case 'EmployeeMaster':
+//                 return <EmployeeTable />
+
+//             case 'EmployeeMaster2':
+//                 return <EmployeeTable1 />
+
+//             default:
+//                 return <MOSDashboard />;
+//         }
+//     };
+
+//     return (
+//         <>
+//             <SidebarContainer
+//                 onMouseEnter={handleMouseEnter}
+//                 onMouseLeave={handleMouseLeave}
+//                 isOpen={isOpen}
+//             >
+//                 <SidebarIcon disableRipple aria-label="info" isOpen={isOpen} onClick={() => handleTabChange('info')} isActive={activeTab === 'info'} >
+//                     <AddTaskIcon sx={{ fontSize: 30 }} />
+//                     {isOpen && <span>&nbsp;&nbsp;&nbsp;Dashboard</span>}
+//                 </SidebarIcon>
+//                 <SidebarIcon disableRipple aria-label="CandidateEvaluation" isOpen={isOpen} onClick={() => handleTabChange('CandidateEvaluation')} isActive={activeTab === 'CandidateEvaluation'} >
+//                     <PersonSearchSharpIcon sx={{ fontSize: 35 }} />
+//                     {isOpen && <span>&nbsp;&nbsp;&nbsp;Candidate Evaluation</span>}
+//                 </SidebarIcon>
+//                 {AuthorizedPerson === 1 ?
+//                     <SidebarIcon disableRipple aria-label="CandidateDatabase" isOpen={isOpen} onClick={() => handleTabChange('CandidateDatabase')} isActive={activeTab === 'CandidateDatabase'} >
+//                         <StorageRoundedIcon sx={{ fontSize: 30 }} />
+//                         {isOpen && <span>&nbsp;&nbsp;&nbsp;Candidate Database</span>}
+//                     </SidebarIcon> : ''}
+
+//                 {AuthorizedPerson === 1 &&
+//                     <SidebarIcon disableRipple aria-label="EmployeeMaster" isOpen={isOpen} onClick={() => handleTabChange('EmployeeMaster')} isActive={activeTab === 'EmployeeMaster'} >
+//                         <SupervisorAccountIcon sx={{ fontSize: 30 }} />
+//                         {isOpen && <span>&nbsp;&nbsp;&nbsp;Employee Master </span>}
+//                     </SidebarIcon>}
+
+//             </SidebarContainer>
+//             <MainContainer>
+//                 {renderContent()}
+//             </MainContainer>
+//         </>
+//     );
+// }

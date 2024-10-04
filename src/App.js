@@ -10,47 +10,49 @@ import MOSLogin from "./Components/Login";
 import MOSLayout from "./Components/Layout";
 import MOSDashboard from "./Components/Dashboard";
 import Employee from "./Components/EmployeeTable";
+import EmployeeTable1 from "./Components/EmployeeTable";
 import { SharedProvider } from "./Context";
 import { useEffect } from "react";
 
 
 function App() {
-  
+
   const user_id = sessionStorage.getItem("user_id");
 
   return (
     <div >
-        <SharedProvider>
-          <BrowserRouter>
-            <Routes>
+      <SharedProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/candidate"
+              element={<MegaOpesCandidateRegistration />}
+            />
+
+            <Route path="/" element={<Landing />} />
+            <Route path="/thankyou" element={<ThankYou />} />
+            <Route path="/login" element={<MOSLogin />} />
+            <Route path="*" element={<Page404 />} />
+            <Route path="/dashboard" element={<MOSLayout />}>
+              <Route index element={<MOSDashboard />} />
               <Route
-                path="/candidate"
-                element={<MegaOpesCandidateRegistration />}
+                path="/dashboard/evalution"
+                element={<CandidateInterview />}
               />
+              <Route
+                path="/dashboard/candidate-master"
+                element={<MOSCandidate />}
+              />
+              <Route
+                path="/dashboard/employee-master"
+                element={<Employee />}
+              />
+              <Route path="/dashboard/employee-master2" element={<EmployeeTable1 />} />
 
-              <Route path="/" element={<Landing />} />
-              <Route path="/thankyou" element={<ThankYou />} />
-              <Route path="/login" element={<MOSLogin />} />
-              <Route path="*" element={<Page404 />} />
-              <Route path="/dashboard" element={<MOSLayout />}>
-                <Route index element={<MOSDashboard />} />
-                <Route
-                  path="/dashboard/evalution"
-                  element={<CandidateInterview />}
-                />
-                <Route
-                  path="/dashboard/candidate-master"
-                  element={<MOSCandidate />}
-                />
-                <Route
-                  path="/dashboard/employee-master"
-                  element={<Employee />}
-                />
-
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </SharedProvider>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </SharedProvider>
     </div>
   );
 }

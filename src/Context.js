@@ -14,8 +14,17 @@ export function SharedProvider({ children }) {
 
     const [rerender, setRerender] = useState(false)
 
+    const [insertRequest, setInsertRequest] = useState(0)
+
+    const [ employeeAddTab ,setEmployeeAddTab ] = useState({
+        candidateId : null,
+        status : 0
+    });
+
+    // console.log(employeeAddTab)
+
     return (
-        <SharedContext.Provider value={{ sharedTab, setSharedTab, rerender, setRerender }}>
+        <SharedContext.Provider value={{ sharedTab, setSharedTab, rerender, setRerender, insertRequest, setInsertRequest ,employeeAddTab ,setEmployeeAddTab}}>
             {children}
         </SharedContext.Provider>
     );

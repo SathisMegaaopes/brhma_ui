@@ -124,7 +124,7 @@ function CandidateInterview() {
                         <Typography color="text.primary" variant='h5'>Candidate Evaluation</Typography>
                     </Breadcrumbs>
                 </Grid>
-                <Grid item sx={4} sm={4} md={3} >
+                <Grid item xs={4} sm={4} md={3} >
                     <TextField sx={{ zIndex: 0 }} variant='outlined' label="Search Candidate" size='small'
                         fullWidth placeholder='Search By Candidate Name or ID or Mobile'
                         onChange={e => setSearchKey(e.target.value)}
@@ -141,7 +141,7 @@ function CandidateInterview() {
 
             <Grid container spacing={2} sx={{ marginTop: "24px", overflowX: 'hidden', paddingX: 6 }} >
                 {candidate_result.length > 0 && client === null ?
-                    <Grid item sx={12} sm={12} md={12}  >
+                    <Grid item xs={12} sm={12} md={12}  >
                         <Typography variant='body1'>
                             Search Results
                         </Typography>
@@ -149,7 +149,7 @@ function CandidateInterview() {
                     : null}
                 {client === null && candidate_result.length > 0 && candidate_result.map(candidate => {
                     return (
-                        <Grid item sx={6} sm={6} md={6} lg={4}>
+                        <Grid item xs={6} sm={6} md={6} lg={4}>
                             <Card>
                                 <CardHeader
                                     avatar={
@@ -183,7 +183,7 @@ function CandidateInterview() {
 
                 {client !== null ? <>
                     <Grid container spacing={2} sx={{ marginTop: "24px", paddingX: 12 }} >
-                        <Grid item sx={12} sm={12} md={12}>
+                        <Grid item xs={12} sm={12} md={12}>
                             <Typography variant='body1'>
                                 Scores & Description
                             </Typography>
@@ -191,14 +191,14 @@ function CandidateInterview() {
                                 0: Poor, 1: Below Average, 2: Average, 3: Met Expectations, 4: Above Expectations, 5: Exceptional
                             </Typography>
                         </Grid>
-                        <Grid item sx={6} sm={6} md={6}>
+                        <Grid item xs={6} sm={6} md={6}>
                             <Typography variant='body1'>
                                 Interviewer Details : <b>{emp_id + " - " + emp_name}</b>
                             </Typography>
                         </Grid>
 
 
-                        <Grid item sx={6} sm={6} md={6}>
+                        <Grid item xs={6} sm={6} md={6}>
                             <FormControl fullWidth size='small'>
                                 <InputLabel >Interview Type</InputLabel>
                                 <Select value={currentRound}

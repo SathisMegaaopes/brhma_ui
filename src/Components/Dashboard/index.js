@@ -149,8 +149,6 @@ export default function MOSDashboard() {
                     setCandidates(response.data.data);
                     setCandidatelist(response.data.data);
                     setEmp(response.data.emp_details);
-                    console.log(response.data.data)
-                    console.log(response.data.emp_details)
                 } else {
                     console.log("ERROR : ", JSON.stringify(response.data));
                 }
@@ -221,7 +219,6 @@ export default function MOSDashboard() {
 
         let round1 = fnFilterCandidateByRound(curr_candidate, status, id);
 
-        console.log(round1, 'This is round one....')
         return round1;
 
     };
@@ -263,7 +260,6 @@ export default function MOSDashboard() {
     };
 
 
-    console.log()
 
     return (
 
@@ -412,7 +408,6 @@ export default function MOSDashboard() {
                                                 fnGetCountById(item.emp_id, 3) === 0 &&
                                                 fnGetCountById(item.emp_id, 4) === 0;
 
-                                            console.log(hide, 'this is hide dudeeeee')
 
                                             return !hide ? (
                                                 <TableRow key={item.emp_id}>

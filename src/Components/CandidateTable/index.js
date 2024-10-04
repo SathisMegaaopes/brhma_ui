@@ -13,7 +13,7 @@ import GroupAddSharpIcon from '@mui/icons-material/GroupAddSharp';
 
 function MOSCandiateTable(props) {
 
-    const { rerender, setRerender } = useSharedContext();
+    const { rerender, setRerender, insertRequest, setInsertRequest, employeeAddTab, setEmployeeAddTab } = useSharedContext();
 
     const [candidate, setCandidate] = React.useState([]);
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -75,15 +75,16 @@ function MOSCandiateTable(props) {
     }
 
 
-    const hadleNavigatetoOnboard = () => {
-        console.log('Navigation Started');
-        const tabParam = `?tab=${'EmployeeMaster'}`;
+    const hadleNavigatetoOnboard = (id) => {
 
-        window.location.href = `/dashboard${tabParam}`;
+        setInsertRequest(1);
 
-        // navigate(`/dashboard/${tabParam}`);
-        // window.location.reload();
-        console.log('Navigation Ended...')
+        setEmployeeAddTab((prev) => ({
+            ...prev,
+            candidateId: id,
+            status: 1
+        }));
+
     }
 
 
@@ -97,7 +98,7 @@ function MOSCandiateTable(props) {
 
     return (
         <>
-            <Grid item sx={12} sm={12} md={12} lg={12} xl={12}>
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                 <TableContainer component={Paper} variant="outlined" >
                     <Table size='small'>
                         <TableHead >
@@ -118,7 +119,7 @@ function MOSCandiateTable(props) {
                                 candidate_data.map(item => {
 
                                     return (
-                                        <TableRow >
+                                        <TableRow key={item.id}>
                                             <TableCell>{item.candidate_id}</TableCell>
                                             <TableCell>{item.f_name_basic.charAt(0).toUpperCase() + item.f_name_basic.slice(1) + " " + item.l_name_basic.charAt(0).toUpperCase() + item.l_name_basic.slice(1)} </TableCell>
                                             <TableCell>{item.job_profile_basic}</TableCell>
@@ -144,7 +145,7 @@ function MOSCandiateTable(props) {
                                                 </Button>
                                             </TableCell>
                                             {/* result */}
-                                            <TableCell align="center" onClick={() => hadleNavigatetoOnboard()} >
+                                            <TableCell align="center" onClick={() => hadleNavigatetoOnboard(item.candidate_id)} >
                                                 {item.result === 1 && <Button>
                                                     <GroupAddSharpIcon />
                                                 </Button>}
@@ -185,7 +186,7 @@ function MOSCandiateTable(props) {
             <Snackbar
                 open={notification}
                 autoHideDuration={3000}
-                anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 onClose={handlenotification}
             >
                 <Alert
