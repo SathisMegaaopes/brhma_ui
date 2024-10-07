@@ -38,6 +38,7 @@ const DateFormater = (val) => {
     let date = ("0" + new_date.getDate()).slice(-2);
 
     return date + "/" + month + "/" + year;
+  
 }
 
 const formatDateTime = (dateTime) => {

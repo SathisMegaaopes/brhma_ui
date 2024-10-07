@@ -13,9 +13,14 @@ import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { DateFormater } from '../Global/Utils/common_data';
+import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
+import { useSharedContext } from '../../Context';
 
 
 export default function EmployeeTable() {
+
+  const { insertRequest, setInsertRequest, employeeAddTab, setEmployeeAddTab } = useSharedContext();
 
   const [employeeData, setEmployeedata] = React.useState([]);
   const [data, setData] = React.useState({
@@ -62,6 +67,18 @@ export default function EmployeeTable() {
       'empid': selectedData[0].emp_id,
     })
     setOpen(!open)
+  }
+
+  const handleEdit = (id) => {
+
+    setInsertRequest(0);
+
+    setEmployeeAddTab((prev) => ({
+      ...prev,
+      candidateId: id,
+      status: 1
+    }));
+
   }
 
   const handleValueChange = (e) => {
@@ -187,22 +204,46 @@ export default function EmployeeTable() {
           <Table size='small'>
             <TableHead >
               <TableRow>
-                <TableCell>Employee ID </TableCell>
+
+                <TableCell>Employee Name</TableCell>
+
+                <TableCell>Email Address</TableCell>
+
+                <TableCell>Mobile Number</TableCell>
+
+                <TableCell> Date of Joining  </TableCell>
+
                 <TableCell>Username</TableCell>
+
                 <TableCell>Password</TableCell>
+
                 <TableCell align='center' >View</TableCell>
+
                 <TableCell align='center'>User Role</TableCell>
+
                 <TableCell align='center'>Update</TableCell>
+
+                <TableCell align='center'>Update Employee</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {employeeData.map((item, index) => (
                 <TableRow key={item.emp_id}>
-                  <TableCell align='left' style={{ whiteSpace: 'nowrap' }}>{item.emp_id}</TableCell>
+
+                  <TableCell>{item.first_name}{item.last_name}</TableCell>
+
+                  <TableCell>{item.email}</TableCell>
+
+                  <TableCell>{item.mobile_number}</TableCell>
+
+                  <TableCell>{DateFormater(item.date_of_join)}</TableCell>
+
                   <TableCell align='left' style={{ whiteSpace: 'nowrap' }}>{item.user_name}</TableCell>
+
                   <TableCell align="left" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {showPassword[index] ? item.user_pwd : changeintohalf(item.user_pwd)}
                   </TableCell>
+
                   <TableCell align="center">
                     <IconButton
                       onClick={() => togglePasswordVisibility(index)}
@@ -212,6 +253,7 @@ export default function EmployeeTable() {
                   </TableCell>
 
                   <TableCell align='center' >{item.user_role}</TableCell>
+
                   <TableCell align='center' >
                     <IconButton color='primary' onClick={() => handleChange(item.id)} sx={{ padding: 0.5 }} >
                       <EditNoteRoundedIcon
@@ -219,6 +261,18 @@ export default function EmployeeTable() {
                       />
                     </IconButton>
                   </TableCell>
+
+
+                  <TableCell align='center' >
+                    <IconButton color='primary' onClick={() => handleEdit(item.employee_number)} sx={{ padding: 0.5 }} >
+                      <ModeEditOutlineIcon
+                        sx={{ fontSize: '32px' }}
+                      />
+                    </IconButton>
+                  </TableCell>
+
+
+
                 </TableRow>
               ))}
             </TableBody>

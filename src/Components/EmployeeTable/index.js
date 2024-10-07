@@ -73,7 +73,8 @@ export default function Employee() {
           {activeButton === 1 &&
             <div>
               {/* <Typography>Update Employee Content</Typography> */}
-              <EmployeeForm/>
+              {/* <EmployeeForm/> */}
+              <EmployeeTable/>
             </div>}
           {activeButton === 2 && (
             <div>

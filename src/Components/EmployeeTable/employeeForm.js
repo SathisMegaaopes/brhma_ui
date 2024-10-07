@@ -395,23 +395,41 @@ export default function EmployeeForm() {
 
 
     const [formData2, setFormData2] = React.useState({
-        reportingmanager: 'Kannan R',
-        reportingteamlead: 'Kannan R',
-        designation: 'CEO',
-        department: 'Executive',
-        team: 'IT Team',
-        referrdby: 'Santhosh',
-        employmentstatus: 'Probation',
-        employeestatus: 'Active',
-        shift: '00:00 - 09:00',
-        grade: 'L1',
-        probabationperiod: '180',
-        salaryofferred: '12000',
-        totalmonthlyctc: '12000',
-        attendancebonus: 'Yes',
-        totalyearlyctc: '144000',
-        billablestatus: 'Billable',
+        reportingmanager: null,
+        reportingteamlead: null,
+        designation: null,
+        department: null,
+        team: null,
+        referrdby: null,
+        employmentstatus: null,
+        employeestatus: null,
+        shift: null,
+        grade: null,
+        probabationperiod: null,
+        salaryofferred: null,
+        totalmonthlyctc: null,
+        attendancebonus: null,
+        totalyearlyctc: null,
+        billablestatus: null,
         addresprofpath: null,
+
+        // reportingmanager: 'Kannan R',
+        // reportingteamlead: 'Kannan R',
+        // designation: 'CEO',
+        // department: 'Executive',
+        // team: 'IT Team',
+        // referrdby: 'Santhosh',
+        // employmentstatus: 'Probation',
+        // employeestatus: 'Active',
+        // shift: '00:00 - 09:00',
+        // grade: 'L1',
+        // probabationperiod: '180',
+        // salaryofferred: '12000',
+        // totalmonthlyctc: '12000',
+        // attendancebonus: 'Yes',
+        // totalyearlyctc: '144000',
+        // billablestatus: 'Billable',
+        // addresprofpath: null,
 
     })
 
@@ -462,15 +480,15 @@ export default function EmployeeForm() {
         branchname: null,
         ifsccode: null,
         accountNumber: null,
-        beneficiarycode: null,
+        beneficiarycode: null
     })
+
+
 
     const [selectedPaymentType, setSelectedPaymentType] = React.useState('');
 
     const salaryOfferred = useWatch({ control, name: 'salaryofferred' });
 
-
-    // console.log(candidatePopulate,'HIiiiiiiiiiiiiiiiiiiiiiiiiiii')
 
     const handleCheckboxChange = (event) => {
         setIsPFChecked(event.target.checked);
@@ -504,7 +522,7 @@ export default function EmployeeForm() {
 
         try {
             const response = axios.get(url)
-            setDepartments(response.data.data)
+            setDepartments(response?.data?.data)
         } catch (error) {
             console.error(error, 'This is the error... ');
         }
@@ -694,7 +712,14 @@ export default function EmployeeForm() {
             }))
 
 
-        } else if (formData4.startdate2 && formData4.enddate2) {
+        }
+
+    }, [formData4.startdate1, formData4.enddate1])
+
+
+    React.useEffect(() => {
+
+        if (formData4.startdate2 && formData4.enddate2) {
 
             const experience2 = calculateExperience(formData4.startdate2, formData4.enddate2);
 
@@ -705,9 +730,14 @@ export default function EmployeeForm() {
                 totalExperience2: experience2,
             }))
 
+        }
+
+    }, [formData4.startdate2, formData4.enddate2])
 
 
-        } else if (formData4.startdate3 && formData4.enddate3) {
+    React.useEffect(() => {
+
+        if (formData4.startdate3 && formData4.enddate3) {
 
             const experience3 = calculateExperience(formData4.startdate3, formData4.enddate3);
 
@@ -720,7 +750,8 @@ export default function EmployeeForm() {
 
         }
 
-    }, [formData4.startdate1, formData4.enddate1, formData4.startdate2, formData4.enddate2, formData4.startdate3, formData4.enddate3])
+    }, [formData4.startdate3, formData4.enddate3])
+
 
 
     React.useEffect(() => {
@@ -756,21 +787,248 @@ export default function EmployeeForm() {
 
     React.useEffect(() => {  //AutoPopulate Function
 
-        if (candidatePopulate) {
-            
-            setValue('firstname', candidatePopulate.firstname, { shouldValidate: true });
-            setValue('lastname', candidatePopulate.lastname, { shouldValidate: true });
-            setValue('dateOfBirth', candidatePopulate.dateOfBirth, { shouldValidate: true });
 
-            setFormData1((prev) => ({
-                ...prev,
-                firstname: candidatePopulate.firstname,
-                lastname: candidatePopulate.lastname,
-                dateOfBirth: candidatePopulate.dateOfBirth,
-            }))
+        if (insertRequest === 1) {
+            if (candidatePopulate) {
+
+                setValue('firstname', candidatePopulate.firstname, { shouldValidate: true });
+                setValue('lastname', candidatePopulate.lastname, { shouldValidate: true });
+                setValue('dateOfBirth', candidatePopulate.dateOfBirth, { shouldValidate: true })
+
+                setValue('email', candidatePopulate.email, { shouldValidate: true });
+                setValue('mobileNumber', candidatePopulate.mobileNumber, { shouldValidate: true });
+                setValue('fathersName', candidatePopulate.fathersName, { shouldValidate: true });
+                setValue('fathersOccupation', candidatePopulate.fathersOccupation, { shouldValidate: true });
+
+                setValue('organization1', candidatePopulate.organization1, { shouldValidate: true });
+                setValue('designation1', candidatePopulate.designation1, { shouldValidate: true });
+                setValue('organization2', candidatePopulate.organization2, { shouldValidate: true });
+                setValue('designation2', candidatePopulate.designation2, { shouldValidate: true });
+                setValue('organization3', candidatePopulate.organization3, { shouldValidate: true });
+                setValue('designation3', candidatePopulate.designation3, { shouldValidate: true });
+
+                setFormData1((prev) => ({
+                    ...prev,
+                    firstname: candidatePopulate.firstname,
+                    lastname: candidatePopulate.lastname,
+                    dateOfBirth: candidatePopulate.dateOfBirth,
+                    email: candidatePopulate.email,
+                    mobileNumber: candidatePopulate.mobileNumber,
+                    fathersName: candidatePopulate.fathersName,
+                    fathersOccupation: candidatePopulate.fathersOccupation,
+                }))
+
+                setFormData4((prev) => ({
+                    ...prev,
+                    organization1: candidatePopulate.organization1,
+                    designation1: candidatePopulate.designation1,
+                    organization2: candidatePopulate.organization2,
+                    designation2: candidatePopulate.designation2,
+                    organization3: candidatePopulate.organization3,
+                    designation3: candidatePopulate.designation3,
+                }))
+            }
+        }
+    }, [candidatePopulate])
+
+
+
+    React.useEffect(() => {
+
+        let url = `${URL}employeeonboard/getEmployee`;
+
+        const fetchData = async () => {
+            const response = await axios.get(url);
+            if (response.data.status === 1) {
+
+
+                const data = response.data.data[0];
+
+
+                setValue('firstname', data.firstname, { shouldValidate: true });
+                setValue('lastname', data.lastname, { shouldValidate: true });
+                setValue('dateOfBirth', data.dateOfBirth, { shouldValidate: true });
+                setValue('employeeNumber', data.employeeNumber, { shouldValidate: true });
+                setValue('gender', data.gender, { shouldValidate: true });
+                setValue('email', data.email, { shouldValidate: true });
+                setValue('mobileNumber', data.mobileNumber, { shouldValidate: true });
+                setValue('phone', data.phone, { shouldValidate: true });
+                setValue('bloodGroup', data.bloodGroup, { shouldValidate: true });
+                setValue('dateOfJoining', data.dateOfJoining, { shouldValidate: true });
+                setValue('fathersName', data.fathersName, { shouldValidate: true });
+                setValue('fathersOccupation', data.fathersOccupation, { shouldValidate: true });
+                setValue('countryOfOrigin', data.countryOfOrigin, { shouldValidate: true });
+                setValue('nationality', data.nationality, { shouldValidate: true });
+                setValue('emergencyContactName', data.emergencyContactName, { shouldValidate: true });
+                setValue('emergencyContactNumber', data.emergencyContactNumber, { shouldValidate: true });
+                setValue('emergencyContactRelation', data.emergencyContactRelation, { shouldValidate: true });
+                setValue('spouseName', data.spouseName, { shouldValidate: true });
+                setValue('physicallyChallenged', data.physicallyChallenged, { shouldValidate: true });
+                setValue('education', data.education, { shouldValidate: true });
+                setValue('addressprofType', data.addressprofType, { shouldValidate: true });
+                setValue('reportingmanager', data.reportingmanager, { shouldValidate: true });
+                setValue('reportingteamlead', data.reportingteamlead, { shouldValidate: true });
+                setValue('designation', data.designation, { shouldValidate: true });
+                setValue('department', data.department, { shouldValidate: true });
+                setValue('team', data.team, { shouldValidate: true });
+                setValue('referrdby', data.referrdby, { shouldValidate: true });
+                setValue('employmentstatus', data.employmentstatus, { shouldValidate: true });
+                setValue('employeestatus', data.employeestatus, { shouldValidate: true });
+                setValue('shift', data.shift, { shouldValidate: true });
+                setValue('grade', data.grade, { shouldValidate: true });
+                setValue('probabationperiod', data.probabationperiod, { shouldValidate: true });
+                setValue('salaryofferred', data.salaryofferred, { shouldValidate: true });
+                setValue('totalmonthlyctc', data.totalmonthlyctc, { shouldValidate: true });
+                setValue('attendancebonus', data.attendancebonus, { shouldValidate: true });
+                setValue('totalyearlyctc', data.totalyearlyctc, { shouldValidate: true });
+                setValue('billablestatus', data.billablestatus, { shouldValidate: true });
+                setValue('addresprofpath', data.addresprofpath, { shouldValidate: true });
+                setValue('currentaddress', data.currentaddress, { shouldValidate: true });
+                setValue('permanentAddress', data.permanentAddress, { shouldValidate: true });
+                setValue('currentCity', data.currentCity, { shouldValidate: true });
+                setValue('currentPincode', data.currentPincode, { shouldValidate: true });
+                setValue('permanentcity', data.permanentcity, { shouldValidate: true });
+                setValue('permanentPincode', data.permanentPincode, { shouldValidate: true });
+                setValue('organization1', data.organization1, { shouldValidate: true });
+                setValue('designation1', data.designation1, { shouldValidate: true });
+                setValue('startdate1', data.startdate1, { shouldValidate: true });
+                setValue('enddate1', data.enddate1, { shouldValidate: true });
+                setValue('totalExperience1', data.totalExperience1, { shouldValidate: true });
+                setValue('organization2', data.organization2, { shouldValidate: true });
+                setValue('designation2', data.designation2, { shouldValidate: true });
+                setValue('startdate2', data.startdate2, { shouldValidate: true });
+                setValue('enddate2', data.enddate2, { shouldValidate: true });
+                setValue('totalExperience2', data.totalExperience2, { shouldValidate: true });
+                setValue('organization3', data.organization3, { shouldValidate: true });
+                setValue('designation3', data.designation3, { shouldValidate: true });
+                setValue('startdate3', data.startdate3, { shouldValidate: true });
+                setValue('enddate3', data.enddate3, { shouldValidate: true });
+                setValue('totalExperience3', data.totalExperience3, { shouldValidate: true });
+                setValue('aadhaarnumber', data.aadhaarnumber, { shouldValidate: true });
+                setValue('pannumber', data.pannumber, { shouldValidate: true });
+                setValue('passportnumber', data.passportnumber, { shouldValidate: true });
+                setValue('uannumber', data.uannumber, { shouldValidate: true });
+                setValue('pfnumber', data.pfnumber, { shouldValidate: true });
+                setValue('pfjoindate', data.pfjoindate, { shouldValidate: true });
+                setValue('esinumber', data.esinumber, { shouldValidate: true });
+                setValue('lwfnumber', data.lwfnumber, { shouldValidate: true });
+                setValue('modeofpayment', data.modeofpayment, { shouldValidate: true });
+                setValue('bankname', data.bankname, { shouldValidate: true });
+                setValue('branchname', data.branchname, { shouldValidate: true });
+                setValue('ifsccode', data.ifsccode, { shouldValidate: true });
+                setValue('accountNumber', data.accountNumber, { shouldValidate: true });
+                setValue('beneficiarycode', data.beneficiarycode, { shouldValidate: true });
+
+                setFormData1((prev) => ({
+                    ...prev,
+                    firstname: data.firstname,
+                    lastname: data.lastname,
+                    dateOfBirth: dayjs(data.dateOfBirth).format('YYYY-MM-DD'),
+                    employeeNumber: data.employeeNumber,
+                    gender: data.gender,
+                    email: data.email,
+                    mobileNumber: data.mobileNumber,
+                    phone: data.phone,
+                    bloodGroup: data.bloodGroup,
+                    dateOfJoining: data.dateOfJoining,
+                    fathersName: data.fathersName,
+                    fathersOccupation: data.fathersOccupation,
+                    countryOfOrigin: data.countryOfOrigin,
+                    nationality: data.nationality,
+                    emergencyContactName: data.emergencyContactName,
+                    emergencyContactNumber: data.emergencyContactNumber,
+                    emergencyContactRelation: data.emergencyContactRelation,
+                    spouseName: data.spouseName,
+                    physicallyChallenged: data.physicallyChallenged,
+                    education: data.education,
+                    addressprofType: data.addressprofType,
+                }))
+
+
+                setFormData2((prev) => ({
+                    ...prev,
+                    reportingmanager: data.reportingmanager,
+                    reportingteamlead: data.reportingteamlead,
+                    designation: data.designation,
+                    department: data.department,
+                    team: data.team,
+                    referrdby: data.referrdby,
+                    employmentstatus: data.employmentstatus,
+                    employeestatus: data.employeestatus,
+                    shift: data.shift,
+                    grade: data.grade,
+                    probabationperiod: data.probabationperiod,
+                    salaryofferred: data.salaryofferred,
+                    totalmonthlyctc: data.totalmonthlyctc,
+                    attendancebonus: data.attendancebonus,
+                    totalyearlyctc: data.totalyearlyctc,
+                    billablestatus: data.billablestatus,
+                    addresprofpath: data.addresprofpath,
+                }))
+
+
+                setFormData3((prev) => ({
+                    ...prev,
+                    currentaddress: data.currentaddress,
+                    permanentAddress: data.permanentAddress,
+                    currentCity: data.currentCity,
+                    currentPincode: data.currentPincode,
+                    permanentcity: data.permanentcity,
+                    permanentPincode: data.permanentPincode
+                }))
+
+
+                setFormData4((prev) => ({
+                    ...prev,
+                    organization1: data.organization1,
+                    designation1: data.designation1,
+                    startdate1: data.startdate1,
+                    enddate1: data.enddate1,
+                    totalExperience1: data.totalExperience1,
+                    organization2: data.organization2,
+                    designation2: data.designation2,
+                    startdate2: data.startdate2,
+                    enddate2: data.enddate2,
+                    totalExperience2: data.totalExperience2,
+                    organization3: data.organization3,
+                    designation3: data.designation3,
+                    startdate3: data.startdate3,
+                    enddate3: data.enddate3,
+                    totalExperience3: data.totalExperience3,
+                }))
+
+
+                setFormData5((prev) => ({
+                    ...prev,
+                    aadhaarnumber: data.aadhaarnumber,
+                    pannumber: data.pannumber,
+                    passportnumber: data.passportnumber,
+                    uannumber: data.uannumber,
+                    pfnumber: data.pfnumber,
+                    pfjoindate: data.pfjoindate,
+                    esinumber: data.esinumber,
+                    lwfnumber: data.lwfnumber
+                }))
+
+
+                setFormData6((prev) => ({
+                    ...prev,
+                    modeofpayment: data.modeofpayment,
+                    bankname: data.bankname,
+                    branchname: data.branchname,
+                    ifsccode: data.ifsccode,
+                    accountNumber: data.accountNumber,
+                    beneficiarycode: data.beneficiarycode,
+                }))
+
+            }
         }
 
-    }, [candidatePopulate])
+        if (insertRequest === 0) {
+            fetchData();
+        }
+
+    }, [])
 
 
     const handleNext = async () => {
@@ -793,7 +1051,7 @@ export default function EmployeeForm() {
         }
 
         try {
-            const response = await axios.post(url, { formData: data, reqType: insertRequest, requestType: interRequest, emp_id: formData1.employeeNumber, referenceid: employeeAddTab.candidateId })
+            const response = await axios.post(url, { formData: data, reqType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep })
 
         } catch (error) {
             console.log(error, 'Youre getting error da sathis uh.... ')
@@ -806,6 +1064,43 @@ export default function EmployeeForm() {
 
     };
 
+    React.useEffect(() => {
+
+        function beneficiaryfn() {
+            if (formData1.firstname && formData1.lastname && formData1.employeeNumber && formData1.dateOfJoining) {
+                return `${formData1.firstname.replace(/\s+/g, '')}${formData1.lastname.replace(/\s+/g, '')}${formData1.employeeNumber}${formData1.dateOfJoining.replace(/-/g, '')}`;
+            } else {
+                return null;
+            }
+        }
+
+
+        const code = beneficiaryfn();
+
+        setValue('beneficiarycode', code, { shouldValidate: true });
+
+        if (code) {
+            setFormData6(preState => ({
+                ...preState,
+                beneficiarycode: code,
+            }));
+        }
+    }, [formData1.firstname, formData1.lastname, formData1.employeeNumber, formData1.dateOfJoining]);
+
+
+    const handleSubmit2 = async () => {
+
+        let data = formData6
+
+        try {
+            const response = await axios.post(url, { formData: data, reqType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep })
+
+        } catch (error) {
+            console.log(error, 'Youre getting error da sathis uh.... ')
+        }
+
+
+    }
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -829,11 +1124,6 @@ export default function EmployeeForm() {
             label: item.f_name + " " + item.l_name,
             value: item.f_name + " " + item.l_name
         }))
-    }
-
-
-    const handleSubmit2 = () => {
-
     }
 
 
@@ -897,10 +1187,9 @@ export default function EmployeeForm() {
 
     }
 
-    console.log(candidatePopulate, ' fine fine fine fine ')
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', paddingLeft: 6 }}>
             <Stack sx={{ width: '100%' }} spacing={4}>
                 <Stepper activeStep={activeStep} alternativeLabel connector={<ColorlibConnector />}>
                     {steps.map((label, index) => (
@@ -957,7 +1246,7 @@ export default function EmployeeForm() {
                                                                 error={!!errors.firstname}
                                                                 helperText={errors.firstname ? errors.firstname.message : ''}
                                                                 FormHelperTextProps={{
-                                                                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                    style: { margin: 0, position: 'absolute', bottom: '-20px', width: 'max-content' }
                                                                 }}
                                                                 onChange={(e) => {
                                                                     field.onChange(e);
@@ -991,7 +1280,7 @@ export default function EmployeeForm() {
                                                                 error={!!errors.lastname}
                                                                 helperText={errors.lastname ? errors.lastname.message : ''}
                                                                 FormHelperTextProps={{
-                                                                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                                    style: { margin: 0, position: 'absolute', bottom: '-20px', width: 'max-content' }
                                                                 }}
                                                                 onChange={(e) => {
                                                                     field.onChange(e);
@@ -1134,7 +1423,7 @@ export default function EmployeeForm() {
                                                             error={!!errors.dateOfBirth}
                                                             helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
                                                             FormHelperTextProps={{
-                                                                style: { margin: 0, position: 'relative', bottom: '-20px' }
+                                                                style: { margin: 0, position: 'relative', bottom: '-8px' }
                                                             }}
                                                             onChange={(e) => {
                                                                 field.onChange(e);
@@ -1143,6 +1432,7 @@ export default function EmployeeForm() {
                                                                     dateOfBirth: e.target.value,
                                                                 }));
                                                             }}
+
                                                         />
                                                     )}
                                                 />
@@ -1159,7 +1449,7 @@ export default function EmployeeForm() {
                                                 <Controller
                                                     name="gender"
                                                     control={control}
-                                                    defaultValue={formData1.gender}
+                                                    defaultValue={formData1.gender || ''}
                                                     render={({ field }) => (
                                                         <StyledInput
                                                             fullWidth
@@ -1646,7 +1936,7 @@ export default function EmployeeForm() {
                                             <Controller
                                                 name="physicallyChallenged"
                                                 control={control}
-                                                defaultValue={formData1.physicallyChallenged}
+                                                defaultValue={formData1.physicallyChallenged || ''}
                                                 render={({ field }) => (
                                                     <StyledInput
                                                         {...field}
@@ -1687,7 +1977,7 @@ export default function EmployeeForm() {
                                             <Controller
                                                 name="addressprofType"
                                                 control={control}
-                                                defaultValue={formData1.addressprofType}
+                                                defaultValue={formData1.addressprofType || ''}
                                                 render={({ field }) => (
                                                     <StyledInput
                                                         {...field}
@@ -2660,8 +2950,8 @@ export default function EmployeeForm() {
                                                     fullWidth
                                                     {...field}
                                                     variant="outlined"
-                                                    error={!!errors.previousOrganizationName1}
-                                                    helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
+                                                    error={!!errors.organization1}
+                                                    helperText={errors.organization1 ? errors.organization1.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -2732,8 +3022,8 @@ export default function EmployeeForm() {
                                                     variant="outlined"
                                                     type="date"
                                                     InputLabelProps={{ shrink: true }}
-                                                    error={!!errors.dateOfBirth}
-                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    error={!!errors.startdate1}
+                                                    helperText={errors.startdate1 ? errors.startdate1.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -2769,8 +3059,8 @@ export default function EmployeeForm() {
                                                     variant="outlined"
                                                     type="date"
                                                     InputLabelProps={{ shrink: true }}
-                                                    error={!!errors.dateOfBirth}
-                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    error={!!errors.enddate1}
+                                                    helperText={errors.enddate1 ? errors.enddate1.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -2803,8 +3093,8 @@ export default function EmployeeForm() {
                                                     fullWidth
                                                     {...field}
                                                     variant="outlined"
-                                                    error={!!errors.totalExperience}
-                                                    helperText={errors.totalExperience ? errors.totalExperience.message : ''}
+                                                    error={!!errors.totalExperience1}
+                                                    helperText={errors.totalExperience1 ? errors.totalExperience1.message : ''}
                                                     disabled // Read-only input
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
@@ -2813,7 +3103,7 @@ export default function EmployeeForm() {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
                                                             ...prev,
-                                                            totalExperience: e.target.value,
+                                                            totalExperience1: e.target.value,
                                                         }));
                                                     }}
                                                 />
@@ -2867,8 +3157,8 @@ export default function EmployeeForm() {
                                                     fullWidth
                                                     {...field}
                                                     variant="outlined"
-                                                    error={!!errors.organization1}
-                                                    helperText={errors.organization1 ? errors.organization1.message : ''}
+                                                    error={!!errors.organization2}
+                                                    helperText={errors.organization2 ? errors.organization2.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -2901,8 +3191,8 @@ export default function EmployeeForm() {
                                                     fullWidth
                                                     {...field}
                                                     variant="outlined"
-                                                    error={!!errors.designation}
-                                                    helperText={errors.designation ? errors.designation.message : ''}
+                                                    error={!!errors.designation2}
+                                                    helperText={errors.designation2 ? errors.designation2.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -2937,8 +3227,8 @@ export default function EmployeeForm() {
                                                     variant="outlined"
                                                     type="date"
                                                     InputLabelProps={{ shrink: true }}
-                                                    error={!!errors.dateOfBirth}
-                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    error={!!errors.startdate2}
+                                                    helperText={errors.startdate2 ? errors.startdate2.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -2974,8 +3264,8 @@ export default function EmployeeForm() {
                                                     variant="outlined"
                                                     type="date"
                                                     InputLabelProps={{ shrink: true }}
-                                                    error={!!errors.dateOfBirth}
-                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    error={!!errors.enddate2}
+                                                    helperText={errors.enddate2 ? errors.enddate2.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -3008,8 +3298,8 @@ export default function EmployeeForm() {
                                                     fullWidth
                                                     {...field}
                                                     variant="outlined"
-                                                    error={!!errors.totalExperience}
-                                                    helperText={errors.totalExperience ? errors.totalExperience.message : ''}
+                                                    error={!!errors.totalExperience2}
+                                                    helperText={errors.totalExperience2 ? errors.totalExperience2.message : ''}
                                                     disabled // Read-only input
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
@@ -3071,8 +3361,8 @@ export default function EmployeeForm() {
                                                     fullWidth
                                                     {...field}
                                                     variant="outlined"
-                                                    error={!!errors.previousOrganizationName1}
-                                                    helperText={errors.previousOrganizationName1 ? errors.previousOrganizationName1.message : ''}
+                                                    error={!!errors.organization3}
+                                                    helperText={errors.organization3 ? errors.organization3.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -3105,8 +3395,8 @@ export default function EmployeeForm() {
                                                     fullWidth
                                                     {...field}
                                                     variant="outlined"
-                                                    error={!!errors.designation}
-                                                    helperText={errors.designation ? errors.designation.message : ''}
+                                                    error={!!errors.designation3}
+                                                    helperText={errors.designation3 ? errors.designation3.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -3141,8 +3431,8 @@ export default function EmployeeForm() {
                                                     variant="outlined"
                                                     type="date"
                                                     InputLabelProps={{ shrink: true }}
-                                                    error={!!errors.dateOfBirth}
-                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    error={!!errors.startdate3}
+                                                    helperText={errors.startdate3 ? errors.startdate3.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -3177,8 +3467,8 @@ export default function EmployeeForm() {
                                                     variant="outlined"
                                                     type="date"
                                                     InputLabelProps={{ shrink: true }}
-                                                    error={!!errors.dateOfBirth}
-                                                    helperText={errors.dateOfBirth ? errors.dateOfBirth.message : ''}
+                                                    error={!!errors.enddate3}
+                                                    helperText={errors.enddate3 ? errors.enddate3.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -3211,8 +3501,8 @@ export default function EmployeeForm() {
                                                     fullWidth
                                                     {...field}
                                                     variant="outlined"
-                                                    error={!!errors.totalExperience}
-                                                    helperText={errors.totalExperience ? errors.totalExperience.message : ''}
+                                                    error={!!errors.totalExperience3}
+                                                    helperText={errors.totalExperience3 ? errors.totalExperience3.message : ''}
                                                     disabled
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
@@ -3769,7 +4059,7 @@ export default function EmployeeForm() {
 
                                                     <Grid item xs={0} alignItems='flex-start'>
                                                         <StyledLabel>
-                                                            Sathiskumar20027090924
+                                                            {`${formData1.firstname.replace(/\s+/g, '')}${formData1.lastname.replace(/\s+/g, '')}${formData1.employeeNumber}${formData1.dateOfJoining.replace(/-/g, '')}`}
                                                         </StyledLabel>
                                                     </Grid>
                                                 </Grid>

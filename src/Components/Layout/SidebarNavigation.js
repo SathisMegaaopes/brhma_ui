@@ -13,12 +13,13 @@ import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import EmployeeTable from "../EmployeeTable";
 import EmployeeTable1 from "../EmployeeTable";
 import { useSharedContext } from "../../Context";
+import EmployeeForm from "../EmployeeTable/employeeForm";
 
 
 
 const SidebarContainer = styled('div')(({ isopen, isactive }) => ({
     height: "100%",
-    width: isopen? "280px" : "60px",
+    width: isopen ? "280px" : "60px",
     position: "fixed",
     zIndex: 3,
     left: 0,
@@ -147,7 +148,8 @@ function Sidebar() {
             case 'EmployeeMaster':
                 return <EmployeeTable />;
             case 'EmployeeMaster2':
-                return <EmployeeTable1 />; // Pass idValue as a prop
+                // return <EmployeeForm />; 
+                return <EmployeeForm/>
             default:
                 return <MOSDashboard />;
         }
