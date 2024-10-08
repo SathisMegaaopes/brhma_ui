@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Grid, Table, TableRow, TableHead, TableCell, TableBody, Dialog, DialogTitle, Tooltip, TableContainer, Paper, Button, DialogContent, DialogContentText, DialogActions, Snackbar, Alert, Box } from "@mui/material";
 import { ThumbUpAltRounded, ThumbDownAltRounded, PendingRounded, VerifiedRounded, ReportRounded } from "@mui/icons-material";
 import { DateFormater, finalStatus } from "../../Components/Global/Utils/common_data.js";
@@ -9,6 +9,7 @@ import axios from 'axios';
 import URL from "../Global/Utils/url_route.js";
 import { useSharedContext } from "../../Context.js";
 import GroupAddSharpIcon from '@mui/icons-material/GroupAddSharp';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 
 function MOSCandiateTable(props) {
@@ -18,6 +19,7 @@ function MOSCandiateTable(props) {
     const [candidate, setCandidate] = React.useState([]);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openModal, setOpen] = React.useState(false);
+    const [allid, setAllid] = React.useState([]);
 
     const [deletemodal, setDeletemodal] = React.useState(false)
 
@@ -36,6 +38,33 @@ function MOSCandiateTable(props) {
 
     const candidate_data = props.data;
 
+
+    useEffect(() => {
+        // onboardedIDs
+
+        let url = `${URL}employeeonboard/onboardedIDs`;
+
+        const gettingOnBoardedIds = async () => {
+
+            try {
+
+                const response = await axios.get(url);
+
+                if (response.data.status === 1) {
+                    setAllid(response.data.data);
+                } else {
+                    setAllid([]);
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+
+        }
+
+        gettingOnBoardedIds();
+
+    }, [])
 
     const open = Boolean(anchorEl);
 
@@ -75,6 +104,7 @@ function MOSCandiateTable(props) {
     }
 
 
+
     const hadleNavigatetoOnboard = (id) => {
 
         setInsertRequest(1);
@@ -95,6 +125,20 @@ function MOSCandiateTable(props) {
 
         setnotification(false);
     };
+
+    // MOS20241007427
+
+    const isCandidateInTable = (val) => {
+        if (allid) {
+            return allid.includes(val);
+        } else {
+            return false;
+        }
+    }
+
+    // console.log(allid.includes('MOS20241001426'))
+
+    // console.log(allid, 'Got it bro ....')
 
     return (
         <>
@@ -145,10 +189,26 @@ function MOSCandiateTable(props) {
                                                 </Button>
                                             </TableCell>
                                             {/* result */}
-                                            <TableCell align="center" onClick={() => hadleNavigatetoOnboard(item.candidate_id)} >
+                                            {/* <TableCell align="center" onClick={() => hadleNavigatetoOnboard(item.candidate_id)} >
                                                 {item.result === 1 && <Button>
                                                     <GroupAddSharpIcon />
                                                 </Button>}
+                                            </TableCell> */}
+
+                                            <TableCell align="center" >
+                                                {item.result === 1 && (
+                                                    <>
+                                                        {isCandidateInTable(item.candidate_id) ? (
+                                                            <Button >
+                                                                <CheckCircleIcon sx={{ color: 'green' }} />
+                                                            </Button>
+                                                        ) : (
+                                                            <Button onClick={() => hadleNavigatetoOnboard(item.candidate_id)}>
+                                                                <GroupAddSharpIcon />
+                                                            </Button>
+                                                        )}
+                                                    </>
+                                                )}
                                             </TableCell>
 
                                         </TableRow>

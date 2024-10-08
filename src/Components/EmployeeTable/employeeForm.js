@@ -332,6 +332,8 @@ export default function EmployeeForm() {
     const [requesType, setRequestType] = React.useState(null)
     const [interRequest, setInterRequest] = React.useState(0)
 
+    const [profileImageUrl, setProfileImageUrl] = React.useState(null);
+
     const [departments, setDepartments] = React.useState([]);
     const [teams, setTeams] = React.useState([]);
     const [employees, setEmployees] = React.useState([]);
@@ -372,11 +374,11 @@ export default function EmployeeForm() {
 
         // firstname: candidatePopulate?.firstname || 'firstname',
         // lastname: candidatePopulate?.lastname || 'lastname',
-        // dateOfBirth:candidatePopulate?.dateOfBirth || '2024-10-02',
+        // dateOfBirth: candidatePopulate?.dateOfBirth || '2024-10-02',
         // employeeNumber: '20002',
         // gender: candidatePopulate?.gender || 'Male',
         // email: candidatePopulate?.email || 'samatap26@gmail.com',
-        // mobileNumber:candidatePopulate?.mobileNumber || '9778164504',
+        // mobileNumber: candidatePopulate?.mobileNumber || '9778164504',
         // phone: '87781645077',
         // bloodGroup: 'A',
         // dateOfJoining: '2024-10-04',
@@ -509,7 +511,7 @@ export default function EmployeeForm() {
 
 
     React.useEffect(() => {
-        if (insertRequest === 1) {
+        if (insertRequest === 1 || insertRequest === 2) {
             setInterRequest(1);
         } else {
             setInterRequest(0);
@@ -540,6 +542,7 @@ export default function EmployeeForm() {
 
     const getCandidate = `${URL}employeeonboard/getCandidate`;
 
+
     const { data, loading, error } = useFetchData(teamUrl);
 
     const { data: departmentData, loading: departmentLoading, error: departError } = useFetchData(departmentUrl);
@@ -554,7 +557,18 @@ export default function EmployeeForm() {
 
     const { data: addressprofData, loading: addressprofLoading, error: addressprofError } = useFetchData(addressprofUrl)
 
-    const { data: candidateData, loading: candidateLoading, error: candidateError } = useFetchData(getCandidate)
+
+    // const { data: candidateData, loading: candidateLoading, error: candidateError } = useFetchData(getCandidate, { id: employeeAddTab.candidateId }, insertRequest);
+
+    const useConditionalFetch = (request) => {
+
+        if (insertRequest === 1) {
+            return useFetchData(getCandidate, { id: employeeAddTab.candidateId }, request);
+        }
+        return { data: null, loading: false, error: null };
+    };
+
+    const { data: candidateData, loading: candidateLoading, error: candidateError } = useConditionalFetch(insertRequest);
 
 
 
@@ -784,8 +798,21 @@ export default function EmployeeForm() {
     }, [isESIChecked, isPFChecked, isLWFChecked])
 
 
+    const formatImageUrl = (path) => {
+        if (path === null || path === '') {
+            const emptyone = ''
+            return emptyone
 
-    React.useEffect(() => {  //AutoPopulate Function
+        } else {
+            let formattedPath = path.replace(/\\/g, '/');
+            formattedPath = encodeURI(formattedPath);
+
+            return formattedPath;
+
+        }
+    };
+
+    React.useEffect(() => {  // Inserting the Candidate as a Employee Function
 
 
         if (insertRequest === 1) {
@@ -827,204 +854,234 @@ export default function EmployeeForm() {
                     organization3: candidatePopulate.organization3,
                     designation3: candidatePopulate.designation3,
                 }))
+
+                if (candidatePopulate.profileUrl) {
+
+                    const imageUrl = `${URL}${formatImageUrl(candidatePopulate?.profileUrl)}`;
+
+                    console.log(imageUrl, 'This tooo important dude,  very very important buddy.....')
+
+                    setProfileImageUrl(imageUrl);
+
+                } else {
+                    setProfileImageUrl(null)
+                }
             }
         }
     }, [candidatePopulate])
 
 
 
-    React.useEffect(() => {
+    React.useEffect(() => {   //Updating the user request....
 
         let url = `${URL}employeeonboard/getEmployee`;
 
-        const fetchData = async () => {
-            const response = await axios.get(url);
-            if (response.data.status === 1) {
-
-
-                const data = response.data.data[0];
-
-
-                setValue('firstname', data.firstname, { shouldValidate: true });
-                setValue('lastname', data.lastname, { shouldValidate: true });
-                setValue('dateOfBirth', data.dateOfBirth, { shouldValidate: true });
-                setValue('employeeNumber', data.employeeNumber, { shouldValidate: true });
-                setValue('gender', data.gender, { shouldValidate: true });
-                setValue('email', data.email, { shouldValidate: true });
-                setValue('mobileNumber', data.mobileNumber, { shouldValidate: true });
-                setValue('phone', data.phone, { shouldValidate: true });
-                setValue('bloodGroup', data.bloodGroup, { shouldValidate: true });
-                setValue('dateOfJoining', data.dateOfJoining, { shouldValidate: true });
-                setValue('fathersName', data.fathersName, { shouldValidate: true });
-                setValue('fathersOccupation', data.fathersOccupation, { shouldValidate: true });
-                setValue('countryOfOrigin', data.countryOfOrigin, { shouldValidate: true });
-                setValue('nationality', data.nationality, { shouldValidate: true });
-                setValue('emergencyContactName', data.emergencyContactName, { shouldValidate: true });
-                setValue('emergencyContactNumber', data.emergencyContactNumber, { shouldValidate: true });
-                setValue('emergencyContactRelation', data.emergencyContactRelation, { shouldValidate: true });
-                setValue('spouseName', data.spouseName, { shouldValidate: true });
-                setValue('physicallyChallenged', data.physicallyChallenged, { shouldValidate: true });
-                setValue('education', data.education, { shouldValidate: true });
-                setValue('addressprofType', data.addressprofType, { shouldValidate: true });
-                setValue('reportingmanager', data.reportingmanager, { shouldValidate: true });
-                setValue('reportingteamlead', data.reportingteamlead, { shouldValidate: true });
-                setValue('designation', data.designation, { shouldValidate: true });
-                setValue('department', data.department, { shouldValidate: true });
-                setValue('team', data.team, { shouldValidate: true });
-                setValue('referrdby', data.referrdby, { shouldValidate: true });
-                setValue('employmentstatus', data.employmentstatus, { shouldValidate: true });
-                setValue('employeestatus', data.employeestatus, { shouldValidate: true });
-                setValue('shift', data.shift, { shouldValidate: true });
-                setValue('grade', data.grade, { shouldValidate: true });
-                setValue('probabationperiod', data.probabationperiod, { shouldValidate: true });
-                setValue('salaryofferred', data.salaryofferred, { shouldValidate: true });
-                setValue('totalmonthlyctc', data.totalmonthlyctc, { shouldValidate: true });
-                setValue('attendancebonus', data.attendancebonus, { shouldValidate: true });
-                setValue('totalyearlyctc', data.totalyearlyctc, { shouldValidate: true });
-                setValue('billablestatus', data.billablestatus, { shouldValidate: true });
-                setValue('addresprofpath', data.addresprofpath, { shouldValidate: true });
-                setValue('currentaddress', data.currentaddress, { shouldValidate: true });
-                setValue('permanentAddress', data.permanentAddress, { shouldValidate: true });
-                setValue('currentCity', data.currentCity, { shouldValidate: true });
-                setValue('currentPincode', data.currentPincode, { shouldValidate: true });
-                setValue('permanentcity', data.permanentcity, { shouldValidate: true });
-                setValue('permanentPincode', data.permanentPincode, { shouldValidate: true });
-                setValue('organization1', data.organization1, { shouldValidate: true });
-                setValue('designation1', data.designation1, { shouldValidate: true });
-                setValue('startdate1', data.startdate1, { shouldValidate: true });
-                setValue('enddate1', data.enddate1, { shouldValidate: true });
-                setValue('totalExperience1', data.totalExperience1, { shouldValidate: true });
-                setValue('organization2', data.organization2, { shouldValidate: true });
-                setValue('designation2', data.designation2, { shouldValidate: true });
-                setValue('startdate2', data.startdate2, { shouldValidate: true });
-                setValue('enddate2', data.enddate2, { shouldValidate: true });
-                setValue('totalExperience2', data.totalExperience2, { shouldValidate: true });
-                setValue('organization3', data.organization3, { shouldValidate: true });
-                setValue('designation3', data.designation3, { shouldValidate: true });
-                setValue('startdate3', data.startdate3, { shouldValidate: true });
-                setValue('enddate3', data.enddate3, { shouldValidate: true });
-                setValue('totalExperience3', data.totalExperience3, { shouldValidate: true });
-                setValue('aadhaarnumber', data.aadhaarnumber, { shouldValidate: true });
-                setValue('pannumber', data.pannumber, { shouldValidate: true });
-                setValue('passportnumber', data.passportnumber, { shouldValidate: true });
-                setValue('uannumber', data.uannumber, { shouldValidate: true });
-                setValue('pfnumber', data.pfnumber, { shouldValidate: true });
-                setValue('pfjoindate', data.pfjoindate, { shouldValidate: true });
-                setValue('esinumber', data.esinumber, { shouldValidate: true });
-                setValue('lwfnumber', data.lwfnumber, { shouldValidate: true });
-                setValue('modeofpayment', data.modeofpayment, { shouldValidate: true });
-                setValue('bankname', data.bankname, { shouldValidate: true });
-                setValue('branchname', data.branchname, { shouldValidate: true });
-                setValue('ifsccode', data.ifsccode, { shouldValidate: true });
-                setValue('accountNumber', data.accountNumber, { shouldValidate: true });
-                setValue('beneficiarycode', data.beneficiarycode, { shouldValidate: true });
-
-                setFormData1((prev) => ({
-                    ...prev,
-                    firstname: data.firstname,
-                    lastname: data.lastname,
-                    dateOfBirth: dayjs(data.dateOfBirth).format('YYYY-MM-DD'),
-                    employeeNumber: data.employeeNumber,
-                    gender: data.gender,
-                    email: data.email,
-                    mobileNumber: data.mobileNumber,
-                    phone: data.phone,
-                    bloodGroup: data.bloodGroup,
-                    dateOfJoining: data.dateOfJoining,
-                    fathersName: data.fathersName,
-                    fathersOccupation: data.fathersOccupation,
-                    countryOfOrigin: data.countryOfOrigin,
-                    nationality: data.nationality,
-                    emergencyContactName: data.emergencyContactName,
-                    emergencyContactNumber: data.emergencyContactNumber,
-                    emergencyContactRelation: data.emergencyContactRelation,
-                    spouseName: data.spouseName,
-                    physicallyChallenged: data.physicallyChallenged,
-                    education: data.education,
-                    addressprofType: data.addressprofType,
-                }))
-
-
-                setFormData2((prev) => ({
-                    ...prev,
-                    reportingmanager: data.reportingmanager,
-                    reportingteamlead: data.reportingteamlead,
-                    designation: data.designation,
-                    department: data.department,
-                    team: data.team,
-                    referrdby: data.referrdby,
-                    employmentstatus: data.employmentstatus,
-                    employeestatus: data.employeestatus,
-                    shift: data.shift,
-                    grade: data.grade,
-                    probabationperiod: data.probabationperiod,
-                    salaryofferred: data.salaryofferred,
-                    totalmonthlyctc: data.totalmonthlyctc,
-                    attendancebonus: data.attendancebonus,
-                    totalyearlyctc: data.totalyearlyctc,
-                    billablestatus: data.billablestatus,
-                    addresprofpath: data.addresprofpath,
-                }))
-
-
-                setFormData3((prev) => ({
-                    ...prev,
-                    currentaddress: data.currentaddress,
-                    permanentAddress: data.permanentAddress,
-                    currentCity: data.currentCity,
-                    currentPincode: data.currentPincode,
-                    permanentcity: data.permanentcity,
-                    permanentPincode: data.permanentPincode
-                }))
-
-
-                setFormData4((prev) => ({
-                    ...prev,
-                    organization1: data.organization1,
-                    designation1: data.designation1,
-                    startdate1: data.startdate1,
-                    enddate1: data.enddate1,
-                    totalExperience1: data.totalExperience1,
-                    organization2: data.organization2,
-                    designation2: data.designation2,
-                    startdate2: data.startdate2,
-                    enddate2: data.enddate2,
-                    totalExperience2: data.totalExperience2,
-                    organization3: data.organization3,
-                    designation3: data.designation3,
-                    startdate3: data.startdate3,
-                    enddate3: data.enddate3,
-                    totalExperience3: data.totalExperience3,
-                }))
-
-
-                setFormData5((prev) => ({
-                    ...prev,
-                    aadhaarnumber: data.aadhaarnumber,
-                    pannumber: data.pannumber,
-                    passportnumber: data.passportnumber,
-                    uannumber: data.uannumber,
-                    pfnumber: data.pfnumber,
-                    pfjoindate: data.pfjoindate,
-                    esinumber: data.esinumber,
-                    lwfnumber: data.lwfnumber
-                }))
-
-
-                setFormData6((prev) => ({
-                    ...prev,
-                    modeofpayment: data.modeofpayment,
-                    bankname: data.bankname,
-                    branchname: data.branchname,
-                    ifsccode: data.ifsccode,
-                    accountNumber: data.accountNumber,
-                    beneficiarycode: data.beneficiarycode,
-                }))
-
-            }
-        }
-
         if (insertRequest === 0) {
+
+            const fetchData = async () => {
+
+
+                const employeeID = { employee_id: employeeAddTab.candidateId }
+
+                const response = await axios.get(url, { params: employeeID });
+
+                if (response.data.status === 1) {
+
+
+                    const data = response.data.data[0];
+
+
+                    setValue('firstname', data.firstname, { shouldValidate: true });
+                    setValue('lastname', data.lastname, { shouldValidate: true });
+                    setValue('dateOfBirth', data.dateOfBirth, { shouldValidate: true });
+                    setValue('employeeNumber', data.employeeNumber, { shouldValidate: true });
+                    setValue('gender', data.gender, { shouldValidate: true });
+                    setValue('email', data.email, { shouldValidate: true });
+                    setValue('mobileNumber', data.mobileNumber, { shouldValidate: true });
+                    setValue('phone', data.phone, { shouldValidate: true });
+                    setValue('bloodGroup', data.bloodGroup, { shouldValidate: true });
+                    setValue('dateOfJoining', data.dateOfJoining, { shouldValidate: true });
+                    setValue('fathersName', data.fathersName, { shouldValidate: true });
+                    setValue('fathersOccupation', data.fathersOccupation, { shouldValidate: true });
+                    setValue('countryOfOrigin', data.countryOfOrigin, { shouldValidate: true });
+                    setValue('nationality', data.nationality, { shouldValidate: true });
+                    setValue('emergencyContactName', data.emergencyContactName, { shouldValidate: true });
+                    setValue('emergencyContactNumber', data.emergencyContactNumber, { shouldValidate: true });
+                    setValue('emergencyContactRelation', data.emergencyContactRelation, { shouldValidate: true });
+                    setValue('spouseName', data.spouseName, { shouldValidate: true });
+                    setValue('physicallyChallenged', data.physicallyChallenged, { shouldValidate: true });
+                    setValue('education', data.education, { shouldValidate: true });
+                    setValue('addressprofType', data.addressprofType, { shouldValidate: true });
+                    setValue('reportingmanager', data.reportingmanager, { shouldValidate: true });
+                    setValue('reportingteamlead', data.reportingteamlead, { shouldValidate: true });
+                    setValue('designation', data.designation, { shouldValidate: true });
+                    setValue('department', data.department, { shouldValidate: true });
+                    setValue('team', data.team, { shouldValidate: true });
+                    setValue('referrdby', data.referrdby, { shouldValidate: true });
+                    setValue('employmentstatus', data.employmentstatus, { shouldValidate: true });
+                    setValue('employeestatus', data.employeestatus, { shouldValidate: true });
+                    setValue('shift', data.shift, { shouldValidate: true });
+                    setValue('grade', data.grade, { shouldValidate: true });
+                    setValue('probabationperiod', data.probabationperiod, { shouldValidate: true });
+                    setValue('salaryofferred', data.salaryofferred, { shouldValidate: true });
+                    setValue('totalmonthlyctc', data.totalmonthlyctc, { shouldValidate: true });
+                    setValue('attendancebonus', data.attendancebonus, { shouldValidate: true });
+                    setValue('totalyearlyctc', data.totalyearlyctc, { shouldValidate: true });
+                    setValue('billablestatus', data.billablestatus, { shouldValidate: true });
+                    setValue('addresprofpath', data.addresprofpath, { shouldValidate: true });
+                    setValue('currentaddress', data.currentaddress, { shouldValidate: true });
+                    setValue('permanentAddress', data.permanentAddress, { shouldValidate: true });
+                    setValue('currentCity', data.currentCity, { shouldValidate: true });
+                    setValue('currentPincode', data.currentPincode, { shouldValidate: true });
+                    setValue('permanentcity', data.permanentcity, { shouldValidate: true });
+                    setValue('permanentPincode', data.permanentPincode, { shouldValidate: true });
+                    setValue('organization1', data.organization1, { shouldValidate: true });
+                    setValue('designation1', data.designation1, { shouldValidate: true });
+                    setValue('startdate1', data.startdate1, { shouldValidate: true });
+                    setValue('enddate1', data.enddate1, { shouldValidate: true });
+                    setValue('totalExperience1', data.totalExperience1, { shouldValidate: true });
+                    setValue('organization2', data.organization2, { shouldValidate: true });
+                    setValue('designation2', data.designation2, { shouldValidate: true });
+                    setValue('startdate2', data.startdate2, { shouldValidate: true });
+                    setValue('enddate2', data.enddate2, { shouldValidate: true });
+                    setValue('totalExperience2', data.totalExperience2, { shouldValidate: true });
+                    setValue('organization3', data.organization3, { shouldValidate: true });
+                    setValue('designation3', data.designation3, { shouldValidate: true });
+                    setValue('startdate3', data.startdate3, { shouldValidate: true });
+                    setValue('enddate3', data.enddate3, { shouldValidate: true });
+                    setValue('totalExperience3', data.totalExperience3, { shouldValidate: true });
+                    setValue('aadhaarnumber', data.aadhaarnumber, { shouldValidate: true });
+                    setValue('pannumber', data.pannumber, { shouldValidate: true });
+                    setValue('passportnumber', data.passportnumber, { shouldValidate: true });
+                    setValue('uannumber', data.uannumber, { shouldValidate: true });
+                    setValue('pfnumber', data.pfnumber, { shouldValidate: true });
+                    setValue('pfjoindate', data.pfjoindate, { shouldValidate: true });
+                    setValue('esinumber', data.esinumber, { shouldValidate: true });
+                    setValue('lwfnumber', data.lwfnumber, { shouldValidate: true });
+                    setValue('modeofpayment', data.modeofpayment, { shouldValidate: true });
+                    setValue('bankname', data.bankname, { shouldValidate: true });
+                    setValue('branchname', data.branchname, { shouldValidate: true });
+                    setValue('ifsccode', data.ifsccode, { shouldValidate: true });
+                    setValue('accountNumber', data.accountNumber, { shouldValidate: true });
+                    setValue('beneficiarycode', data.beneficiarycode, { shouldValidate: true });
+
+                    setFormData1((prev) => ({
+                        ...prev,
+                        firstname: data.firstname,
+                        lastname: data.lastname,
+                        dateOfBirth: dayjs(data.dateOfBirth).format('YYYY-MM-DD'),
+                        employeeNumber: data.employeeNumber,
+                        gender: data.gender,
+                        email: data.email,
+                        mobileNumber: data.mobileNumber,
+                        phone: data.phone,
+                        bloodGroup: data.bloodGroup,
+                        dateOfJoining: data.dateOfJoining,
+                        fathersName: data.fathersName,
+                        fathersOccupation: data.fathersOccupation,
+                        countryOfOrigin: data.countryOfOrigin,
+                        nationality: data.nationality,
+                        emergencyContactName: data.emergencyContactName,
+                        emergencyContactNumber: data.emergencyContactNumber,
+                        emergencyContactRelation: data.emergencyContactRelation,
+                        spouseName: data.spouseName,
+                        physicallyChallenged: data.physicallyChallenged,
+                        education: data.education,
+                        addressprofType: data.addressprofType,
+                    }))
+
+
+                    setFormData2((prev) => ({
+                        ...prev,
+                        reportingmanager: data.reportingmanager,
+                        reportingteamlead: data.reportingteamlead,
+                        designation: data.designation,
+                        department: data.department,
+                        team: data.team,
+                        referrdby: data.referrdby,
+                        employmentstatus: data.employmentstatus,
+                        employeestatus: data.employeestatus,
+                        shift: data.shift,
+                        grade: data.grade,
+                        probabationperiod: data.probabationperiod,
+                        salaryofferred: data.salaryofferred,
+                        totalmonthlyctc: data.totalmonthlyctc,
+                        attendancebonus: data.attendancebonus,
+                        totalyearlyctc: data.totalyearlyctc,
+                        billablestatus: data.billablestatus,
+                        addresprofpath: data.addresprofpath,
+                    }))
+
+
+                    setFormData3((prev) => ({
+                        ...prev,
+                        currentaddress: data.currentaddress,
+                        permanentAddress: data.permanentAddress,
+                        currentCity: data.currentCity,
+                        currentPincode: data.currentPincode,
+                        permanentcity: data.permanentcity,
+                        permanentPincode: data.permanentPincode
+                    }))
+
+
+                    setFormData4((prev) => ({
+                        ...prev,
+                        organization1: data.organization1,
+                        designation1: data.designation1,
+                        startdate1: data.startdate1,
+                        enddate1: data.enddate1,
+                        totalExperience1: data.totalExperience1,
+                        organization2: data.organization2,
+                        designation2: data.designation2,
+                        startdate2: data.startdate2,
+                        enddate2: data.enddate2,
+                        totalExperience2: data.totalExperience2,
+                        organization3: data.organization3,
+                        designation3: data.designation3,
+                        startdate3: data.startdate3,
+                        enddate3: data.enddate3,
+                        totalExperience3: data.totalExperience3,
+                    }))
+
+
+                    setFormData5((prev) => ({
+                        ...prev,
+                        aadhaarnumber: data.aadhaarnumber,
+                        pannumber: data.pannumber,
+                        passportnumber: data.passportnumber,
+                        uannumber: data.uannumber,
+                        pfnumber: data.pfnumber,
+                        pfjoindate: data.pfjoindate,
+                        esinumber: data.esinumber,
+                        lwfnumber: data.lwfnumber
+                    }))
+
+
+                    setFormData6((prev) => ({
+                        ...prev,
+                        modeofpayment: data.modeofpayment,
+                        bankname: data.bankname,
+                        branchname: data.branchname,
+                        ifsccode: data.ifsccode,
+                        accountNumber: data.accountNumber,
+                        beneficiarycode: data.beneficiarycode,
+                    }))
+
+                    setSelectedPaymentType(data.modeofpayment);
+
+                    if (data.profileUrl) {
+
+                        const imageUrl = `${URL}${formatImageUrl(data?.profileUrl)}`;
+
+                        setProfileImageUrl(imageUrl);
+
+                    } else {
+                        setProfileImageUrl(null)
+                    }
+
+                }
+            }
+
             fetchData();
         }
 
@@ -1188,6 +1245,11 @@ export default function EmployeeForm() {
     }
 
 
+    console.log(formData2, 'important formData2 , this is .....')
+
+
+
+
     return (
         <Box sx={{ width: '100%', paddingLeft: 6 }}>
             <Stack sx={{ width: '100%' }} spacing={4}>
@@ -1210,15 +1272,38 @@ export default function EmployeeForm() {
 
                                 <Grid item xs={2} > {/* Avatar container */}
 
-                                    <Grid item xs={12} paddingLeft={5}>
+                                    {/* <Grid item xs={12} paddingLeft={5}>
+                                        <input
+                                            type="file"
+                                            hidden
+                                            // onChange={(e) => { handleProofUpload(e) }}
+                                        />
 
                                         <Avatar
                                             sx={{ width: 200, height: 200 }}
                                             alt="Profile Image"
-                                            src="https://images.pexels.com/photos/4629633/pexels-photo-4629633.jpeg?cs=srgb&dl=pexels-cottonbro-4629633.jpg&fm=jpg"
+                                            src={profileImageUrl}
                                         />
 
+                                    </Grid> */}
+
+
+                                    <Grid item xs={12} paddingLeft={5} position="relative">
+                                        <input
+                                            type="file"
+                                            hidden
+                                            onChange={handleProofUpload}
+                                            id="file-input"
+                                        />
+                                        <label htmlFor="file-input"> {/* Use label to open file input on click */}
+                                            <Avatar
+                                                sx={{ width: 200, height: 200, cursor: 'pointer' }}
+                                                alt="Profile Image"
+                                                src={profileImageUrl}
+                                            />
+                                        </label>
                                     </Grid>
+
 
                                 </Grid>
 
@@ -1228,7 +1313,7 @@ export default function EmployeeForm() {
 
                                         <Grid container >
                                             <Grid xs={6} container alignItems="center" paddingBottom={2} >
-                                                <Grid item xs={4}>
+                                                <Grid item xs={4} >
                                                     <StyledLabel>
                                                         First Name <span style={{ color: 'red' }}>*</span>
                                                     </StyledLabel>
@@ -1600,7 +1685,7 @@ export default function EmployeeForm() {
                                     </Grid>
 
                                     <Grid container alignItems="center" paddingBottom={2}>
-                                        <Grid item xs={4}>
+                                        <Grid item xs={4} sx={{ paddingRight: '20px' }}>
                                             <StyledLabel>
                                                 Emergency Contact Name <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
@@ -1635,7 +1720,7 @@ export default function EmployeeForm() {
                                     </Grid>
 
                                     <Grid container alignItems="center" paddingBottom={2}>
-                                        <Grid item xs={4}>
+                                        <Grid item xs={4} sx={{ paddingRight: '20px' }}>
                                             <StyledLabel>
                                                 Emergency Contact Number <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
@@ -1671,7 +1756,7 @@ export default function EmployeeForm() {
                                     </Grid>
 
                                     <Grid container alignItems="center" paddingBottom={2}>
-                                        <Grid item xs={4}>
+                                        <Grid item xs={4} sx={{ paddingRight: '20px' }}>
                                             <StyledLabel>
                                                 Emergency Contact Relation (Should be blood relative) <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
@@ -1710,7 +1795,7 @@ export default function EmployeeForm() {
                                 <Grid container xs={4} bgcolor={''}> {/* Second Half child - 2 Container */}
 
                                     <Grid container alignItems="center" paddingBottom={2}>
-                                        <Grid item xs={4}>
+                                        <Grid item xs={4} >
                                             <StyledLabel>
                                                 Father's Name <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
@@ -1817,7 +1902,7 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
 
-                                        <Grid item xs={4}>
+                                        <Grid item xs={4} sx={{ paddingRight: '20px' }}>
                                             <StyledLabel>
                                                 Education (Highest Level) <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
@@ -2030,7 +2115,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="reportingmanager"
                                             control={control}
-                                            defaultValue={formData2.reportingmanager}
+                                            defaultValue={formData2.reportingmanager || ''}
                                             render={({ field }) => (
                                                 <Autocomplete
                                                     {...field}
@@ -2042,8 +2127,14 @@ export default function EmployeeForm() {
                                                     ]}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
 
-                                                    onChange={(event, value) => field.onChange(value ? value.value : '')}
-
+                                                    onChange={(event, value) => {
+                                                        const newValue = value ? value.value : null;
+                                                        setFormData2((prevData) => ({
+                                                            ...prevData,
+                                                            reportingmanager: newValue,
+                                                        }));
+                                                        field.onChange(newValue);
+                                                    }}
                                                     renderInput={(params) => (
                                                         <StyledInput
                                                             {...params}
@@ -2074,7 +2165,7 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="reportingteamlead"
                                             control={control}
-                                            defaultValue={formData2.reportingteamlead}
+                                            defaultValue={formData2.reportingteamlead || ''}
                                             render={({ field }) => (
 
                                                 <Autocomplete
@@ -2086,7 +2177,16 @@ export default function EmployeeForm() {
                                                         { label: 'Santhosh ', value: 'Santhosh' }
                                                     ]}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
-                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    // onChange={(event, value) => field.onChange(value?.value)}
+
+                                                    onChange={(event, value) => {
+                                                        const newValue = value ? value.value : null;
+                                                        setFormData2((prevData) => ({
+                                                            ...prevData,
+                                                            reportingteamlead: newValue,
+                                                        }));
+                                                        field.onChange(newValue);
+                                                    }}
                                                     renderInput={(params) => (
                                                         <StyledInput
                                                             {...params}
@@ -2116,13 +2216,21 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="designation"
                                             control={control}
-                                            defaultValue={formData2.designation}
+                                            defaultValue={formData2.designation || ''}
                                             render={({ field }) => (
 
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(designation)}
-                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    // onChange={(event, value) => field.onChange(value?.value)}
+                                                    onChange={(event, value) => {
+                                                        const newValue = value ? value.value : null;
+                                                        setFormData2((prevData) => ({
+                                                            ...prevData,
+                                                            designation: newValue,
+                                                        }));
+                                                        field.onChange(newValue);
+                                                    }}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
@@ -2153,13 +2261,22 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="department"
                                             control={control}
-                                            defaultValue={formData2.department}
+                                            defaultValue={formData2.department || ''}
                                             render={({ field }) => (
 
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(departments)}
-                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    // onChange={(event, value) => field.onChange(value?.value)}
+
+                                                    onChange={(event, value) => {
+                                                        const newValue = value ? value.value : null;
+                                                        setFormData2((prevData) => ({
+                                                            ...prevData,
+                                                            department: newValue,
+                                                        }));
+                                                        field.onChange(newValue);
+                                                    }}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
@@ -2190,12 +2307,20 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="team"
                                             control={control}
-                                            defaultValue={formData2.team}
+                                            defaultValue={formData2.team || ''}
                                             render={({ field }) => (
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(teams)}
-                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    // onChange={(event, value) => field.onChange(value?.value)}
+                                                    onChange={(event, value) => {
+                                                        const newValue = value ? value.value : null;
+                                                        setFormData2((prevData) => ({
+                                                            ...prevData,
+                                                            team: newValue,
+                                                        }));
+                                                        field.onChange(newValue);
+                                                    }}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
@@ -2227,13 +2352,21 @@ export default function EmployeeForm() {
                                         <Controller
                                             name="referrdby"
                                             control={control}
-                                            defaultValue={formData2.referrdby}
+                                            defaultValue={formData2.referrdby || ''}
                                             render={({ field }) => (
 
                                                 <Autocomplete
                                                     {...field}
                                                     options={employeeMap(employees)}
-                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    // onChange={(event, value) => field.onChange(value?.value)}
+                                                    onChange={(event, value) => {
+                                                        const newValue = value ? value.value : null;
+                                                        setFormData2((prevData) => ({
+                                                            ...prevData,
+                                                            referrdby: newValue,
+                                                        }));
+                                                        field.onChange(newValue);
+                                                    }}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
@@ -2278,6 +2411,14 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData2((prev) => ({
+                                                            ...prev,
+                                                            employmentstatus: e.target.value,
+                                                        }));
+                                                    }}
+
                                                 >
                                                     <MenuItem value="Probation">Probation</MenuItem>
                                                     <MenuItem value="Confirmed">Confirmed</MenuItem>
@@ -2314,6 +2455,14 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData2((prev) => ({
+                                                            ...prev,
+                                                            employeestatus: e.target.value,
+                                                        }));
+                                                    }}
+
                                                 >
                                                     <MenuItem value="Active">Active</MenuItem>
                                                     <MenuItem value="In Active">In Active</MenuItem>
@@ -2339,7 +2488,15 @@ export default function EmployeeForm() {
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(shifts)}
-                                                    onChange={(event, value) => field.onChange(value?.value)}
+                                                    // onChange={(event, value) => field.onChange(value?.value)}
+                                                    onChange={(event, value) => {
+                                                        const newValue = value ? value.value : null;
+                                                        setFormData2((prevData) => ({
+                                                            ...prevData,
+                                                            shift: newValue,
+                                                        }));
+                                                        field.onChange(newValue);
+                                                    }}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
@@ -2383,6 +2540,13 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData2((prev) => ({
+                                                            ...prev,
+                                                            grade: e.target.value,
+                                                        }));
+                                                    }}
                                                 >
                                                     {grade.map(item => (
                                                         <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>
@@ -2415,6 +2579,13 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData2((prev) => ({
+                                                            ...prev,
+                                                            probabationperiod: e.target.value,
+                                                        }));
+                                                    }}
                                                 />
                                             )}
                                         />
@@ -2442,6 +2613,13 @@ export default function EmployeeForm() {
                                                     helperText={errors.salaryofferred ? errors.salaryofferred.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData2((prev) => ({
+                                                            ...prev,
+                                                            salaryofferred: e.target.value,
+                                                        }));
                                                     }}
                                                 />
                                             )}
@@ -2471,6 +2649,13 @@ export default function EmployeeForm() {
                                                     helperText={errors.attendancebonus ? errors.attendancebonus.message : ''}
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                                                    }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData2((prev) => ({
+                                                            ...prev,
+                                                            attendancebonus: e.target.value,
+                                                        }));
                                                     }}
                                                 >
                                                     <MenuItem value="Yes">Yes</MenuItem>
@@ -2508,110 +2693,19 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData2((prev) => ({
+                                                            ...prev,
+                                                            totalmonthlyctc: e.target.value,
+                                                        }));
+                                                    }}
+
                                                 />
                                             )}
                                         />
                                     </Grid>
                                 </Grid>
-
-                                <Grid container alignItems="center" paddingBottom={2}>
-                                    <Grid item xs={4}>
-                                        <StyledLabel>
-                                            Upload Address Prof <span style={{ color: 'red' }}>*</span>
-                                        </StyledLabel>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                        <Controller
-                                            name="fileupload"
-                                            control={control}
-                                            defaultValue={formData2.addresprofpath}
-                                            render={({ field }) => (
-                                                <div>
-                                                    <Button
-                                                        variant="outlined"
-                                                        component="label"
-                                                        fullWidth
-                                                        color="primary"
-                                                        style={{ marginBottom: '3px' }}
-                                                    >
-                                                        {uploadStatus ? 'File Uploaded' : 'Upload File'}
-                                                        <input
-                                                            type="file"
-                                                            hidden
-                                                            onChange={(e) => { handleProofUpload(e) }}
-                                                        />
-
-                                                        {uploadFileName && (
-                                                            uploadStatus ? <CheckCircleIcon style={{ color: 'green', marginLeft: '12px' }} /> :
-                                                                <CancelIcon style={{ color: 'red', marginLeft: '12px' }} />
-                                                        )}
-
-                                                    </Button>
-
-                                                    <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
-                                                        {errors.fileupload?.message ? ` - ${errors.fileupload.message}` : uploadFileName ? uploadFileName : 'No file selected'}
-                                                    </FormHelperText>
-
-
-                                                    {/* <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
-                                                        {uploadFileName ? uploadFileName : 'No file selected'}
-                                                    </FormHelperText>
-
-                                                    <FormHelperText style={{ color: 'red' }}>
-                                                        {errors.fileupload?.message}
-                                                    </FormHelperText> */}
-                                                </div>
-                                            )}
-                                        />
-                                    </Grid>
-                                </Grid>
-
-                                {/* <Grid container alignItems="center" paddingBottom={2}>
-                                    <Grid item xs={4}>
-                                        <StyledLabel>
-                                            Upload Address Prof <span style={{ color: 'red' }}>*</span>
-                                        </StyledLabel>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                        <Controller
-                                            name="fileupload"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <div>
-                                                    <Button
-                                                        variant="outlined"
-                                                        component="label"
-                                                        fullWidth
-                                                        color="primary"
-                                                        style={{ marginBottom: '8px' }}
-                                                    >
-                                                        Upload File
-                                                        <input
-                                                            type="file"
-                                                            hidden
-                                                            onChange={handleProofUpload}
-                                                        />
-                                                    </Button>
-                                                    <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
-                                                        {uploadFileName ? uploadFileName : 'No file selected'}
-                                                    </FormHelperText>
-
-                                                    <FormHelperText style={{ color: 'red' }}>
-                                                        {errors.fileupload?.message}
-                                                    </FormHelperText>
-
-                                                    {uploadStatus === 'success' && (
-                                                        <CheckCircleIcon style={{ color: 'green', marginTop: '8px' }} />
-                                                    )}
-                                                    {uploadStatus === 'error' && (
-                                                        <CancelIcon style={{ color: 'red', marginTop: '8px' }} />
-                                                    )}
-                                                </div>
-                                            )}
-                                        />
-                                    </Grid>
-                                </Grid> */}
-
 
                                 <Grid container alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
@@ -2636,6 +2730,14 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData2((prev) => ({
+                                                            ...prev,
+                                                            totalyearlyctc: e.target.value,
+                                                        }));
+                                                    }}
+
                                                 />
                                             )}
                                         />
@@ -2665,6 +2767,13 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                        setFormData2((prev) => ({
+                                                            ...prev,
+                                                            billablestatus: e.target.value,
+                                                        }));
+                                                    }}
                                                 >
                                                     <MenuItem value="Billable">Billable</MenuItem>
                                                     <MenuItem value="Non-Billable">Non-Billable</MenuItem>
@@ -2674,6 +2783,63 @@ export default function EmployeeForm() {
                                         />
                                     </Grid>
                                 </Grid>
+
+                                {insertRequest === 1 &&
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+                                        <Grid item xs={4}>
+                                            <StyledLabel>
+                                                Upload Address Prof <span style={{ color: 'red' }}>*</span>
+                                            </StyledLabel>
+                                        </Grid>
+                                        <Grid item xs={7}>
+                                            <Controller
+                                                name="fileupload"
+                                                control={control}
+                                                defaultValue={formData2.addresprofpath}
+                                                render={({ field }) => (
+                                                    <div>
+                                                        <Button
+                                                            variant="outlined"
+                                                            component="label"
+                                                            fullWidth
+                                                            color="primary"
+                                                            style={{ marginBottom: '3px' }}
+                                                        >
+                                                            {uploadStatus ? 'File Uploaded' : 'Upload File'}
+                                                            <input
+                                                                type="file"
+                                                                hidden
+                                                                onChange={(e) => { handleProofUpload(e) }}
+                                                            />
+
+                                                            {uploadFileName && (
+                                                                uploadStatus ? <CheckCircleIcon style={{ color: 'green', marginLeft: '12px' }} /> :
+                                                                    <CancelIcon style={{ color: 'red', marginLeft: '12px' }} />
+                                                            )}
+
+                                                        </Button>
+
+                                                        <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
+                                                            {errors.fileupload?.message ? ` - ${errors.fileupload.message}` : uploadFileName ? uploadFileName : 'No file selected'}
+                                                        </FormHelperText>
+
+
+                                                        {/* <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
+                                                        {uploadFileName ? uploadFileName : 'No file selected'}
+                                                    </FormHelperText>
+
+                                                    <FormHelperText style={{ color: 'red' }}>
+                                                        {errors.fileupload?.message}
+                                                    </FormHelperText> */}
+                                                    </div>
+                                                )}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                }
+
 
                             </Grid>
                         </>
@@ -4131,7 +4297,7 @@ export default function EmployeeForm() {
                         Submit
                     </Button>
                 ) : (
-                    <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid || (activeStep === 1 && !uploadStatus)}>
+                    <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid || (activeStep === 1 && !formData2.addresprofpath)}>
                         Next
                     </Button>
                 )}

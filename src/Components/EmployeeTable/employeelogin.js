@@ -139,9 +139,18 @@ export default function EmployeeTable() {
 
 
   const handleAddUser = () => {
-    setaddorUpdate(1)
-    setDrawerName('Add New User')
-    setOpen(!open)
+    // setaddorUpdate(1)
+    // setDrawerName('Add New User')
+    // setOpen(!open)
+
+    setInsertRequest(2);
+
+    setEmployeeAddTab((prev) => ({
+      ...prev,
+      candidateId: '',
+      status: 1
+    }));
+
   }
 
   const handleClose = () => {
@@ -188,19 +197,19 @@ export default function EmployeeTable() {
             component='h1'
           >Employee Details</Typography>
         </Grid>
-        {/* <Grid item xs={6} sx={{ textAlign: 'right' }}>
+        <Grid item xs={6} sx={{ textAlign: 'right' }}>
 
           <Button
             variant='contained'
             color='primary'
             onClick={handleAddUser}
           >
-            Add User
+            Add Employee
           </Button>
-        </Grid> */}
+        </Grid>
       </Grid>
-      <Grid item xs={12}>
-        <Card variant='outlined'>
+      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        <TableContainer component={Paper} variant="outlined" >
           <Table size='small'>
             <TableHead >
               <TableRow>
@@ -223,14 +232,18 @@ export default function EmployeeTable() {
 
                 <TableCell align='center'>Update</TableCell>
 
-                <TableCell align='center'>Update Employee</TableCell>
+                {/* <TableCell align='center'>Update Employee</TableCell> */}
+
               </TableRow>
             </TableHead>
-            <TableBody>
-              {employeeData.map((item, index) => (
-                <TableRow key={item.emp_id}>
 
-                  <TableCell>{item.first_name}{item.last_name}</TableCell>
+            <TableBody>
+
+              {employeeData.map((item, index) => (
+
+                <TableRow key={item.emp_id} style={{ cursor: 'pointer' }}>
+
+                  <TableCell onClick={() => handleEdit(item.employee_number)} >{item.first_name}{item.last_name}</TableCell>
 
                   <TableCell>{item.email}</TableCell>
 
@@ -263,13 +276,15 @@ export default function EmployeeTable() {
                   </TableCell>
 
 
-                  <TableCell align='center' >
-                    <IconButton color='primary' onClick={() => handleEdit(item.employee_number)} sx={{ padding: 0.5 }} >
+                  {/* <TableCell align='center' >
+                    <IconButton color='primary'
+                      //  onClick={() => handleEdit(item.employee_number)}
+                      sx={{ padding: 0.5 }} >
                       <ModeEditOutlineIcon
                         sx={{ fontSize: '32px' }}
                       />
                     </IconButton>
-                  </TableCell>
+                  </TableCell> */}
 
 
 
@@ -277,7 +292,7 @@ export default function EmployeeTable() {
               ))}
             </TableBody>
           </Table>
-        </Card>
+        </TableContainer>
       </Grid>
 
       <DrawerComponent open={open} name={drawername} data={data} handleValueChange={handleValueChange} setOpen={setOpen} handleUpdate={handleUpdate} addorUpdate={addorUpdate} isFormIncomplete={isFormIncomplete} handleClose={handleClose} />
