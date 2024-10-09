@@ -82,6 +82,8 @@ function Sidebar() {
             setActiveTab('particularEmployee')
         } else if (employeeAddTab.status === 1) {
             setActiveTab('EmployeeMaster2')
+        } else if (employeeAddTab.status === 2) {
+            setActiveTab('EmployeeMaster')
         }
 
     }, [sharedTab.active, employeeAddTab])
@@ -149,7 +151,7 @@ function Sidebar() {
                 return <EmployeeTable />;
             case 'EmployeeMaster2':
                 // return <EmployeeForm />; 
-                return <EmployeeForm/>
+                return <EmployeeForm />
             default:
                 return <MOSDashboard />;
         }

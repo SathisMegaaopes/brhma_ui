@@ -8,7 +8,7 @@ import StepLabel from '@mui/material/StepLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { Autocomplete, Avatar, Checkbox, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Avatar, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -28,6 +28,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useSharedContext } from '../../Context';
 import { reference } from '@popperjs/core';
+import { useNavigate } from 'react-router-dom';
 
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
@@ -315,7 +316,9 @@ export default function EmployeeForm() {
 
     let url = `${URL}employeeonboard`
 
-    const { insertRequest, setInsertRequest, employeeAddTab } = useSharedContext();
+    const { insertRequest, setInsertRequest, employeeAddTab, setEmployeeAddTab } = useSharedContext();
+
+    const navigate = useNavigate();
 
     const [activeStep, setActiveStep] = React.useState(0);
 
@@ -329,6 +332,11 @@ export default function EmployeeForm() {
     const [isLWFChecked, setIsLWFChecked] = React.useState(false);
     const [copyToPermanent, setCopyToPermanent] = React.useState(false);
 
+    const [loading2, setLoading] = React.useState(false);
+    const [showSnackbar, setShowSnackbar] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
+
+
     const [requesType, setRequestType] = React.useState(null)
     const [interRequest, setInterRequest] = React.useState(0)
 
@@ -341,6 +349,8 @@ export default function EmployeeForm() {
     const [grade, setgrade] = React.useState([]);
     const [designation, setDesignation] = React.useState([]);
     const [addressprof, setAddressprof] = React.useState([]);
+
+    const [available, setAvailable] = React.useState(0); // 0 => not present in db ,  1 => present in db ....
 
     const [candidatePopulate, setCandidatePopulate] = React.useState([]);
 
@@ -511,6 +521,38 @@ export default function EmployeeForm() {
 
 
     React.useEffect(() => {
+
+        const url = `${URL}employeeonboard/employeeCheckIds`;
+
+        const checkId = async () => {
+            try {
+                const response = await axios.get(url);
+
+                const allData = response.data.data;
+
+                if (Array.isArray(allData)) {
+                    if (allData.includes(Number(formData1.employeeNumber))) {
+                        setAvailable(1)
+                    } else {
+                        setAvailable(0)
+                    }
+                } else {
+                    console.log('Received data is not an array');
+                }
+
+
+            } catch (error) {
+                console.log('Error fetching employee data:', error);
+            }
+        };
+
+        checkId();
+
+    }, [formData1.employeeNumber, requesType, interRequest, activeStep]);
+
+
+
+    React.useEffect(() => {
         if (insertRequest === 1 || insertRequest === 2) {
             setInterRequest(1);
         } else {
@@ -553,12 +595,9 @@ export default function EmployeeForm() {
 
     const { data: gradeData, loading: gradeLoading, error: gradeError } = useFetchData(gradeUrl);
 
-    const { data: designationData, loading: designationLoading, error: designationError } = useFetchData(desginationUrl)
+    const { data: designationData, loading: designationLoading, error: designationError } = useFetchData(desginationUrl);
 
-    const { data: addressprofData, loading: addressprofLoading, error: addressprofError } = useFetchData(addressprofUrl)
-
-
-    // const { data: candidateData, loading: candidateLoading, error: candidateError } = useFetchData(getCandidate, { id: employeeAddTab.candidateId }, insertRequest);
+    const { data: addressprofData, loading: addressprofLoading, error: addressprofError } = useFetchData(addressprofUrl);
 
     const useConditionalFetch = (request) => {
 
@@ -649,16 +688,14 @@ export default function EmployeeForm() {
             setValue('bankname', null, { shouldValidate: true });
             setValue('branchname', null, { shouldValidate: true });
             setValue('ifsccode', null, { shouldValidate: true });
-            setValue('accountNumber', null, { shouldValidate: true });
-            setValue('beneficiarycode', null, { shouldValidate: true });
+            setValue('accountNumber', null, { shouldValidate: true })
 
             setFormData6(preState => ({
                 ...preState,
                 bankname: null,
                 branchname: null,
                 ifsccode: null,
-                accountNumber: null,
-                beneficiarycode: null,
+                accountNumber: null
             }))
 
         }
@@ -857,9 +894,7 @@ export default function EmployeeForm() {
 
                 if (candidatePopulate.profileUrl) {
 
-                    const imageUrl = `${URL}${formatImageUrl(candidatePopulate?.profileUrl)}`;
-
-                    console.log(imageUrl, 'This tooo important dude,  very very important buddy.....')
+                    const imageUrl = `${URL}${formatImageUrl(candidatePopulate?.profileUrl)}`
 
                     setProfileImageUrl(imageUrl);
 
@@ -880,16 +915,13 @@ export default function EmployeeForm() {
 
             const fetchData = async () => {
 
-
-                const employeeID = { employee_id: employeeAddTab.candidateId }
+                const employeeID = { employee_id: employeeAddTab.candidateId };
 
                 const response = await axios.get(url, { params: employeeID });
 
                 if (response.data.status === 1) {
 
-
-                    const data = response.data.data[0];
-
+                    const data = response.data.data;
 
                     setValue('firstname', data.firstname, { shouldValidate: true });
                     setValue('lastname', data.lastname, { shouldValidate: true });
@@ -1069,15 +1101,7 @@ export default function EmployeeForm() {
 
                     setSelectedPaymentType(data.modeofpayment);
 
-                    if (data.profileUrl) {
-
-                        const imageUrl = `${URL}${formatImageUrl(data?.profileUrl)}`;
-
-                        setProfileImageUrl(imageUrl);
-
-                    } else {
-                        setProfileImageUrl(null)
-                    }
+                    setProfileImageUrl(data.profileUrl);
 
                 }
             }
@@ -1090,10 +1114,7 @@ export default function EmployeeForm() {
 
     const handleNext = async () => {
 
-        // insertRequest, setInsertRequest,
-        let data;
-
-        /// Ithu vandhu url base panni ,, based on this "http://localhost:3000/dashboard?tab=EmployeeMaster"
+        let data
 
         if (activeStep === 0) {
             data = formData1;
@@ -1107,8 +1128,12 @@ export default function EmployeeForm() {
             data = formData5;
         }
 
+
         try {
-            const response = await axios.post(url, { formData: data, reqType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep })
+            const response = await axios.post(url, {
+                formData: data, reqType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep,
+                profileUrl: profileImageUrl, available: available
+            })
 
         } catch (error) {
             console.log(error, 'Youre getting error da sathis uh.... ')
@@ -1150,10 +1175,55 @@ export default function EmployeeForm() {
         let data = formData6
 
         try {
+
             const response = await axios.post(url, { formData: data, reqType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep })
 
+
+            if (response.data.status === 1) {
+                setSnackbarMessage(1);
+                setShowSnackbar(true);
+
+                setLoading(true);
+
+                setTimeout(() => {
+
+                    setLoading(false);
+
+                    setShowSnackbar(false);
+
+
+                    setEmployeeAddTab((prev) => ({
+                        ...prev,
+                        status: 2,
+                    }));
+
+
+                }, 3000);
+            }
+            else {
+                setSnackbarMessage(0);
+                setShowSnackbar(true);
+                setLoading(false);
+            }
+
+
+            // if (response.data.status === 1) {
+
+
+            //     setEmployeeAddTab((prev) => ({
+            //         ...prev,
+            //         status: 2,
+            //     }))
+
+            // }
+            // console.log(response.data.status, ' final Log ..... ')
+
         } catch (error) {
+            setSnackbarMessage(0);
+            setShowSnackbar(true);
+            setLoading(false);
             console.log(error, 'Youre getting error da sathis uh.... ')
+
         }
 
 
@@ -1216,6 +1286,7 @@ export default function EmployeeForm() {
 
         const addressData = new FormData();
         addressData.append('file', selectedFile);
+        addressData.append('id', formData1.employeeNumber ? formData1.employeeNumber : Math.floor(1000 + Math.random() * 9000))
 
         let url = URL + "employeeonboard/addressprof";
 
@@ -1245,13 +1316,92 @@ export default function EmployeeForm() {
     }
 
 
-    console.log(formData2, 'important formData2 , this is .....')
+    // addressprof
+
+    const handleProfileUpload = async (e) => {
+
+        const file = e.target.files[0];
+
+        const profileFormData = new FormData();
+
+        profileFormData.append('file', file);
 
 
+        let url = URL + "employeeonboard/profileUpload";
+
+        try {
+
+            const response = await axios.post(url, profileFormData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+
+            if (response?.data?.status === 1) {
+
+                if (response?.data?.data?.url) {
+
+                    const imageUrl = `${URL}${formatImageUrl(response?.data?.data?.url)}`;
+
+                    setProfileImageUrl(imageUrl);
+
+                } else {
+                    setProfileImageUrl(null)
+                }
+
+            }
+
+        } catch (error) {
+            console.log(error, 'Error in uploading the profile picture....')
+        }
+
+
+    }
 
 
     return (
         <Box sx={{ width: '100%', paddingLeft: 6 }}>
+            {loading2 &&
+
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                        zIndex: 1,
+                    }}
+                >
+                    <CircularProgress />
+                </Box>
+
+            }
+
+            <Snackbar
+                open={showSnackbar}
+                autoHideDuration={3000}
+                onClose={() => setShowSnackbar(!showSnackbar)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                sx={{
+                    zIndex: 2,
+                }}
+            >
+                <Alert
+                    onClose={() => setShowSnackbar(!showSnackbar)}
+                    severity={snackbarMessage === 1 ? 'success' : 'error'}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMessage === 1 ? 'Successfully Completed' : 'Something went Wrong !'}
+                </Alert>
+            </Snackbar>
+
+
             <Stack sx={{ width: '100%' }} spacing={4}>
                 <Stepper activeStep={activeStep} alternativeLabel connector={<ColorlibConnector />}>
                     {steps.map((label, index) => (
@@ -1268,34 +1418,18 @@ export default function EmployeeForm() {
 
                     {activeStep === 0 && (
                         <>
-                            <Grid container paddingLeft={0}  > {/* First Half  Parent Container */}
+                            <Grid container xs={12} paddingLeft={0}  > {/* First Half  Parent Container */}
 
                                 <Grid item xs={2} > {/* Avatar container */}
 
-                                    {/* <Grid item xs={12} paddingLeft={5}>
+                                    <Grid item xs={12} paddingLeft={5} position="fixed">
                                         <input
                                             type="file"
                                             hidden
-                                            // onChange={(e) => { handleProofUpload(e) }}
-                                        />
-
-                                        <Avatar
-                                            sx={{ width: 200, height: 200 }}
-                                            alt="Profile Image"
-                                            src={profileImageUrl}
-                                        />
-
-                                    </Grid> */}
-
-
-                                    <Grid item xs={12} paddingLeft={5} position="relative">
-                                        <input
-                                            type="file"
-                                            hidden
-                                            onChange={handleProofUpload}
+                                            onChange={handleProfileUpload}
                                             id="file-input"
                                         />
-                                        <label htmlFor="file-input"> {/* Use label to open file input on click */}
+                                        <label htmlFor="file-input">
                                             <Avatar
                                                 sx={{ width: 200, height: 200, cursor: 'pointer' }}
                                                 alt="Profile Image"
@@ -2177,8 +2311,6 @@ export default function EmployeeForm() {
                                                         { label: 'Santhosh ', value: 'Santhosh' }
                                                     ]}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
-                                                    // onChange={(event, value) => field.onChange(value?.value)}
-
                                                     onChange={(event, value) => {
                                                         const newValue = value ? value.value : null;
                                                         setFormData2((prevData) => ({
@@ -2222,7 +2354,6 @@ export default function EmployeeForm() {
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(designation)}
-                                                    // onChange={(event, value) => field.onChange(value?.value)}
                                                     onChange={(event, value) => {
                                                         const newValue = value ? value.value : null;
                                                         setFormData2((prevData) => ({
@@ -2267,8 +2398,6 @@ export default function EmployeeForm() {
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(departments)}
-                                                    // onChange={(event, value) => field.onChange(value?.value)}
-
                                                     onChange={(event, value) => {
                                                         const newValue = value ? value.value : null;
                                                         setFormData2((prevData) => ({
@@ -2312,7 +2441,6 @@ export default function EmployeeForm() {
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(teams)}
-                                                    // onChange={(event, value) => field.onChange(value?.value)}
                                                     onChange={(event, value) => {
                                                         const newValue = value ? value.value : null;
                                                         setFormData2((prevData) => ({
@@ -2358,7 +2486,6 @@ export default function EmployeeForm() {
                                                 <Autocomplete
                                                     {...field}
                                                     options={employeeMap(employees)}
-                                                    // onChange={(event, value) => field.onChange(value?.value)}
                                                     onChange={(event, value) => {
                                                         const newValue = value ? value.value : null;
                                                         setFormData2((prevData) => ({
@@ -2488,7 +2615,6 @@ export default function EmployeeForm() {
                                                 <Autocomplete
                                                     {...field}
                                                     options={mapOptions(shifts)}
-                                                    // onChange={(event, value) => field.onChange(value?.value)}
                                                     onChange={(event, value) => {
                                                         const newValue = value ? value.value : null;
                                                         setFormData2((prevData) => ({
@@ -2784,61 +2910,52 @@ export default function EmployeeForm() {
                                     </Grid>
                                 </Grid>
 
-                                {insertRequest === 1 &&
+                                {/* {(insertRequest === 1 || insertRequest === 2) && */}
 
-                                    <Grid container alignItems="center" paddingBottom={2}>
-                                        <Grid item xs={4}>
-                                            <StyledLabel>
-                                                Upload Address Prof <span style={{ color: 'red' }}>*</span>
-                                            </StyledLabel>
-                                        </Grid>
-                                        <Grid item xs={7}>
-                                            <Controller
-                                                name="fileupload"
-                                                control={control}
-                                                defaultValue={formData2.addresprofpath}
-                                                render={({ field }) => (
-                                                    <div>
-                                                        <Button
-                                                            variant="outlined"
-                                                            component="label"
-                                                            fullWidth
-                                                            color="primary"
-                                                            style={{ marginBottom: '3px' }}
-                                                        >
-                                                            {uploadStatus ? 'File Uploaded' : 'Upload File'}
-                                                            <input
-                                                                type="file"
-                                                                hidden
-                                                                onChange={(e) => { handleProofUpload(e) }}
-                                                            />
-
-                                                            {uploadFileName && (
-                                                                uploadStatus ? <CheckCircleIcon style={{ color: 'green', marginLeft: '12px' }} /> :
-                                                                    <CancelIcon style={{ color: 'red', marginLeft: '12px' }} />
-                                                            )}
-
-                                                        </Button>
-
-                                                        <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
-                                                            {errors.fileupload?.message ? ` - ${errors.fileupload.message}` : uploadFileName ? uploadFileName : 'No file selected'}
-                                                        </FormHelperText>
-
-
-                                                        {/* <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
-                                                        {uploadFileName ? uploadFileName : 'No file selected'}
-                                                    </FormHelperText>
-
-                                                    <FormHelperText style={{ color: 'red' }}>
-                                                        {errors.fileupload?.message}
-                                                    </FormHelperText> */}
-                                                    </div>
-                                                )}
-                                            />
-                                        </Grid>
+                                <Grid container alignItems="center" paddingBottom={2}>
+                                    <Grid item xs={4}>
+                                        <StyledLabel>
+                                            Upload Address Prof <span style={{ color: 'red' }}>*</span>
+                                        </StyledLabel>
                                     </Grid>
+                                    <Grid item xs={7}>
+                                        <Controller
+                                            name="fileupload"
+                                            control={control}
+                                            defaultValue={formData2.addresprofpath}
+                                            render={({ field }) => (
+                                                <div>
+                                                    <Button
+                                                        variant="outlined"
+                                                        component="label"
+                                                        fullWidth
+                                                        color="primary"
+                                                        style={{ marginBottom: '3px' }}
+                                                    >
+                                                        {uploadStatus ? 'File Uploaded' : 'Upload File'}
+                                                        <input
+                                                            type="file"
+                                                            hidden
+                                                            onChange={(e) => { handleProofUpload(e) }}
+                                                        />
 
-                                }
+                                                        {uploadFileName && (
+                                                            uploadStatus ? <CheckCircleIcon style={{ color: 'green', marginLeft: '12px' }} /> :
+                                                                <CancelIcon style={{ color: 'red', marginLeft: '12px' }} />
+                                                        )}
+
+                                                    </Button>
+
+                                                    <FormHelperText style={{ color: errors.fileupload ? 'red' : 'inherit' }}>
+                                                        {errors.fileupload?.message ? ` - ${errors.fileupload.message}` : uploadFileName ? uploadFileName : 'No file selected'}
+                                                    </FormHelperText>
+                                                </div>
+                                            )}
+                                        />
+                                    </Grid>
+                                </Grid>
+
+                                {/* } */}
 
 
                             </Grid>
@@ -3261,7 +3378,7 @@ export default function EmployeeForm() {
                                                     variant="outlined"
                                                     error={!!errors.totalExperience1}
                                                     helperText={errors.totalExperience1 ? errors.totalExperience1.message : ''}
-                                                    disabled // Read-only input
+                                                    disabled
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -3466,7 +3583,7 @@ export default function EmployeeForm() {
                                                     variant="outlined"
                                                     error={!!errors.totalExperience2}
                                                     helperText={errors.totalExperience2 ? errors.totalExperience2.message : ''}
-                                                    disabled // Read-only input
+                                                    disabled
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
@@ -4070,6 +4187,30 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
 
+                                        <Grid container alignItems="center" paddingBottom={2}>
+                                            <Grid item xs={4}>
+                                                <StyledLabel>
+                                                    Beneficiary Code <span style={{ color: 'red' }}>*</span>
+                                                </StyledLabel>
+                                            </Grid>
+
+                                            <Grid item xs={0}>
+                                                <StyledLabel>
+                                                    :
+                                                </StyledLabel>
+                                            </Grid>
+
+                                            <Grid item xs={0} alignItems='flex-start'>
+                                                <StyledLabel>
+                                                    {`${formData1.firstname.replace(/\s+/g, '')}${formData1.lastname.replace(/\s+/g, '')}${formData1.employeeNumber}${formData1.dateOfJoining.replace(/-/g, '')}`}
+                                                </StyledLabel>
+                                            </Grid>
+                                        </Grid>
+
+                                    </Grid>
+
+                                    <Grid container alignItems="center" paddingBottom={2}>
+
                                         {selectedPaymentType === 'banktransfer' && (
 
                                             <Grid container paddingTop={2}>
@@ -4210,26 +4351,6 @@ export default function EmployeeForm() {
                                                     </Grid>
                                                 </Grid>
 
-                                                <Grid container alignItems="center" paddingBottom={2}>
-                                                    <Grid item xs={4}>
-                                                        <StyledLabel>
-                                                            Beneficiary Code <span style={{ color: 'red' }}>*</span>
-                                                        </StyledLabel>
-                                                    </Grid>
-
-                                                    <Grid item xs={0}>
-                                                        <StyledLabel>
-                                                            :
-                                                        </StyledLabel>
-                                                    </Grid>
-
-                                                    <Grid item xs={0} alignItems='flex-start'>
-                                                        <StyledLabel>
-                                                            {`${formData1.firstname.replace(/\s+/g, '')}${formData1.lastname.replace(/\s+/g, '')}${formData1.employeeNumber}${formData1.dateOfJoining.replace(/-/g, '')}`}
-                                                        </StyledLabel>
-                                                    </Grid>
-                                                </Grid>
-
                                             </Grid>
 
                                         )}
@@ -4297,7 +4418,8 @@ export default function EmployeeForm() {
                         Submit
                     </Button>
                 ) : (
-                    <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid || (activeStep === 1 && !formData2.addresprofpath)}>
+                    // <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid || (activeStep === 1 && !formData2.addresprofpath)}>
+                    <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
                         Next
                     </Button>
                 )}

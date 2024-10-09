@@ -239,7 +239,7 @@ export default function EmployeeTable() {
 
             <TableBody>
 
-              {employeeData.map((item, index) => (
+              {employeeData.length > 0 && employeeData.map((item, index) => (
 
                 <TableRow key={item.emp_id} style={{ cursor: 'pointer' }}>
 

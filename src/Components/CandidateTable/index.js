@@ -12,7 +12,7 @@ import GroupAddSharpIcon from '@mui/icons-material/GroupAddSharp';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 
-function MOSCandiateTable(props) {
+function    MOSCandiateTable(props) {
 
     const { rerender, setRerender, insertRequest, setInsertRequest, employeeAddTab, setEmployeeAddTab } = useSharedContext();
 
