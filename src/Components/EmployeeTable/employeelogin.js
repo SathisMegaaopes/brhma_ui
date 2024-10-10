@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Alert, Box, Button, Card, Drawer, Grid, MenuItem, Select, Snackbar, TextField, Tooltip, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Card, Drawer, Grid, List, ListItem, ListItemText, MenuItem, Select, Snackbar, TextField, Tooltip, Typography } from '@mui/material';
 import axios from 'axios';
 import URL from '../Global/Utils/url_route';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
@@ -16,7 +16,9 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { DateFormater } from '../Global/Utils/common_data';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import { useSharedContext } from '../../Context';
-
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useFetchData } from './customHook';
 
 export default function EmployeeTable() {
 
@@ -37,6 +39,10 @@ export default function EmployeeTable() {
   const [responseModal, setResponseModal] = React.useState(false)
   const [apiStatus, setApiStatus] = React.useState(null)
   const [showPassword, setShowPassword] = React.useState({});
+  const [department, setDepartment] = React.useState('');
+  const [departmentList, setDepartmentList] = React.useState([]);
+
+  const [departmentListView, setDepartmentListView] = React.useState(false);
 
 
   const url = URL + "employeemaster"
@@ -51,6 +57,38 @@ export default function EmployeeTable() {
         console.log(err, 'This is the error occuring in the frontEnd....')
       })
   }, [rerender])
+
+
+
+  const fetchDepartmentUrl = `${URL}employeeonboard/dynamicDepartments`;
+
+  const fetchTeamUrl = `${URL}employeeonboard/dynamicTeams`;
+
+  const fetchDepartment = `${URL}todolist/department`;
+
+  const { data: departData, loading: departDataLoading, error: departDataError } = useFetchData(fetchDepartment);
+
+  // const fetchDepartmentPayload = { value: department }
+
+  // const { data: departmentData, loading: departmentLoading, error: departError } = useFetchData(fetchDepartmentUrl, fetchDepartmentPayload, department);
+
+  // const { data : teamData , loading : teamLoadin}
+
+
+
+
+  React.useEffect(() => {
+
+    if (departData) {
+
+      setDepartmentList(departData?.data)
+
+      console.log(departData.data, 'Important deudeeeee')
+
+    }
+
+
+  }, [departData, departmentList])
 
 
   const handleChange = (id) => {
@@ -183,21 +221,93 @@ export default function EmployeeTable() {
   const togglePasswordVisibility = (index) => {
     setShowPassword((prevState) => ({
       ...prevState,
-      [index]: !prevState[index] // Toggle visibility for the specific index
+      [index]: !prevState[index]
     }));
   };
 
 
+  // const handleSelectDepartment = (val) => {
+
+  //   console.log(val, 'This is the value ');
+  //   setDepartment(val);
+  //   setDepartmentListView(false);
+
+  // }
+
+
+  // const handleAddDepartmentText = (val) => {
+
+  //   setDepartment(val);
+  //   setDepartmentListView(true);
+
+  // }
+
+  const mapOptions = (data) => {
+    return data.map(item => ({
+      label: item.name,
+      value: item.name
+    }));
+  }
+
+  // console.log(mapOptions())
+
+  console.log(departmentList, 'This is the value of the department')
+
   return (
     <Grid container spacing={2} sx={{ paddingX: 12, paddingTop: 3 }}>
       <Grid container xs={12} >
-        <Grid item xs={6} sx={{ paddingLeft: 2 }}>
+        <Grid item xs={4} sx={{ paddingLeft: 2 }}>
           <Typography
             variant='h5'
             component='h1'
           >Employee Details</Typography>
         </Grid>
-        <Grid item xs={6} sx={{ textAlign: 'right' }}>
+
+        <Grid item xs={4}>
+
+          <Autocomplete
+            disablePortal
+            options={mapOptions(departmentList)}
+            sx={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="Movie" />}
+          />
+
+
+          {/*           
+          <TextField
+            id="standard-basic"
+            label="Enter Department"
+            variant="standard"
+            value={department}
+            onChange={(e) => handleAddDepartmentText(e.target.value)}
+            // onBlur={checkDepartmentName}
+            // onFocus={() => console.log('On Focus.....')}
+            fullWidth
+          /> */}
+
+          {/* {departmentListView && (
+
+            <Box>
+
+              {departmentLoading && (
+                <CircularProgress />
+              )}
+
+              {departmentList.length > 0 && (
+                <List sx={{ zIndex: 2, position: 'absolute', backgroundColor: 'grey', height: '40vh', overflowY: 'auto', width: '20vw' }}>
+                  {departmentList.map((dept, index) => (
+                    <ListItem key={index} >
+                      <ListItemText onClick={() => handleSelectDepartment(dept.name)} primary={dept.name} />
+                    </ListItem>
+                  ))}
+                </List>
+              )}
+
+            </Box>
+          )} */}
+
+        </Grid>
+        <Grid item xs={4} sx={{ textAlign: 'right' }}>
 
           <Button
             variant='contained'
@@ -239,7 +349,7 @@ export default function EmployeeTable() {
 
             <TableBody>
 
-              {employeeData.length > 0 && employeeData.map((item, index) => (
+              {employeeData.length > 0 ? employeeData.map((item, index) => (
 
                 <TableRow key={item.emp_id} style={{ cursor: 'pointer' }}>
 
@@ -289,11 +399,19 @@ export default function EmployeeTable() {
 
 
                 </TableRow>
-              ))}
+              ))
+
+                :
+                <>
+                  <ErrorOutlineIcon />
+                </>
+
+
+              }
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
+      </Grid >
 
       <DrawerComponent open={open} name={drawername} data={data} handleValueChange={handleValueChange} setOpen={setOpen} handleUpdate={handleUpdate} addorUpdate={addorUpdate} isFormIncomplete={isFormIncomplete} handleClose={handleClose} />
 
@@ -313,7 +431,7 @@ export default function EmployeeTable() {
         </Alert>
       </Snackbar>
 
-    </Grid>
+    </Grid >
 
   );
 }

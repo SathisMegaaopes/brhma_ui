@@ -360,88 +360,88 @@ export default function EmployeeForm() {
 
 
     const [formData1, setFormData1] = React.useState({
-        firstname: null,
-        lastname: null,
-        dateOfBirth: null, //Format of a data -( 2024/09/26 ) 
-        employeeNumber: null,
-        gender: null,
-        email: null,
-        mobileNumber: null,
-        phone: null,
-        bloodGroup: null,
-        dateOfJoining: null,
-        fathersName: null,
-        fathersOccupation: null,
-        countryOfOrigin: null,
-        nationality: null,
-        emergencyContactName: null,
-        emergencyContactNumber: null,
-        emergencyContactRelation: null,
-        spouseName: null,
-        physicallyChallenged: null,
-        education: null,
-        addressprofType: null,
+        // firstname: null,
+        // lastname: null,
+        // dateOfBirth: null, //Format of a data -( 2024/09/26 ) 
+        // employeeNumber: null,
+        // gender: null,
+        // email: null,
+        // mobileNumber: null,
+        // phone: null,
+        // bloodGroup: null,
+        // dateOfJoining: null,
+        // fathersName: null,
+        // fathersOccupation: null,
+        // countryOfOrigin: null,
+        // nationality: null,
+        // emergencyContactName: null,
+        // emergencyContactNumber: null,
+        // emergencyContactRelation: null,
+        // spouseName: null,
+        // physicallyChallenged: null,
+        // education: null,
+        // addressprofType: null,
 
-        // firstname: candidatePopulate?.firstname || 'firstname',
-        // lastname: candidatePopulate?.lastname || 'lastname',
-        // dateOfBirth: candidatePopulate?.dateOfBirth || '2024-10-02',
-        // employeeNumber: '20002',
-        // gender: candidatePopulate?.gender || 'Male',
-        // email: candidatePopulate?.email || 'samatap26@gmail.com',
-        // mobileNumber: candidatePopulate?.mobileNumber || '9778164504',
-        // phone: '87781645077',
-        // bloodGroup: 'A',
-        // dateOfJoining: '2024-10-04',
-        // fathersName: 'qqqqqqqqqqq',
-        // fathersOccupation: 'testfatheroccupation',
-        // countryOfOrigin: 'testindia',
-        // nationality: 'testIndian',
-        // emergencyContactName: 'qqqqqq',
-        // emergencyContactNumber: '8777842222',
-        // emergencyContactRelation: 'testemergencycontactrelation',
-        // spouseName: 'testspousename',
-        // physicallyChallenged: 'Yes',
-        // education: 'B.E.,',
-        // addressprofType: null
+        firstname: candidatePopulate?.firstname || 'firstname',
+        lastname: candidatePopulate?.lastname || 'lastname',
+        dateOfBirth: candidatePopulate?.dateOfBirth || '2024-10-02',
+        employeeNumber: '20002',
+        gender: candidatePopulate?.gender || 'Male',
+        email: candidatePopulate?.email || 'samatap26@gmail.com',
+        mobileNumber: candidatePopulate?.mobileNumber || '9778164504',
+        phone: '87781645077',
+        bloodGroup: 'A',
+        dateOfJoining: '2024-10-04',
+        fathersName: 'qqqqqqqqqqq',
+        fathersOccupation: 'testfatheroccupation',
+        countryOfOrigin: 'testindia',
+        nationality: 'testIndian',
+        emergencyContactName: 'qqqqqq',
+        emergencyContactNumber: '8777842222',
+        emergencyContactRelation: 'testemergencycontactrelation',
+        spouseName: 'testspousename',
+        physicallyChallenged: 'Yes',
+        education: 'B.E.,',
+        addressprofType: null
     });
 
 
     const [formData2, setFormData2] = React.useState({
-        reportingmanager: null,
-        reportingteamlead: null,
-        designation: null,
-        department: null,
-        team: null,
-        referrdby: null,
-        employmentstatus: null,
-        employeestatus: null,
-        shift: null,
-        grade: null,
-        probabationperiod: null,
-        salaryofferred: null,
-        totalmonthlyctc: null,
-        attendancebonus: null,
-        totalyearlyctc: null,
-        billablestatus: null,
-        addresprofpath: null,
-
-        // reportingmanager: 'Kannan R',
-        // reportingteamlead: 'Kannan R',
-        // designation: 'CEO',
-        // department: 'Executive',
-        // team: 'IT Team',
-        // referrdby: 'Santhosh',
-        // employmentstatus: 'Probation',
-        // employeestatus: 'Active',
-        // shift: '00:00 - 09:00',
-        // grade: 'L1',
-        // probabationperiod: '180',
-        // salaryofferred: '12000',
-        // totalmonthlyctc: '12000',
-        // attendancebonus: 'Yes',
-        // totalyearlyctc: '144000',
-        // billablestatus: 'Billable',
+        // reportingmanager: null,
+        // reportingteamlead: null,
+        // designation: null,
+        // department: null,
+        // team: null,
+        // referrdby: null,
+        // employmentstatus: null,
+        // employeestatus: null,
+        // shift: null,
+        // grade: null,
+        // probabationperiod: null,
+        // salaryofferred: null,
+        // totalmonthlyctc: null,
+        // attendancebonus: null,
+        // totalyearlyctc: null,
+        // billablestatus: null,
         // addresprofpath: null,
+
+        reportingmanager: 'Kannan R',
+        reportingteamlead: 'Kannan R',
+        designation: 'CEO',
+        department: 'Executive',
+        team: 'IT Team',
+        referrdby: 'Kannan R',
+        employmentstatus: 'Probation',
+        employeestatus: 'Active',
+        shift: '00:00 - 09:00',
+        grade: 'L1',
+        probabationperiod: '180',
+        salaryofferred: '12000',
+        totalmonthlyctc: '12000',
+        attendancebonus: 'Yes',
+        totalyearlyctc: '144000',
+        billablestatus: 'Billable',
+        addresprofpath: null,
 
     })
 
@@ -560,18 +560,18 @@ export default function EmployeeForm() {
         }
     }, [insertRequest])
 
-    React.useEffect(() => {
+    // React.useEffect(() => {
 
-        let url = `${URL}todolist/department`;
+    //     let url = `${URL}todolist/department`;
 
-        try {
-            const response = axios.get(url)
-            setDepartments(response?.data?.data)
-        } catch (error) {
-            console.error(error, 'This is the error... ');
-        }
+    //     try {
+    //         const response = axios.get(url)
+    //         setDepartments(response?.data?.data)
+    //     } catch (error) {
+    //         console.error(error, 'This is the error... ');
+    //     }
 
-    }, [])
+    // }, [])
 
 
     const teamUrl = `${URL}todolist/teams`;
@@ -1112,6 +1112,47 @@ export default function EmployeeForm() {
     }, [])
 
 
+    React.useEffect(() => {
+
+        console.log(departments);
+
+        const demoData = { ...formData2 };
+
+        if (departments) {
+            const secondDemo = Object.entries(departments).find(([key, value]) => value.name === demoData.department)?.[1];
+
+            const thirdDemo = Object.entries(teams).find(([key, value]) => value.name === demoData.team)?.[1];
+
+            const fourthDemo = Object.entries(employees).find(([key, value]) => `${value.f_name} ${value.l_name}` === demoData.referrdby)?.[1];
+
+            demoData.department = secondDemo?.id;
+            demoData.team = thirdDemo?.id;
+            demoData.referrdby = fourthDemo?.emp_id;
+
+            console.log(demoData)
+        }
+
+    }, [formData2, departments, employees])
+
+    const updateFormData2 = () => {
+        const demoData = { ...formData2 };
+
+        if (departments) {
+            const secondDemo = Object.entries(departments).find(([key, value]) => value.name === demoData.department)?.[1];
+            const thirdDemo = Object.entries(teams).find(([key, value]) => value.name === demoData.team)?.[1];
+            const fourthDemo = Object.entries(employees).find(([key, value]) => `${value.f_name} ${value.l_name}` === demoData.referrdby)?.[1];
+
+            demoData.department = secondDemo?.id;
+            demoData.team = thirdDemo?.id;
+            demoData.referrdby = fourthDemo?.emp_id;
+
+            return demoData;
+        }
+
+        return formData2;
+    };
+
+
     const handleNext = async () => {
 
         let data
@@ -1119,7 +1160,8 @@ export default function EmployeeForm() {
         if (activeStep === 0) {
             data = formData1;
         } else if (activeStep === 1) {
-            data = formData2;
+            // data = formData2;
+            data = updateFormData2();
         } else if (activeStep === 2) {
             data = formData3;
         } else if (activeStep === 3) {
@@ -1128,6 +1170,7 @@ export default function EmployeeForm() {
             data = formData5;
         }
 
+        console.log(data)
 
         try {
             const response = await axios.post(url, {
@@ -4429,6 +4472,3 @@ export default function EmployeeForm() {
 
     );
 }
-
-
-
