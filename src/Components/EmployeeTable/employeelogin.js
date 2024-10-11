@@ -83,7 +83,7 @@ export default function EmployeeTable() {
 
       setDepartmentList(departData?.data)
 
-      console.log(departData.data, 'Important deudeeeee')
+      // console.log(departData.data, 'Important deudeeeee')
 
     }
 
@@ -251,7 +251,7 @@ export default function EmployeeTable() {
 
   // console.log(mapOptions())
 
-  console.log(departmentList, 'This is the value of the department')
+  // console.log(departmentList, 'This is the value of the department')
 
   return (
     <Grid container spacing={2} sx={{ paddingX: 12, paddingTop: 3 }}>

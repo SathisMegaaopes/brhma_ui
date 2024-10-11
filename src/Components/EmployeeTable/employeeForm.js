@@ -9,7 +9,7 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { Alert, Autocomplete, Avatar, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
-import { useForm, Controller, useWatch } from 'react-hook-form';
+import { useForm, Controller, useWatch, set } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -314,8 +314,6 @@ const MultilineTextField = styled(TextField)(({ theme }) => ({
 
 export default function EmployeeForm() {
 
-    let url = `${URL}employeeonboard`
-
     const { insertRequest, setInsertRequest, employeeAddTab, setEmployeeAddTab } = useSharedContext();
 
     const navigate = useNavigate();
@@ -360,49 +358,49 @@ export default function EmployeeForm() {
 
 
     const [formData1, setFormData1] = React.useState({
-        // firstname: null,
-        // lastname: null,
-        // dateOfBirth: null, //Format of a data -( 2024/09/26 ) 
-        // employeeNumber: null,
-        // gender: null,
-        // email: null,
-        // mobileNumber: null,
-        // phone: null,
-        // bloodGroup: null,
-        // dateOfJoining: null,
-        // fathersName: null,
-        // fathersOccupation: null,
-        // countryOfOrigin: null,
-        // nationality: null,
-        // emergencyContactName: null,
-        // emergencyContactNumber: null,
-        // emergencyContactRelation: null,
-        // spouseName: null,
-        // physicallyChallenged: null,
-        // education: null,
-        // addressprofType: null,
+        firstname: null,
+        lastname: null,
+        dateOfBirth: null, //Format of a data -( 2024/09/26 ) 
+        employeeNumber: null,
+        gender: null,
+        email: null,
+        mobileNumber: null,
+        phone: null,
+        bloodGroup: null,
+        dateOfJoining: null,
+        fathersName: null,
+        fathersOccupation: null,
+        countryOfOrigin: null,
+        nationality: null,
+        emergencyContactName: null,
+        emergencyContactNumber: null,
+        emergencyContactRelation: null,
+        spouseName: null,
+        physicallyChallenged: null,
+        education: null,
+        addressprofType: null,
 
-        firstname: candidatePopulate?.firstname || 'firstname',
-        lastname: candidatePopulate?.lastname || 'lastname',
-        dateOfBirth: candidatePopulate?.dateOfBirth || '2024-10-02',
-        employeeNumber: '20002',
-        gender: candidatePopulate?.gender || 'Male',
-        email: candidatePopulate?.email || 'samatap26@gmail.com',
-        mobileNumber: candidatePopulate?.mobileNumber || '9778164504',
-        phone: '87781645077',
-        bloodGroup: 'A',
-        dateOfJoining: '2024-10-04',
-        fathersName: 'qqqqqqqqqqq',
-        fathersOccupation: 'testfatheroccupation',
-        countryOfOrigin: 'testindia',
-        nationality: 'testIndian',
-        emergencyContactName: 'qqqqqq',
-        emergencyContactNumber: '8777842222',
-        emergencyContactRelation: 'testemergencycontactrelation',
-        spouseName: 'testspousename',
-        physicallyChallenged: 'Yes',
-        education: 'B.E.,',
-        addressprofType: null
+        // firstname: candidatePopulate?.firstname || 'firstname',
+        // lastname: candidatePopulate?.lastname || 'lastname',
+        // dateOfBirth: candidatePopulate?.dateOfBirth || '2024-10-02',
+        // employeeNumber: '20002',
+        // gender: candidatePopulate?.gender || 'Male',
+        // email: candidatePopulate?.email || 'samatap26@gmail.com',
+        // mobileNumber: candidatePopulate?.mobileNumber || '9778164504',
+        // phone: '87781645077',
+        // bloodGroup: 'A',
+        // dateOfJoining: '2024-10-04',
+        // fathersName: 'qqqqqqqqqqq',
+        // fathersOccupation: 'testfatheroccupation',
+        // countryOfOrigin: 'testindia',
+        // nationality: 'testIndian',
+        // emergencyContactName: 'qqqqqq',
+        // emergencyContactNumber: '8777842222',
+        // emergencyContactRelation: 'testemergencycontactrelation',
+        // spouseName: 'testspousename',
+        // physicallyChallenged: 'Yes',
+        // education: 'B.E.,',
+        // addressprofType: null
     });
 
 
@@ -495,8 +493,6 @@ export default function EmployeeForm() {
         beneficiarycode: null
     })
 
-
-
     const [selectedPaymentType, setSelectedPaymentType] = React.useState('');
 
     const salaryOfferred = useWatch({ control, name: 'salaryofferred' });
@@ -559,19 +555,6 @@ export default function EmployeeForm() {
             setInterRequest(0);
         }
     }, [insertRequest])
-
-    // React.useEffect(() => {
-
-    //     let url = `${URL}todolist/department`;
-
-    //     try {
-    //         const response = axios.get(url)
-    //         setDepartments(response?.data?.data)
-    //     } catch (error) {
-    //         console.error(error, 'This is the error... ');
-    //     }
-
-    // }, [])
 
 
     const teamUrl = `${URL}todolist/teams`;
@@ -863,6 +846,8 @@ export default function EmployeeForm() {
                 setValue('mobileNumber', candidatePopulate.mobileNumber, { shouldValidate: true });
                 setValue('fathersName', candidatePopulate.fathersName, { shouldValidate: true });
                 setValue('fathersOccupation', candidatePopulate.fathersOccupation, { shouldValidate: true });
+                // address
+                setValue('currentaddress', candidatePopulate.address, { shouldValidate: true });
 
                 setValue('organization1', candidatePopulate.organization1, { shouldValidate: true });
                 setValue('designation1', candidatePopulate.designation1, { shouldValidate: true });
@@ -880,6 +865,11 @@ export default function EmployeeForm() {
                     mobileNumber: candidatePopulate.mobileNumber,
                     fathersName: candidatePopulate.fathersName,
                     fathersOccupation: candidatePopulate.fathersOccupation,
+                }))
+
+                setFormData3((prev) => ({
+                    ...prev,
+                    currentaddress: candidatePopulate.address,
                 }))
 
                 setFormData4((prev) => ({
@@ -904,7 +894,6 @@ export default function EmployeeForm() {
             }
         }
     }, [candidatePopulate])
-
 
 
     React.useEffect(() => {   //Updating the user request....
@@ -1028,7 +1017,7 @@ export default function EmployeeForm() {
                         reportingmanager: data.reportingmanager,
                         reportingteamlead: data.reportingteamlead,
                         designation: data.designation,
-                        department: data.department,
+                        department: handleUpdateDepartment(data.department),
                         team: data.team,
                         referrdby: data.referrdby,
                         employmentstatus: data.employmentstatus,
@@ -1114,8 +1103,6 @@ export default function EmployeeForm() {
 
     React.useEffect(() => {
 
-        console.log(departments);
-
         const demoData = { ...formData2 };
 
         if (departments) {
@@ -1129,10 +1116,11 @@ export default function EmployeeForm() {
             demoData.team = thirdDemo?.id;
             demoData.referrdby = fourthDemo?.emp_id;
 
-            console.log(demoData)
         }
 
     }, [formData2, departments, employees])
+
+
 
     const updateFormData2 = () => {
         const demoData = { ...formData2 };
@@ -1154,27 +1142,31 @@ export default function EmployeeForm() {
 
 
     const handleNext = async () => {
-
+        let url;
         let data
 
         if (activeStep === 0) {
+            url = `${URL}employeeonboard/basicInformation`;
             data = formData1;
         } else if (activeStep === 1) {
+            url = `${URL}employeeonboard/employeePosition`;
             // data = formData2;
             data = updateFormData2();
         } else if (activeStep === 2) {
+            url = `${URL}employeeonboard/employeeAddress`;
             data = formData3;
         } else if (activeStep === 3) {
+            url = `${URL}employeeonboard/employeeExperience`;
             data = formData4;
         } else if (activeStep === 4) {
+            url = `${URL}employeeonboard/employeeStatutoryinfo`;
             data = formData5;
         }
 
-        console.log(data)
 
         try {
             const response = await axios.post(url, {
-                formData: data, reqType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep,
+                formData: data, operationType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep,
                 profileUrl: profileImageUrl, available: available
             })
 
@@ -1188,6 +1180,8 @@ export default function EmployeeForm() {
         }
 
     };
+
+
 
     React.useEffect(() => {
 
@@ -1215,11 +1209,14 @@ export default function EmployeeForm() {
 
     const handleSubmit2 = async () => {
 
+        let url = `${URL}employeeonboard/employeePaymentmode`;
+
         let data = formData6
+
 
         try {
 
-            const response = await axios.post(url, { formData: data, reqType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep })
+            const response = await axios.post(url, { formData: data, operationType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep })
 
 
             if (response.data.status === 1) {
@@ -1272,8 +1269,229 @@ export default function EmployeeForm() {
 
     }
 
+
+    const handlebackDataPopulate = async (val) => {
+
+        let url = `${URL}employeeonboard/getPageData`;
+
+        try {
+
+            const params = {
+                employee_id: formData1.employeeNumber,
+                pageNumber: val,
+            }
+
+            const response = await axios.get(url, { params: params })
+
+            if (response?.data?.status === 1) {
+
+                const data = response?.data?.data;
+
+                // console.log(data, ' blah blah blah blah blah blah hhhhhhh  ')
+
+                if (val === 0) {
+
+                    setValue('firstname', data.firstname, { shouldValidate: true });
+                    setValue('lastname', data.lastname, { shouldValidate: true });
+                    setValue('dateOfBirth', data.dateOfBirth, { shouldValidate: true });
+                    setValue('employeeNumber', data.employeeNumber, { shouldValidate: true });
+                    setValue('gender', data.gender, { shouldValidate: true });
+                    setValue('email', data.email, { shouldValidate: true });
+                    setValue('mobileNumber', data.mobileNumber, { shouldValidate: true });
+                    setValue('phone', data.phone, { shouldValidate: true });
+                    setValue('bloodGroup', data.bloodGroup, { shouldValidate: true });
+                    setValue('dateOfJoining', data.dateOfJoining, { shouldValidate: true });
+                    setValue('fathersName', data.fathersName, { shouldValidate: true });
+                    setValue('fathersOccupation', data.fathersOccupation, { shouldValidate: true });
+                    setValue('countryOfOrigin', data.countryOfOrigin, { shouldValidate: true });
+                    setValue('nationality', data.nationality, { shouldValidate: true });
+                    setValue('emergencyContactName', data.emergencyContactName, { shouldValidate: true });
+                    setValue('emergencyContactNumber', data.emergencyContactNumber, { shouldValidate: true });
+                    setValue('emergencyContactRelation', data.emergencyContactRelation, { shouldValidate: true });
+                    setValue('spouseName', data.spouseName, { shouldValidate: true });
+                    setValue('physicallyChallenged', data.physicallyChallenged, { shouldValidate: true });
+                    setValue('education', data.education, { shouldValidate: true });
+                    setValue('addressprofType', data.addressprofType, { shouldValidate: true });
+                    // console.log('Yes da Sathis mame....')
+
+
+                    setFormData1((prev) => ({
+                        ...prev,
+                        firstname: data.firstname,
+                        lastname: data.lastname,
+                        dateOfBirth: dayjs(data.dateOfBirth).format('YYYY-MM-DD'),
+                        employeeNumber: data.employeeNumber,
+                        gender: data.gender,
+                        email: data.email,
+                        mobileNumber: data.mobileNumber,
+                        phone: data.phone,
+                        bloodGroup: data.bloodGroup,
+                        dateOfJoining: data.dateOfJoining,
+                        fathersName: data.fathersName,
+                        fathersOccupation: data.fathersOccupation,
+                        countryOfOrigin: data.countryOfOrigin,
+                        nationality: data.nationality,
+                        emergencyContactName: data.emergencyContactName,
+                        emergencyContactNumber: data.emergencyContactNumber,
+                        emergencyContactRelation: data.emergencyContactRelation,
+                        spouseName: data.spouseName,
+                        physicallyChallenged: data.physicallyChallenged,
+                        education: data.education,
+                        addressprofType: data.addressprofType,
+                    }))
+
+
+                } else if (val === 1) {
+
+                    setValue('reportingmanager', data.reportingmanager, { shouldValidate: true });
+                    setValue('reportingteamlead', data.reportingteamlead, { shouldValidate: true });
+                    setValue('designation', data.designation, { shouldValidate: true });
+                    setValue('department', data.department, { shouldValidate: true });
+                    setValue('team', data.team, { shouldValidate: true });
+                    setValue('referrdby', data.referrdby, { shouldValidate: true });
+                    setValue('employmentstatus', data.employmentstatus, { shouldValidate: true });
+                    setValue('employeestatus', data.employeestatus, { shouldValidate: true });
+                    setValue('shift', data.shift, { shouldValidate: true });
+                    setValue('grade', data.grade, { shouldValidate: true });
+                    setValue('probabationperiod', data.probabationperiod, { shouldValidate: true });
+                    setValue('salaryofferred', data.salaryofferred, { shouldValidate: true });
+                    setValue('totalmonthlyctc', data.totalmonthlyctc, { shouldValidate: true });
+                    setValue('attendancebonus', data.attendancebonus, { shouldValidate: true });
+                    setValue('totalyearlyctc', data.totalyearlyctc, { shouldValidate: true });
+                    setValue('billablestatus', data.billablestatus, { shouldValidate: true });
+                    setValue('addresprofpath', data.addresprofpath, { shouldValidate: true });
+
+
+                    setFormData2((prev) => ({
+                        ...prev,
+                        reportingmanager: data.reportingmanager,
+                        reportingteamlead: data.reportingteamlead,
+                        designation: data.designation,
+                        department: data.department,
+                        team: data.team,
+                        referrdby: data.referrdby,
+                        employmentstatus: data.employmentstatus,
+                        employeestatus: data.employeestatus,
+                        shift: data.shift,
+                        grade: data.grade,
+                        probabationperiod: data.probabationperiod,
+                        salaryofferred: data.salaryofferred,
+                        totalmonthlyctc: data.totalmonthlyctc,
+                        attendancebonus: data.attendancebonus,
+                        totalyearlyctc: data.totalyearlyctc,
+                        billablestatus: data.billablestatus,
+                        addresprofpath: data.addresprofpath,
+                    }))
+
+                } else if (val === 2) {
+                    setValue('currentaddress', data.currentaddress, { shouldValidate: true });
+                    setValue('permanentAddress', data.permanentAddress, { shouldValidate: true });
+                    setValue('currentCity', data.currentCity, { shouldValidate: true });
+                    setValue('currentPincode', data.currentPincode, { shouldValidate: true });
+                    setValue('permanentcity', data.permanentcity, { shouldValidate: true });
+                    setValue('permanentPincode', data.permanentPincode, { shouldValidate: true });
+
+                    setFormData3((prev) => ({
+                        ...prev,
+                        currentaddress: data.currentaddress,
+                        permanentAddress: data.permanentAddress,
+                        currentCity: data.currentCity,
+                        currentPincode: data.currentPincode,
+                        permanentcity: data.permanentcity,
+                        permanentPincode: data.permanentPincode
+                    }))
+
+                } else if (val === 3) {
+                    setValue('organization1', data.organization1, { shouldValidate: true });
+                    setValue('designation1', data.designation1, { shouldValidate: true });
+                    setValue('startdate1', data.startdate1, { shouldValidate: true });
+                    setValue('enddate1', data.enddate1, { shouldValidate: true });
+                    setValue('totalExperience1', data.totalExperience1, { shouldValidate: true });
+                    setValue('organization2', data.organization2, { shouldValidate: true });
+                    setValue('designation2', data.designation2, { shouldValidate: true });
+                    setValue('startdate2', data.startdate2, { shouldValidate: true });
+                    setValue('enddate2', data.enddate2, { shouldValidate: true });
+                    setValue('totalExperience2', data.totalExperience2, { shouldValidate: true });
+                    setValue('organization3', data.organization3, { shouldValidate: true });
+                    setValue('designation3', data.designation3, { shouldValidate: true });
+                    setValue('startdate3', data.startdate3, { shouldValidate: true });
+                    setValue('enddate3', data.enddate3, { shouldValidate: true });
+                    setValue('totalExperience3', data.totalExperience3, { shouldValidate: true });
+
+                    setFormData4((prev) => ({
+                        ...prev,
+                        organization1: data.organization1,
+                        designation1: data.designation1,
+                        startdate1: data.startdate1,
+                        enddate1: data.enddate1,
+                        totalExperience1: data.totalExperience1,
+                        organization2: data.organization2,
+                        designation2: data.designation2,
+                        startdate2: data.startdate2,
+                        enddate2: data.enddate2,
+                        totalExperience2: data.totalExperience2,
+                        organization3: data.organization3,
+                        designation3: data.designation3,
+                        startdate3: data.startdate3,
+                        enddate3: data.enddate3,
+                        totalExperience3: data.totalExperience3,
+                    }))
+
+                } else if (val === 4) {
+                    setValue('aadhaarnumber', data.aadhaarnumber, { shouldValidate: true });
+                    setValue('pannumber', data.pannumber, { shouldValidate: true });
+                    setValue('passportnumber', data.passportnumber, { shouldValidate: true });
+                    setValue('uannumber', data.uannumber, { shouldValidate: true });
+                    setValue('pfnumber', data.pfnumber, { shouldValidate: true });
+                    setValue('pfjoindate', data.pfjoindate, { shouldValidate: true });
+                    setValue('esinumber', data.esinumber, { shouldValidate: true });
+                    setValue('lwfnumber', data.lwfnumber, { shouldValidate: true });
+
+                    setFormData5((prev) => ({
+                        ...prev,
+                        aadhaarnumber: data.aadhaarnumber,
+                        pannumber: data.pannumber,
+                        passportnumber: data.passportnumber,
+                        uannumber: data.uannumber,
+                        pfnumber: data.pfnumber,
+                        pfjoindate: data.pfjoindate,
+                        esinumber: data.esinumber,
+                        lwfnumber: data.lwfnumber
+                    }))
+
+                }
+            }
+
+        }
+        // console.log(response?.data?.data, 'important da Sathis uh .....')
+
+        catch (error) {
+
+        }
+    }
+
+
+
+
+
     const handleBack = () => {
+
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
+
+        const value = activeStep - 1;
+
+        handlebackDataPopulate(value);
+
+        // console.log(activeStep - 1, 'This is the active step , when I clicking on the back button.....');
+
+        //Here I need to make a api call,,,,
+
+
+        // console.log(formData1.employeeNumber, 'This is the employee number , Im going to get the details from the api dude....')
+
+
+
+        // console.log('So form here only I have to select , whether it is a , current step or not the current step......')
     };
 
 
@@ -1398,6 +1616,24 @@ export default function EmployeeForm() {
             console.log(error, 'Error in uploading the profile picture....')
         }
 
+
+    }
+
+    const handleUpdateDepartment = (val) => {
+
+        if (departments) {
+
+            console.log(val)
+
+            console.log(departments)
+
+            const gettingName = Object.entries(departments).find(([key, value]) => value.id === val)
+
+            console.log(gettingName, 'This is important dude .......')
+
+            return val ;
+
+        }
 
     }
 
@@ -2189,7 +2425,7 @@ export default function EmployeeForm() {
                                     </Grid>
 
                                     <Grid container alignItems="center" paddingBottom={2}>
-                                        <Grid item xs={4}>
+                                        <Grid item xs={4} sx={{ paddingRight: '20px' }}>
                                             <StyledLabel>
                                                 Physically Challenged (Yes/No)
                                             </StyledLabel>
@@ -2958,7 +3194,7 @@ export default function EmployeeForm() {
                                 <Grid container alignItems="center" paddingBottom={2}>
                                     <Grid item xs={4}>
                                         <StyledLabel>
-                                            Upload Address Prof <span style={{ color: 'red' }}>*</span>
+                                            Upload Address Proof <span style={{ color: 'red' }}>*</span>
                                         </StyledLabel>
                                     </Grid>
                                     <Grid item xs={7}>

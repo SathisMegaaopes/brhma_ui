@@ -1,5 +1,4 @@
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-
 import MegaOpesCandidateRegistration from "./Components/CandidateRegistration";
 import CandidateInterview from "./Components/CandidateInterview";
 import Page404 from "./Components/Global/Page404";
@@ -12,7 +11,6 @@ import MOSDashboard from "./Components/Dashboard";
 import Employee from "./Components/EmployeeTable";
 import EmployeeTable1 from "./Components/EmployeeTable";
 import { SharedProvider } from "./Context";
-import { useEffect } from "react";
 
 
 function App() {
