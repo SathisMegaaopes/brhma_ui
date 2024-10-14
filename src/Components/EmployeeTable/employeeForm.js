@@ -1017,7 +1017,8 @@ export default function EmployeeForm() {
                         reportingmanager: data.reportingmanager,
                         reportingteamlead: data.reportingteamlead,
                         designation: data.designation,
-                        department: handleUpdateDepartment(data.department),
+                        // department: handleUpdateDepartment(data.department),
+                        department: data.department,
                         team: data.team,
                         referrdby: data.referrdby,
                         employmentstatus: data.employmentstatus,
@@ -1126,19 +1127,49 @@ export default function EmployeeForm() {
         const demoData = { ...formData2 };
 
         if (departments) {
+
             const secondDemo = Object.entries(departments).find(([key, value]) => value.name === demoData.department)?.[1];
             const thirdDemo = Object.entries(teams).find(([key, value]) => value.name === demoData.team)?.[1];
             const fourthDemo = Object.entries(employees).find(([key, value]) => `${value.f_name} ${value.l_name}` === demoData.referrdby)?.[1];
+            const shiftChange = Object.entries(shifts).find(([key, value]) => value.name === demoData.shift)?.[1];
+            const gradeChange = Object.entries(grade).find(([key, value]) => value.name === demoData.grade)?.[1];
+            // const addressProfChange = Object.entries(addressprof).find(([key,value])=> value.name === demoData.ad)?.[1];
+            // shifts
 
             demoData.department = secondDemo?.id;
             demoData.team = thirdDemo?.id;
             demoData.referrdby = fourthDemo?.emp_id;
+            demoData.shift = shiftChange?.id;
+            demoData.grade = gradeChange?.id;
+
+            console.log(demoData, 'Demo Data Demo Demo Demo Demo Demo')
 
             return demoData;
+
         }
 
         return formData2;
     };
+
+
+    const updateAddressproofintoID = () => {
+
+        const demoData = { ...formData1 };
+
+        if (addressprof) {
+
+            const addresdproofId = Object.entries(addressprof).find(([key, value]) => value.name === demoData.addressprofType)?.[1];
+
+            demoData.addressprofType = addresdproofId?.id;
+
+            return demoData;
+
+        } else {
+
+            return formData1;
+        }
+
+    }
 
 
     const handleNext = async () => {
@@ -1147,11 +1178,16 @@ export default function EmployeeForm() {
 
         if (activeStep === 0) {
             url = `${URL}employeeonboard/basicInformation`;
-            data = formData1;
+            // data = formData1;
+            data = updateAddressproofintoID();
+
+            console.log(data, 'Change aairuchu ah nu paru da deiiiiii')
         } else if (activeStep === 1) {
             url = `${URL}employeeonboard/employeePosition`;
             // data = formData2;
             data = updateFormData2();
+
+            console.log(data, 'ithan return ana data .....')
         } else if (activeStep === 2) {
             url = `${URL}employeeonboard/employeeAddress`;
             data = formData3;
@@ -1238,7 +1274,7 @@ export default function EmployeeForm() {
                     }));
 
 
-                }, 3000);
+                }, 1000);
             }
             else {
                 setSnackbarMessage(0);
@@ -1473,7 +1509,6 @@ export default function EmployeeForm() {
 
 
 
-
     const handleBack = () => {
 
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -1481,17 +1516,6 @@ export default function EmployeeForm() {
         const value = activeStep - 1;
 
         handlebackDataPopulate(value);
-
-        // console.log(activeStep - 1, 'This is the active step , when I clicking on the back button.....');
-
-        //Here I need to make a api call,,,,
-
-
-        // console.log(formData1.employeeNumber, 'This is the employee number , Im going to get the details from the api dude....')
-
-
-
-        // console.log('So form here only I have to select , whether it is a , current step or not the current step......')
     };
 
 
@@ -1619,23 +1643,6 @@ export default function EmployeeForm() {
 
     }
 
-    const handleUpdateDepartment = (val) => {
-
-        if (departments) {
-
-            console.log(val)
-
-            console.log(departments)
-
-            const gettingName = Object.entries(departments).find(([key, value]) => value.id === val)
-
-            console.log(gettingName, 'This is important dude .......')
-
-            return val ;
-
-        }
-
-    }
 
 
     return (

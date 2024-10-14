@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Alert, Autocomplete, Box, Button, Card, Drawer, Grid, List, ListItem, ListItemText, MenuItem, Select, Snackbar, TextField, Tooltip, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Card, Drawer, Grid, List, ListItem, ListItemText, MenuItem, Select, Snackbar, TextField, Tooltip, Typography, useRadioGroup } from '@mui/material';
 import axios from 'axios';
 import URL from '../Global/Utils/url_route';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
@@ -41,22 +41,28 @@ export default function EmployeeTable() {
   const [showPassword, setShowPassword] = React.useState({});
   const [department, setDepartment] = React.useState('');
   const [departmentList, setDepartmentList] = React.useState([]);
-
+  const [teamList, setTeamList] = React.useState([]);
   const [departmentListView, setDepartmentListView] = React.useState(false);
+
+
+
+
+  const [departmentname, setDepartmentName] = React.useState(null);
+  const [teamname, setTeamName] = React.useState(null);
+  const [employeename, setEmployeeName] = React.useState(null);
 
 
   const url = URL + "employeemaster"
 
-
-  React.useEffect(() => {
-    const response = axios.get(url)
-      .then((res) => {
-        setEmployeedata(res.data.data)
-      })
-      .catch((err) => {
-        console.log(err, 'This is the error occuring in the frontEnd....')
-      })
-  }, [rerender])
+  // React.useEffect(() => {
+  //   const response = axios.get(url)
+  //     .then((res) => {
+  //       setEmployeedata(res.data.data)
+  //     })
+  //     .catch((err) => {
+  //       console.log(err, 'This is the error occuring in the frontEnd....')
+  //     })
+  // }, [rerender])
 
 
 
@@ -66,14 +72,19 @@ export default function EmployeeTable() {
 
   const fetchDepartment = `${URL}todolist/department`;
 
+  const fetchTeams = `${URL}todolist/teams`;
+
   const { data: departData, loading: departDataLoading, error: departDataError } = useFetchData(fetchDepartment);
 
-  // const fetchDepartmentPayload = { value: department }
+  const { data: teamData, loading: teamDataLoading, error: teamDataError } = useFetchData(fetchTeams);
 
-  // const { data: departmentData, loading: departmentLoading, error: departError } = useFetchData(fetchDepartmentUrl, fetchDepartmentPayload, department);
 
-  // const { data : teamData , loading : teamLoadin}
 
+  const { data: employeeDAta, loading: employeeLoading, error: employeeError } = useFetchData(url, {
+    department: departmentname || '',
+    team: teamname || '',
+    employeeName: employeename || '',
+  }, departmentname, employeename);
 
 
 
@@ -83,12 +94,28 @@ export default function EmployeeTable() {
 
       setDepartmentList(departData?.data)
 
-      // console.log(departData.data, 'Important deudeeeee')
+    }
+
+  }, [departData, departmentList])
+
+
+  React.useEffect(() => {
+
+    if (teamData) {
+
+      setTeamList(teamData?.data)
 
     }
 
+  }, [teamData, teamList])
 
-  }, [departData, departmentList])
+  React.useEffect(() => {
+
+    if (employeeDAta) {
+      setEmployeedata(employeeDAta?.data)
+    }
+
+  }, [employeeDAta])
 
 
   const handleChange = (id) => {
@@ -249,65 +276,151 @@ export default function EmployeeTable() {
     }));
   }
 
-  // console.log(mapOptions())
 
-  // console.log(departmentList, 'This is the value of the department')
+
+  const handleDepartmentChange = (e, value) => {
+
+    if (!value || !value.value) {
+      setDepartmentName(null);
+      setTeamName(null);
+      setEmployeeName(null);
+      return;
+    } else {
+
+      setDepartmentName(value.value);
+      setTeamName(null);
+      setEmployeeName(null);
+    }
+
+
+  }
+
+
+  const handleEmployeeNameChange = (e) => {
+
+    setDepartmentName(null);
+    setTeamName(null);
+    setEmployeeName(e.target.value);
+
+  }
+
+  const handleTeamChange = (e, value) => {
+    if (!value || !value.value) {
+      setDepartmentName(null);
+      setTeamName(null);
+      setEmployeeName(null);
+      return;
+    }
+
+    setDepartmentName(null);
+    setTeamName(value.value);
+    setEmployeeName(null);
+  }
+
+
+  // console.log(departmentname, 'departmentname')
+  // console.log(teamname, 'teamname')
+  // console.log(employeename, 'employeename')
+
 
   return (
-    <Grid container spacing={2} sx={{ paddingX: 12, paddingTop: 3 }}>
+    <Grid container spacing={2} sx={{ paddingX: 0, paddingTop: 3, display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%'>
+
       <Grid container xs={12} >
-        <Grid item xs={4} sx={{ paddingLeft: 2 }}>
+
+        <Grid item xs={3} md={3} sx={{ paddingLeft: 2 }}>
           <Typography
             variant='h5'
             component='h1'
           >Employee Details</Typography>
         </Grid>
 
-        <Grid item xs={4}>
 
+        <Grid item xs={2} md={2}>
           <Autocomplete
             disablePortal
+            value={departmentname || ''}
             options={mapOptions(departmentList)}
-            sx={{ width: 300 }}
-            renderInput={(params) => <TextField {...params} label="Movie" />}
+            sx={{ width: 200 }}
+            onChange={(e, value) => handleDepartmentChange(e, value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select Department"
+                sx={{
+                  '& .MuiInputBase-root': {
+                    height: '36px',
+                    fontSize: '14px',
+                  },
+                  '& .MuiInputLabel-root': {
+                    top: '-8px',
+                    fontSize: '14px',
+                  },
+                  '& .MuiInputLabel-shrink': {
+                    top: 0,
+                  },
+                }}
+              />
+            )}
+          />
+        </Grid>
+
+        <Grid item xs={2} md={2}>
+          <Autocomplete
+            disablePortal
+            value={teamname || ''}
+            options={mapOptions(teamList)}
+            sx={{ width: 200 }}
+
+            onChange={(e, value) => handleTeamChange(e, value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select Team "
+                sx={{
+                  '& .MuiInputBase-root': {
+                    height: '36px',
+                    fontSize: '14px',
+                  },
+                  '& .MuiInputLabel-root': {
+                    top: '-8px',
+                    fontSize: '14px',
+                  },
+                  '& .MuiInputLabel-shrink': {
+                    top: 0,
+                  },
+                }}
+              />
+            )}
+          />
+        </Grid>
+
+
+        <Grid item xs={2} md={2}>
+          <TextField
+            value={employeename || ''}
+            label="Enter Employee Name"
+            sx={{
+              width: 200,
+              '& .MuiInputBase-root': {
+                height: '36px',
+                fontSize: '14px',
+              },
+              '& .MuiInputLabel-root': {
+                top: '-8px',
+                fontSize: '14px',
+              },
+              '& .MuiInputLabel-shrink': {
+                top: 0,
+              },
+            }}
+            onChange={(e) => handleEmployeeNameChange(e)}
           />
 
-
-          {/*           
-          <TextField
-            id="standard-basic"
-            label="Enter Department"
-            variant="standard"
-            value={department}
-            onChange={(e) => handleAddDepartmentText(e.target.value)}
-            // onBlur={checkDepartmentName}
-            // onFocus={() => console.log('On Focus.....')}
-            fullWidth
-          /> */}
-
-          {/* {departmentListView && (
-
-            <Box>
-
-              {departmentLoading && (
-                <CircularProgress />
-              )}
-
-              {departmentList.length > 0 && (
-                <List sx={{ zIndex: 2, position: 'absolute', backgroundColor: 'grey', height: '40vh', overflowY: 'auto', width: '20vw' }}>
-                  {departmentList.map((dept, index) => (
-                    <ListItem key={index} >
-                      <ListItemText onClick={() => handleSelectDepartment(dept.name)} primary={dept.name} />
-                    </ListItem>
-                  ))}
-                </List>
-              )}
-
-            </Box>
-          )} */}
-
         </Grid>
-        <Grid item xs={4} sx={{ textAlign: 'right' }}>
+
+
+        <Grid item xs={3} md={3} sx={{ textAlign: 'right' }} >
 
           <Button
             variant='contained'
@@ -317,101 +430,130 @@ export default function EmployeeTable() {
             Add Employee
           </Button>
         </Grid>
+
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-        <TableContainer component={Paper} variant="outlined" >
-          <Table size='small'>
-            <TableHead >
-              <TableRow>
-
-                <TableCell>Employee Name</TableCell>
-
-                <TableCell>Email Address</TableCell>
-
-                <TableCell>Mobile Number</TableCell>
-
-                <TableCell> Date of Joining  </TableCell>
-
-                <TableCell>Username</TableCell>
-
-                <TableCell>Password</TableCell>
-
-                <TableCell align='center' >View</TableCell>
-
-                <TableCell align='center'>User Role</TableCell>
-
-                <TableCell align='center'>Update</TableCell>
-
-                {/* <TableCell align='center'>Update Employee</TableCell> */}
-
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-
-              {employeeData.length > 0 ? employeeData.map((item, index) => (
-
-                <TableRow key={item.emp_id} style={{ cursor: 'pointer' }}>
-
-                  <TableCell onClick={() => handleEdit(item.employee_number)} >{item.first_name}{item.last_name}</TableCell>
-
-                  <TableCell>{item.email}</TableCell>
-
-                  <TableCell>{item.mobile_number}</TableCell>
-
-                  <TableCell>{DateFormater(item.date_of_join)}</TableCell>
-
-                  <TableCell align='left' style={{ whiteSpace: 'nowrap' }}>{item.user_name}</TableCell>
-
-                  <TableCell align="left" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {showPassword[index] ? item.user_pwd : changeintohalf(item.user_pwd)}
-                  </TableCell>
-
-                  <TableCell align="center">
-                    <IconButton
-                      onClick={() => togglePasswordVisibility(index)}
-                    >
-                      {showPassword[index] ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                    </IconButton>
-                  </TableCell>
-
-                  <TableCell align='center' >{item.user_role}</TableCell>
-
-                  <TableCell align='center' >
-                    <IconButton color='primary' onClick={() => handleChange(item.id)} sx={{ padding: 0.5 }} >
-                      <EditNoteRoundedIcon
-                        sx={{ fontSize: '32px' }}
-                      />
-                    </IconButton>
-                  </TableCell>
 
 
-                  {/* <TableCell align='center' >
-                    <IconButton color='primary'
-                      //  onClick={() => handleEdit(item.employee_number)}
-                      sx={{ padding: 0.5 }} >
-                      <ModeEditOutlineIcon
-                        sx={{ fontSize: '32px' }}
-                      />
-                    </IconButton>
-                  </TableCell> */}
+      {employeeLoading && (
+
+        <Box
+          sx={{
+            height: '70vh',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Grid
+            container
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <CircularProgress />
+            </Grid>
+
+          </Grid>
+
+        </Box>
+
+      )}
+
+      {!employeeLoading && (
+
+        <Grid
+          container
+        // justifyContent="center"
+        // alignItems="center"
+        >
+
+          <Grid item xs={12} sm={12} md={12} lg={12} xl={12} sx={{ paddingTop: '2rem' }}>
+
+            <TableContainer component={Paper} variant="outlined" >
+              <Table size='small'>
+                <TableHead >
+                  <TableRow>
+
+                    <TableCell>Employee Name</TableCell>
+
+                    <TableCell>Email Address</TableCell>
+
+                    <TableCell>Mobile Number</TableCell>
+
+                    <TableCell> Date of Joining  </TableCell>
+
+                    <TableCell>Username</TableCell>
+
+                    <TableCell>Password</TableCell>
+
+                    <TableCell align='center' >View</TableCell>
+
+                    <TableCell align='center'>User Role</TableCell>
+
+                    <TableCell align='center'>Update</TableCell>
+
+                  </TableRow>
+                </TableHead>
+
+                <TableBody>
+
+                  {employeeData.length > 0 ? employeeData.map((item, index) => (
+
+                    <TableRow key={item.emp_id} style={{ cursor: 'pointer' }}>
+
+                      <TableCell onClick={() => handleEdit(item.employee_number)} >{item.first_name}{item.last_name}</TableCell>
+
+                      <TableCell>{item.email}</TableCell>
+
+                      <TableCell>{item.mobile_number}</TableCell>
+
+                      <TableCell>{DateFormater(item.date_of_join)}</TableCell>
+
+                      <TableCell align='left' style={{ whiteSpace: 'nowrap' }}>{item.user_name}</TableCell>
+
+                      <TableCell align="left" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {showPassword[index] ? item.user_pwd : changeintohalf(item.user_pwd)}
+                      </TableCell>
+
+                      <TableCell align="center">
+                        <IconButton
+                          onClick={() => togglePasswordVisibility(index)}
+                        >
+                          {showPassword[index] ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                        </IconButton>
+                      </TableCell>
+
+                      <TableCell align='center' >{item.user_role}</TableCell>
+
+                      <TableCell align='center' >
+                        <IconButton color='primary' onClick={() => handleChange(item.id)} sx={{ padding: 0.5 }} >
+                          <EditNoteRoundedIcon
+                            sx={{ fontSize: '32px' }}
+                          />
+                        </IconButton>
+                      </TableCell>
+
+                    </TableRow>
+                  ))
+
+                    :
+                    <>
+                      <ErrorOutlineIcon />
+                    </>
 
 
+                  }
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-                </TableRow>
-              ))
+          </Grid >
 
-                :
-                <>
-                  <ErrorOutlineIcon />
-                </>
+        </Grid>
 
+      )}
 
-              }
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Grid >
 
       <DrawerComponent open={open} name={drawername} data={data} handleValueChange={handleValueChange} setOpen={setOpen} handleUpdate={handleUpdate} addorUpdate={addorUpdate} isFormIncomplete={isFormIncomplete} handleClose={handleClose} />
 
@@ -549,3 +691,32 @@ function DrawerComponent({ open, name, data, handleValueChange, handleUpdate, ad
     </Drawer >
   )
 }
+
+
+
+
+
+
+
+
+
+{/* {departmentListView && (
+
+            <Box>
+
+              {departmentLoading && (
+                <CircularProgress />
+              )}
+
+              {departmentList.length > 0 && (
+                <List sx={{ zIndex: 2, position: 'absolute', backgroundColor: 'grey', height: '40vh', overflowY: 'auto', width: '20vw' }}>
+                  {departmentList.map((dept, index) => (
+                    <ListItem key={index} >
+                      <ListItemText onClick={() => handleSelectDepartment(dept.name)} primary={dept.name} />
+                    </ListItem>
+                  ))}
+                </List>
+              )}
+
+            </Box>
+          )} */}
