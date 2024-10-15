@@ -10,6 +10,9 @@ import MOSLayout from "./Components/Layout";
 import MOSDashboard from "./Components/Dashboard";
 import Employee from "./Components/EmployeeTable";
 import EmployeeTable1 from "./Components/EmployeeTable";
+import TeamMaster from "./Components/Team";
+import DeparmentMaster from "./Components/Departments";
+import DesignationMaster from "./Components/Designation";
 import { SharedProvider } from "./Context";
 
 
@@ -46,6 +49,11 @@ function App() {
                 element={<Employee />}
               />
               <Route path="/dashboard/employee-master2" element={<EmployeeTable1 />} />
+
+              <Route path="/dashboard/department" element={<DeparmentMaster />} />
+
+              <Route path="/dashboard/team" element={<TeamMaster />} />
+              <Route path="/dashboard/designation" element={<DesignationMaster />} />
 
             </Route>
           </Routes>

@@ -14,6 +14,14 @@ import EmployeeTable from "../EmployeeTable";
 import EmployeeTable1 from "../EmployeeTable";
 import { useSharedContext } from "../../Context";
 import EmployeeForm from "../EmployeeTable/employeeForm";
+import GroupsIcon from '@mui/icons-material/Groups';
+import BusinessIcon from '@mui/icons-material/Business';
+import BadgeIcon from '@mui/icons-material/Badge';
+import DeparmentMaster from "../Departments";
+import TeamMaster from "../Team";
+import DesignationMaster from "../Designation";
+
+
 
 
 
@@ -76,7 +84,6 @@ function Sidebar() {
 
     }, [activeTab])
 
-
     React.useEffect(() => {
         if (sharedTab.active === 1) {
             setActiveTab('particularEmployee')
@@ -87,8 +94,6 @@ function Sidebar() {
         }
 
     }, [sharedTab.active, employeeAddTab])
-
-
 
     useEffect(() => {
         sessionStorage.setItem("activeTab", activeTab);
@@ -111,28 +116,20 @@ function Sidebar() {
             case 'EmployeeMaster2':
                 navigate(`/dashboard/employee-master2`);
                 break;
+            case 'Team':
+                navigate('/dashboard/team');
+                break;
+            case 'Department':
+                navigate('/dashboard/department');
+                break;
+            case 'Designation':
+                navigate('/dashboard/designation');
+                break;
             default:
                 navigate("/");
         }
     }, [activeTab, navigate]);
 
-    const handleMouseEnter = () => {
-        setIsOpen(true);
-    };
-
-    const handleMouseLeave = () => {
-        setIsOpen(false);
-    };
-
-    const handleTabChange = (tab) => {
-        setActiveTab(tab);
-        setSharedTab({
-            Tabname: null,
-            TabUrl: null,
-            active: 0,
-            backendUrl: null
-        });
-    };
 
     const renderContent = () => {
         switch (activeTab) {
@@ -151,10 +148,34 @@ function Sidebar() {
                 return <EmployeeTable />;
             case 'EmployeeMaster2':
                 // return <EmployeeForm />; 
-                return <EmployeeForm />
+                return <EmployeeForm />;
+            case 'Department':
+                return <DeparmentMaster />;
+            case 'Team':
+                return <TeamMaster />;
+            case 'Designation':
+                return <DesignationMaster />;
             default:
                 return <MOSDashboard />;
         }
+    };
+
+    const handleMouseEnter = () => {
+        setIsOpen(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsOpen(false);
+    };
+
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        setSharedTab({
+            Tabname: null,
+            TabUrl: null,
+            active: 0,
+            backendUrl: null
+        });
     };
 
     return (
@@ -180,6 +201,7 @@ function Sidebar() {
                     isopen={isopen}
                     onClick={() => handleTabChange('CandidateEvaluation')}
                     isactive={activeTab === 'CandidateEvaluation'}
+                    style={{ marginTop: '-20px' }}
                 >
                     <PersonSearchSharpIcon sx={{ fontSize: 35 }} />
                     {isopen && <span>&nbsp;&nbsp;&nbsp;Candidate Evaluation</span>}
@@ -191,6 +213,7 @@ function Sidebar() {
                         isopen={isopen}
                         onClick={() => handleTabChange('CandidateDatabase')}
                         isactive={activeTab === 'CandidateDatabase'}
+                        style={{ marginTop: '-20px' }}
                     >
                         <StorageRoundedIcon sx={{ fontSize: 30 }} />
                         {isopen && <span>&nbsp;&nbsp;&nbsp;Candidate Database</span>}
@@ -203,11 +226,53 @@ function Sidebar() {
                         isopen={isopen}
                         onClick={() => handleTabChange('EmployeeMaster')}
                         isactive={activeTab === 'EmployeeMaster'}
+                        style={{ marginTop: '-20px' }}
                     >
                         <SupervisorAccountIcon sx={{ fontSize: 30 }} />
                         {isopen && <span>&nbsp;&nbsp;&nbsp;Employee Master</span>}
                     </SidebarIcon>
                 )}
+
+                <div style={{ marginLeft: '45px', marginTop: '0px' }}>
+
+                    <SidebarIcon
+                        disableRipple
+                        aria-label="Team"
+                        isopen={isopen}
+                        onClick={() => handleTabChange('Team')}
+                        isactive={activeTab === 'Team'}
+                        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', marginTop: '-30px' }}
+                    >
+                        <GroupsIcon sx={{ fontSize: 20 }} />
+                        {isopen && <span>&nbsp;&nbsp;&nbsp;Team</span>}
+                    </SidebarIcon>
+
+                    <SidebarIcon
+                        disableRipple
+                        aria-label="Department"
+                        isopen={isopen}
+                        onClick={() => handleTabChange('Department')}
+                        isactive={activeTab === 'Department'}
+                        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', marginTop: '-30px' }}
+                    >
+                        <BusinessIcon sx={{ fontSize: 20 }} />
+                        {isopen && <span>&nbsp;&nbsp;&nbsp;Department</span>}
+                    </SidebarIcon>
+
+                    <SidebarIcon
+                        disableRipple
+                        aria-label="Designation"
+                        isopen={isopen}
+                        onClick={() => handleTabChange('Designation')}
+                        isactive={activeTab === 'Designation'}
+                        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', marginTop: '-30px' }}
+                    >
+                        <BadgeIcon sx={{ fontSize: 20 }} />
+                        {isopen && <span>&nbsp;&nbsp;&nbsp;Designation</span>}
+                    </SidebarIcon>
+                </div>
+
+
             </SidebarContainer>
             <MainContainer>
                 {renderContent()}

@@ -3,8 +3,19 @@
   src: local("palatinolinotype"),
     url("./fonts/palatinolinotype.ttf") format("truetype");
 } 
-
+/* 
 .important{
   width: 1000px;
+} */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
+
+* {
+  box-sizing: border-box;
+}
+
 

@@ -71,7 +71,7 @@ export default function EmployeeTable() {
     department: departmentname || '',
     team: teamname || '',
     employeeName: employeename || '',
-  }, departmentname, employeename, rerender);
+  }, departmentname, teamname ,employeename, rerender);
 
 
 
