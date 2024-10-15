@@ -37,43 +37,31 @@ export default function MOSDashboard() {
     const [reload, setReload] = useState(false);
     const [onbreak, setOnbreak] = useState(false);
 
-
-    React.useEffect(() => {
-
-        const isPageRefreshed = () => {
-            const navigationEntries = performance.getEntriesByType('navigation');
-            if (navigationEntries.length > 0) {
-                return navigationEntries[0].type === 'reload';
-            }
-            return false;
+    const handleBeforeUnload = async (event) => {
+        let url = URL + "login/validateUser";
+        let request = {
+            user_name: userinfo.user_name,
+            user_pwd: userinfo.user_pwd,
+            type: 'logout',
         };
 
-        const handleUnload = async (event) => {
-            try {
-
-                if (isPageRefreshed()) {
-                    return;
-                }
-
-                let url = URL + "login/validateUser";
-
-                let request = { "user_name": userinfo.user_name, "user_pwd": userinfo.user_pwd, "type": "logout" };
-
-                const response = await axios.post(url, request)
-
-            } catch (err) {
-                console.log(err)
-            }
+        try {
+            await axios.post(url, request);
+        } catch (error) {
+            console.error('There was a problem with the API call:', error);
         }
 
-        window.addEventListener('beforeunload', handleUnload);
+        event.preventDefault();
+        event.returnValue = '';
+    };
+
+    React.useEffect(() => {
+        window.addEventListener('beforeunload', handleBeforeUnload);
 
         return () => {
-            window.removeEventListener('beforeunload', handleUnload);
+            window.removeEventListener('beforeunload', handleBeforeUnload);
         };
     }, []);
-
-
 
 
     const date = new Date();

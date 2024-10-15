@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Alert, Autocomplete, Box, Button, Card, Drawer, Grid, List, ListItem, ListItemText, MenuItem, Select, Snackbar, TextField, Tooltip, Typography, useRadioGroup } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Drawer, Grid, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import URL from '../Global/Utils/url_route';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
@@ -14,7 +14,6 @@ import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { DateFormater } from '../Global/Utils/common_data';
-import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import { useSharedContext } from '../../Context';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -54,21 +53,9 @@ export default function EmployeeTable() {
 
   const url = URL + "employeemaster"
 
-  // React.useEffect(() => {
-  //   const response = axios.get(url)
-  //     .then((res) => {
-  //       setEmployeedata(res.data.data)
-  //     })
-  //     .catch((err) => {
-  //       console.log(err, 'This is the error occuring in the frontEnd....')
-  //     })
-  // }, [rerender])
+  // const fetchDepartmentUrl = `${URL}employeeonboard/dynamicDepartments`;
 
-
-
-  const fetchDepartmentUrl = `${URL}employeeonboard/dynamicDepartments`;
-
-  const fetchTeamUrl = `${URL}employeeonboard/dynamicTeams`;
+  // const fetchTeamUrl = `${URL}employeeonboard/dynamicTeams`;
 
   const fetchDepartment = `${URL}todolist/department`;
 
@@ -84,7 +71,7 @@ export default function EmployeeTable() {
     department: departmentname || '',
     team: teamname || '',
     employeeName: employeename || '',
-  }, departmentname, employeename);
+  }, departmentname, employeename, rerender);
 
 
 
@@ -119,18 +106,21 @@ export default function EmployeeTable() {
 
 
   const handleChange = (id) => {
+
     setaddorUpdate(0)
     setDrawerName('Update Credentials')
+
     const selectedData = employeeData.filter((item) => {
-      return item.id === id
+      return item.employee_number === id
     })
     setData({
-      'id': selectedData[0].id,
+      'id': 0,
       'username': selectedData[0].user_name,
       'password': selectedData[0].user_pwd,
       'userrole': selectedData[0].user_role,
-      'empid': selectedData[0].emp_id,
+      'empid': selectedData[0].employee_number,
     })
+
     setOpen(!open)
   }
 
@@ -204,9 +194,6 @@ export default function EmployeeTable() {
 
 
   const handleAddUser = () => {
-    // setaddorUpdate(1)
-    // setDrawerName('Add New User')
-    // setOpen(!open)
 
     setInsertRequest(2);
 
@@ -253,21 +240,6 @@ export default function EmployeeTable() {
   };
 
 
-  // const handleSelectDepartment = (val) => {
-
-  //   console.log(val, 'This is the value ');
-  //   setDepartment(val);
-  //   setDepartmentListView(false);
-
-  // }
-
-
-  // const handleAddDepartmentText = (val) => {
-
-  //   setDepartment(val);
-  //   setDepartmentListView(true);
-
-  // }
 
   const mapOptions = (data) => {
     return data.map(item => ({
@@ -316,11 +288,6 @@ export default function EmployeeTable() {
     setTeamName(value.value);
     setEmployeeName(null);
   }
-
-
-  // console.log(departmentname, 'departmentname')
-  // console.log(teamname, 'teamname')
-  // console.log(employeename, 'employeename')
 
 
   return (
@@ -464,91 +431,114 @@ export default function EmployeeTable() {
 
         <Grid
           container
-        // justifyContent="center"
-        // alignItems="center"
         >
 
-          <Grid item xs={12} sm={12} md={12} lg={12} xl={12} sx={{ paddingTop: '2rem' }}>
+          {employeeData.length > 0 ?
 
-            <TableContainer component={Paper} variant="outlined" >
-              <Table size='small'>
-                <TableHead >
-                  <TableRow>
+            <Grid item xs={12} sm={12} md={12} lg={12} xl={12} sx={{ paddingTop: '2rem' }}>
 
-                    <TableCell>Employee Name</TableCell>
+              <TableContainer component={Paper} variant="outlined" >
+                <Table size='small'>
+                  <TableHead >
+                    <TableRow>
 
-                    <TableCell>Email Address</TableCell>
+                      <TableCell>Employee Name</TableCell>
 
-                    <TableCell>Mobile Number</TableCell>
+                      <TableCell>Employee ID</TableCell>
 
-                    <TableCell> Date of Joining  </TableCell>
+                      <TableCell>Email Address</TableCell>
 
-                    <TableCell>Username</TableCell>
+                      <TableCell>Mobile Number</TableCell>
 
-                    <TableCell>Password</TableCell>
+                      <TableCell> Date of Joining  </TableCell>
 
-                    <TableCell align='center' >View</TableCell>
+                      <TableCell>Username</TableCell>
 
-                    <TableCell align='center'>User Role</TableCell>
+                      <TableCell>Password</TableCell>
 
-                    <TableCell align='center'>Update</TableCell>
+                      <TableCell align='center' >View</TableCell>
 
-                  </TableRow>
-                </TableHead>
+                      <TableCell align='center'>User Role</TableCell>
 
-                <TableBody>
-
-                  {employeeData.length > 0 ? employeeData.map((item, index) => (
-
-                    <TableRow key={item.emp_id} style={{ cursor: 'pointer' }}>
-
-                      <TableCell onClick={() => handleEdit(item.employee_number)} >{item.first_name}{item.last_name}</TableCell>
-
-                      <TableCell>{item.email}</TableCell>
-
-                      <TableCell>{item.mobile_number}</TableCell>
-
-                      <TableCell>{DateFormater(item.date_of_join)}</TableCell>
-
-                      <TableCell align='left' style={{ whiteSpace: 'nowrap' }}>{item.user_name}</TableCell>
-
-                      <TableCell align="left" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {showPassword[index] ? item.user_pwd : changeintohalf(item.user_pwd)}
-                      </TableCell>
-
-                      <TableCell align="center">
-                        <IconButton
-                          onClick={() => togglePasswordVisibility(index)}
-                        >
-                          {showPassword[index] ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                        </IconButton>
-                      </TableCell>
-
-                      <TableCell align='center' >{item.user_role}</TableCell>
-
-                      <TableCell align='center' >
-                        <IconButton color='primary' onClick={() => handleChange(item.id)} sx={{ padding: 0.5 }} >
-                          <EditNoteRoundedIcon
-                            sx={{ fontSize: '32px' }}
-                          />
-                        </IconButton>
-                      </TableCell>
+                      <TableCell align='center'>Update</TableCell>
 
                     </TableRow>
-                  ))
+                  </TableHead>
 
-                    :
-                    <>
-                      <ErrorOutlineIcon />
-                    </>
+                  <TableBody>
 
+                    {employeeData.map((item, index) => (
 
-                  }
-                </TableBody>
-              </Table>
-            </TableContainer>
+                      <TableRow key={item.emp_id} style={{ cursor: 'pointer' }}>
 
-          </Grid >
+                        <TableCell onClick={() => handleEdit(item.employee_number)} >{item.first_name}{item.last_name}</TableCell>
+
+                        <TableCell>{item.employee_number}</TableCell>
+
+                        <TableCell>{item.email}</TableCell>
+
+                        <TableCell>{item.mobile_number}</TableCell>
+
+                        <TableCell>{DateFormater(item.date_of_join)}</TableCell>
+
+                        <TableCell align='left' style={{ whiteSpace: 'nowrap' }}>{item.user_name}</TableCell>
+
+                        <TableCell align="left" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {showPassword[index] ? item.user_pwd : changeintohalf(item.user_pwd)}
+                        </TableCell>
+
+                        <TableCell align="center">
+                          <IconButton
+                            onClick={() => togglePasswordVisibility(index)}
+                          >
+                            {showPassword[index] ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                          </IconButton>
+                        </TableCell>
+
+                        <TableCell align='center' >{item.user_role}</TableCell>
+
+                        <TableCell align='center' >
+                          <IconButton color='primary' onClick={() => handleChange(item.employee_number)} sx={{ padding: 0.5 }} >
+                            <EditNoteRoundedIcon
+                              sx={{ fontSize: '32px' }}
+                            />
+                          </IconButton>
+                        </TableCell>
+
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+            </Grid >
+
+            :
+
+            <Box
+              sx={{
+                height: '70vh',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Grid
+                container
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                  <ErrorOutlineIcon sx={{ fontSize: 60, marginTop: '-40px', color: 'red' }} />
+                  <Typography variant='h5' sx={{ mt: '12px' }}>Sorry , There is no data available ....  </Typography>
+                </Grid>
+
+              </Grid>
+
+            </Box>
+
+          }
 
         </Grid>
 

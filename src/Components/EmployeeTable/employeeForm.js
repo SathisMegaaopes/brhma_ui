@@ -9,7 +9,7 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { Alert, Autocomplete, Avatar, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
-import { useForm, Controller, useWatch, set } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -27,7 +27,6 @@ import { useFetchData } from './customHook';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useSharedContext } from '../../Context';
-import { reference } from '@popperjs/core';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -126,10 +125,7 @@ ColorlibStepIcon.propTypes = {
     icon: PropTypes.node,
 };
 
-
 const steps = ['BASIC INFORMATION', 'EMPLOYEE POSITION', 'ADDRESS', 'EXPERIENCE', ' STATUTORY INFO', 'PAYMENT MODE']
-
-const Designations = ['CEO', 'Software Developer', 'Vice President - HR Operations', 'Team Leader', 'HR - Telecaller', 'HR Executive', 'Front Desk Executive', 'System Admin', 'Admin Executive', 'Quality Analyst', 'Business Development Executive']
 
 
 const schemaValidationForForm = Yup.object().shape({
@@ -142,12 +138,12 @@ const schemaValidationForForm = Yup.object().shape({
     firstname: Yup.string()
         .required('Employee Name is required')
         .matches(/^[a-zA-Z\s]+$/, 'Employee Name must contain only characters..')
-        .min(5, 'At least fives digit is required')
+        .min(5, 'At least five digit is required')
     ,
     lastname: Yup.string()
         .required('Employee Name is required')
         .matches(/^[a-zA-Z\s]+$/, 'Employee Name must contain only characters..')
-        .min(5, 'At least fives digit is required')
+        .min(1, 'At least one digit is required')
     ,
     dateOfBirth: Yup.date().required('Date of Birth is required'),
     dateOfJoining: Yup.date().required('Date of Joining is required'),
@@ -245,15 +241,10 @@ const schemaValidationForForm4 = Yup.object().shape({
         .required('PAN number is required.')
 })
 
-
 const schemaValidationForForm5 = Yup.object().shape({
     modeofpayment: Yup.string()
         .required()
 })
-
-
-//need to check here  ///What means in terms of the Confirmation Date.....
-//employeeconfirmationstatus , this also I have to check again . all are come around one thing only....
 
 const getValidationSchema = (page) => {
     if (page === 0) {
@@ -289,7 +280,6 @@ const StyledInput = styled(TextField)(({ theme }) => ({
         transition: 'transform 0.3s ease',
     },
 }));
-
 
 const MultilineTextField = styled(TextField)(({ theme }) => ({
     '& .MuiInputBase-root': {
@@ -379,70 +369,28 @@ export default function EmployeeForm() {
         physicallyChallenged: null,
         education: null,
         addressprofType: null,
-
-        // firstname: candidatePopulate?.firstname || 'firstname',
-        // lastname: candidatePopulate?.lastname || 'lastname',
-        // dateOfBirth: candidatePopulate?.dateOfBirth || '2024-10-02',
-        // employeeNumber: '20002',
-        // gender: candidatePopulate?.gender || 'Male',
-        // email: candidatePopulate?.email || 'samatap26@gmail.com',
-        // mobileNumber: candidatePopulate?.mobileNumber || '9778164504',
-        // phone: '87781645077',
-        // bloodGroup: 'A',
-        // dateOfJoining: '2024-10-04',
-        // fathersName: 'qqqqqqqqqqq',
-        // fathersOccupation: 'testfatheroccupation',
-        // countryOfOrigin: 'testindia',
-        // nationality: 'testIndian',
-        // emergencyContactName: 'qqqqqq',
-        // emergencyContactNumber: '8777842222',
-        // emergencyContactRelation: 'testemergencycontactrelation',
-        // spouseName: 'testspousename',
-        // physicallyChallenged: 'Yes',
-        // education: 'B.E.,',
-        // addressprofType: null
     });
 
-
     const [formData2, setFormData2] = React.useState({
-        // reportingmanager: null,
-        // reportingteamlead: null,
-        // designation: null,
-        // department: null,
-        // team: null,
-        // referrdby: null,
-        // employmentstatus: null,
-        // employeestatus: null,
-        // shift: null,
-        // grade: null,
-        // probabationperiod: null,
-        // salaryofferred: null,
-        // totalmonthlyctc: null,
-        // attendancebonus: null,
-        // totalyearlyctc: null,
-        // billablestatus: null,
-        // addresprofpath: null,
-
-        reportingmanager: 'Kannan R',
-        reportingteamlead: 'Kannan R',
-        designation: 'CEO',
-        department: 'Executive',
-        team: 'IT Team',
-        referrdby: 'Kannan R',
-        employmentstatus: 'Probation',
-        employeestatus: 'Active',
-        shift: '00:00 - 09:00',
-        grade: 'L1',
-        probabationperiod: '180',
-        salaryofferred: '12000',
-        totalmonthlyctc: '12000',
-        attendancebonus: 'Yes',
-        totalyearlyctc: '144000',
-        billablestatus: 'Billable',
+        reportingmanager: null,
+        reportingteamlead: null,
+        designation: null,
+        department: null,
+        team: null,
+        referrdby: null,
+        employmentstatus: null,
+        employeestatus: null,
+        shift: null,
+        grade: null,
+        probabationperiod: null,
+        salaryofferred: null,
+        totalmonthlyctc: null,
+        attendancebonus: null,
+        totalyearlyctc: null,
+        billablestatus: null,
         addresprofpath: null,
 
     })
-
 
     const [formData3, setFormData3] = React.useState({
         currentaddress: null,
@@ -502,7 +450,6 @@ export default function EmployeeForm() {
         setIsPFChecked(event.target.checked);
     };
 
-
     const handleCheckboxESIChange = (event) => {
         setIsESIChecked(event.target.checked);
     };
@@ -514,7 +461,6 @@ export default function EmployeeForm() {
     const handlePaymentTypeChange = (event) => {
         setSelectedPaymentType(event.target.value);
     };
-
 
     React.useEffect(() => {
 
@@ -545,8 +491,6 @@ export default function EmployeeForm() {
         checkId();
 
     }, [formData1.employeeNumber, requesType, interRequest, activeStep]);
-
-
 
     React.useEffect(() => {
         if (insertRequest === 1 || insertRequest === 2) {
@@ -600,20 +544,17 @@ export default function EmployeeForm() {
 
     }, [data])
 
-
     React.useEffect(() => {
 
         setDepartments(departmentData?.data);
 
     }, [departmentData])
 
-
     React.useEffect(() => {
 
         setEmployees(employeeData?.data);
 
     }, [employeeData])
-
 
     React.useEffect(() => {
 
@@ -627,13 +568,11 @@ export default function EmployeeForm() {
 
     }, [gradeData])
 
-
     React.useEffect(() => {
 
         setDesignation(designationData?.data);
 
     }, [designationData])
-
 
     React.useEffect(() => {
 
@@ -641,13 +580,11 @@ export default function EmployeeForm() {
 
     }, [addressprofData])
 
-
     React.useEffect(() => {
 
         setCandidatePopulate(candidateData?.data[0]);
 
     }, [candidateData])
-
 
     React.useEffect(() => {
         const salary = parseFloat(salaryOfferred) || '';
@@ -664,7 +601,6 @@ export default function EmployeeForm() {
         }))
 
     }, [salaryOfferred]);
-
 
     React.useEffect(() => {
         if (selectedPaymentType !== 'banktransfer') {
@@ -684,7 +620,6 @@ export default function EmployeeForm() {
         }
 
     }, [selectedPaymentType])
-
 
     React.useEffect(() => {
 
@@ -717,10 +652,6 @@ export default function EmployeeForm() {
 
     }, [copyToPermanent])
 
-
-
-
-
     function calculateExperience(startDate, endDate) {
         const start = dayjs(startDate);
         const end = dayjs(endDate);
@@ -731,7 +662,6 @@ export default function EmployeeForm() {
 
         return `${years}.${months}`
     }
-
 
     React.useEffect(() => {
 
@@ -750,7 +680,6 @@ export default function EmployeeForm() {
 
     }, [formData4.startdate1, formData4.enddate1])
 
-
     React.useEffect(() => {
 
         if (formData4.startdate2 && formData4.enddate2) {
@@ -768,7 +697,6 @@ export default function EmployeeForm() {
 
     }, [formData4.startdate2, formData4.enddate2])
 
-
     React.useEffect(() => {
 
         if (formData4.startdate3 && formData4.enddate3) {
@@ -785,8 +713,6 @@ export default function EmployeeForm() {
         }
 
     }, [formData4.startdate3, formData4.enddate3])
-
-
 
     React.useEffect(() => {
 
@@ -817,7 +743,6 @@ export default function EmployeeForm() {
 
     }, [isESIChecked, isPFChecked, isLWFChecked])
 
-
     const formatImageUrl = (path) => {
         if (path === null || path === '') {
             const emptyone = ''
@@ -833,7 +758,6 @@ export default function EmployeeForm() {
     };
 
     React.useEffect(() => {  // Inserting the Candidate as a Employee Function
-
 
         if (insertRequest === 1) {
             if (candidatePopulate) {
@@ -894,7 +818,6 @@ export default function EmployeeForm() {
             }
         }
     }, [candidatePopulate])
-
 
     React.useEffect(() => {   //Updating the user request....
 
@@ -1017,7 +940,6 @@ export default function EmployeeForm() {
                         reportingmanager: data.reportingmanager,
                         reportingteamlead: data.reportingteamlead,
                         designation: data.designation,
-                        // department: handleUpdateDepartment(data.department),
                         department: data.department,
                         team: data.team,
                         referrdby: data.referrdby,
@@ -1101,7 +1023,6 @@ export default function EmployeeForm() {
 
     }, [])
 
-
     React.useEffect(() => {
 
         const demoData = { ...formData2 };
@@ -1121,8 +1042,6 @@ export default function EmployeeForm() {
 
     }, [formData2, departments, employees])
 
-
-
     const updateFormData2 = () => {
         const demoData = { ...formData2 };
 
@@ -1133,8 +1052,6 @@ export default function EmployeeForm() {
             const fourthDemo = Object.entries(employees).find(([key, value]) => `${value.f_name} ${value.l_name}` === demoData.referrdby)?.[1];
             const shiftChange = Object.entries(shifts).find(([key, value]) => value.name === demoData.shift)?.[1];
             const gradeChange = Object.entries(grade).find(([key, value]) => value.name === demoData.grade)?.[1];
-            // const addressProfChange = Object.entries(addressprof).find(([key,value])=> value.name === demoData.ad)?.[1];
-            // shifts
 
             demoData.department = secondDemo?.id;
             demoData.team = thirdDemo?.id;
@@ -1142,15 +1059,12 @@ export default function EmployeeForm() {
             demoData.shift = shiftChange?.id;
             demoData.grade = gradeChange?.id;
 
-            console.log(demoData, 'Demo Data Demo Demo Demo Demo Demo')
-
             return demoData;
 
         }
 
         return formData2;
     };
-
 
     const updateAddressproofintoID = () => {
 
@@ -1171,7 +1085,6 @@ export default function EmployeeForm() {
 
     }
 
-
     const handleNext = async () => {
         let url;
         let data
@@ -1180,14 +1093,10 @@ export default function EmployeeForm() {
             url = `${URL}employeeonboard/basicInformation`;
             // data = formData1;
             data = updateAddressproofintoID();
-
-            console.log(data, 'Change aairuchu ah nu paru da deiiiiii')
         } else if (activeStep === 1) {
             url = `${URL}employeeonboard/employeePosition`;
             // data = formData2;
             data = updateFormData2();
-
-            console.log(data, 'ithan return ana data .....')
         } else if (activeStep === 2) {
             url = `${URL}employeeonboard/employeeAddress`;
             data = formData3;
@@ -1207,7 +1116,7 @@ export default function EmployeeForm() {
             })
 
         } catch (error) {
-            console.log(error, 'Youre getting error da sathis uh.... ')
+            console.log(error, 'Getting error in moving towards the next page .... ')
         }
 
         const isStepValid = await trigger();
@@ -1216,8 +1125,6 @@ export default function EmployeeForm() {
         }
 
     };
-
-
 
     React.useEffect(() => {
 
@@ -1241,7 +1148,6 @@ export default function EmployeeForm() {
             }));
         }
     }, [formData1.firstname, formData1.lastname, formData1.employeeNumber, formData1.dateOfJoining]);
-
 
     const handleSubmit2 = async () => {
 
@@ -1282,29 +1188,16 @@ export default function EmployeeForm() {
                 setLoading(false);
             }
 
-
-            // if (response.data.status === 1) {
-
-
-            //     setEmployeeAddTab((prev) => ({
-            //         ...prev,
-            //         status: 2,
-            //     }))
-
-            // }
-            // console.log(response.data.status, ' final Log ..... ')
-
         } catch (error) {
             setSnackbarMessage(0);
             setShowSnackbar(true);
             setLoading(false);
-            console.log(error, 'Youre getting error da sathis uh.... ')
+            console.log(error, 'Getting error in the submitting the form .... ')
 
         }
 
 
     }
-
 
     const handlebackDataPopulate = async (val) => {
 
@@ -1322,8 +1215,6 @@ export default function EmployeeForm() {
             if (response?.data?.status === 1) {
 
                 const data = response?.data?.data;
-
-                // console.log(data, ' blah blah blah blah blah blah hhhhhhh  ')
 
                 if (val === 0) {
 
@@ -1348,8 +1239,6 @@ export default function EmployeeForm() {
                     setValue('physicallyChallenged', data.physicallyChallenged, { shouldValidate: true });
                     setValue('education', data.education, { shouldValidate: true });
                     setValue('addressprofType', data.addressprofType, { shouldValidate: true });
-                    // console.log('Yes da Sathis mame....')
-
 
                     setFormData1((prev) => ({
                         ...prev,
@@ -1499,15 +1388,11 @@ export default function EmployeeForm() {
             }
 
         }
-        // console.log(response?.data?.data, 'important da Sathis uh .....')
 
         catch (error) {
 
         }
     }
-
-
-
 
     const handleBack = () => {
 
@@ -1518,11 +1403,9 @@ export default function EmployeeForm() {
         handlebackDataPopulate(value);
     };
 
-
     const onSubmit = (data) => {
         // setFormData((prevData) => ({ ...prevData, ...data }));
     };
-
 
     const mapOptions = (data) => {
         return data.map(item => ({
@@ -1537,7 +1420,6 @@ export default function EmployeeForm() {
             value: item.f_name + " " + item.l_name
         }))
     }
-
 
     const percentagefunction = () => {
         let percentageValue
@@ -1560,8 +1442,6 @@ export default function EmployeeForm() {
     const handleCheckboxChange2 = (event) => {
         setCopyToPermanent(event.target.checked);
     };
-
-
 
     const handleProofUpload = async (event) => {
 
@@ -1599,9 +1479,6 @@ export default function EmployeeForm() {
         }
 
     }
-
-
-    // addressprof
 
     const handleProfileUpload = async (e) => {
 
@@ -1642,8 +1519,6 @@ export default function EmployeeForm() {
 
 
     }
-
-
 
     return (
         <Box sx={{ width: '100%', paddingLeft: 6 }}>
@@ -4704,7 +4579,6 @@ export default function EmployeeForm() {
                         Submit
                     </Button>
                 ) : (
-                    // <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid || (activeStep === 1 && !formData2.addresprofpath)}>
                     <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
                         Next
                     </Button>

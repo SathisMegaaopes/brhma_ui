@@ -17,7 +17,9 @@ const useFetchData = (url, payload = {}, ...dependencies) => {
             } catch (err) {
                 setError('Something went wrong: ' + err.message);
             } finally {
-                setLoading(false);
+                setTimeout(() => {
+                    setLoading(false);
+                }, 300)
             }
         };
 

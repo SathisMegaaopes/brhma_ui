@@ -6,7 +6,6 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import EmployeeForm from './employeeForm';
 
 
-
 function CardComponent({ name, onClick, isActive, value }) {
   return (
     <Card
@@ -41,46 +40,18 @@ function CardComponent({ name, onClick, isActive, value }) {
 }
 
 export default function Employee() {
-  const [activeButton, setActiveButton] = React.useState(1);
 
-  const handleButtonClick = (value) => {
-    setActiveButton(value);
-  };
+  // const [activeButton, setActiveButton] = React.useState(1);
+
+  // const handleButtonClick = (value) => {
+  //   setActiveButton(value);
+  // };
 
   return (
     <>
-      {/* <Grid container spacing={4} paddingLeft={5}>
-        <Grid item >
-          <CardComponent
-            name="Add Employee"
-            onClick={() => handleButtonClick(1)}
-            isActive={activeButton === 1}
-            value={1}
-          />
-        </Grid>
-        <Grid item >
-          <CardComponent
-            name="Update Employee"
-            onClick={() => handleButtonClick(2)}
-            isActive={activeButton === 2}
-            value={2}
-          />
-        </Grid>
-      </Grid> */}
-
-      <Grid container paddingX={5} paddingY={2}>
+      <Grid container paddingLeft={6} paddingY={2}>
         <Grid item xs={12}>
-          {activeButton === 1 &&
-            <div>
-              {/* <Typography>Update Employee Content</Typography> */}
-              {/* <EmployeeForm/> */}
-              <EmployeeTable/>
-            </div>}
-          {activeButton === 2 && (
-            <div>
-              <Typography>Update Employee Content</Typography>
-            </div>
-          )}
+          <EmployeeTable />
         </Grid>
       </Grid>
     </>

@@ -68,7 +68,7 @@ const CalendarComponent = () => {
                 }}
             >
                 {hoveredDate === dateStr && content && (
-                    <div className="points">
+                    <div className="points" style={{ zIndex: 5 }}>
                         {content}
                     </div>
                 )}
