@@ -90,7 +90,6 @@ function    MOSCandiateTable(props) {
             const response = await axios.delete(url, {
                 data: { candidateid }
             });
-            console.log('User get deleted successfully', response)
 
             setDeleteStatusVal(response.data.status)
             setnotification(true)
@@ -126,8 +125,6 @@ function    MOSCandiateTable(props) {
         setnotification(false);
     };
 
-    // MOS20241007427
-
     const isCandidateInTable = (val) => {
         if (allid) {
             return allid.includes(val);
@@ -135,10 +132,6 @@ function    MOSCandiateTable(props) {
             return false;
         }
     }
-
-    // console.log(allid.includes('MOS20241001426'))
-
-    // console.log(allid, 'Got it bro ....')
 
     return (
         <>

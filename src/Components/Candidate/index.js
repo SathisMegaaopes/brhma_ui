@@ -36,15 +36,12 @@ function MOSCandidate({ emp_id, fromDate, toDate }) {
         let url;
 
         if (sharedTab.active === 1) {
-            // url = URL + `candidates/?employid=${emp_id}&fromdate=${fromDate}&todate=${toDate}`
             url = URL + sharedTab.backendUrl
         } else {
             url = URL + "candidates"
 
         }
 
-
-        console.log(url)
 
         axios.get(url)
             .then((response) => {
@@ -145,7 +142,7 @@ function MOSCandidate({ emp_id, fromDate, toDate }) {
 
     return (
         <>
-            <Grid container spacing={2} sx={{ paddingY: 3, paddingX: 12 }} >
+            <Grid container spacing={2} sx={{ paddingY: 3, paddingX: 2, paddingLeft: 6 }} >
                 <Grid item xs={12} md={12} lg={4} xl={4}>
                     <Breadcrumbs aria-label="breadcrumb">
                         <Link underline="hover" color="inherit" href="/dashboard">

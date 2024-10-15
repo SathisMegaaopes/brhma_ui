@@ -237,7 +237,6 @@ export default function MOSDashboard() {
     const handleNext = (e, id) => {
 
         setSharedTab({
-            // ?tab=${activeTab}
             Tabname: 'particularEmployee',
             TabUrl: `/dashboard/candidate-master/?employid=${id}&fromdate=${from_date}&todate=${to_date}`,
             active: 1,
