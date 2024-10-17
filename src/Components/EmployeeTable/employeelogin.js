@@ -18,6 +18,8 @@ import { useSharedContext } from '../../Context';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useFetchData } from './customHook';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import DatanotFound from '../CustomComponents/datanotfound';
 
 export default function EmployeeTable() {
 
@@ -42,10 +44,6 @@ export default function EmployeeTable() {
   const [departmentList, setDepartmentList] = React.useState([]);
   const [teamList, setTeamList] = React.useState([]);
   const [departmentListView, setDepartmentListView] = React.useState(false);
-
-
-
-
   const [departmentname, setDepartmentName] = React.useState(null);
   const [teamname, setTeamName] = React.useState(null);
   const [employeename, setEmployeeName] = React.useState(null);
@@ -71,7 +69,7 @@ export default function EmployeeTable() {
     department: departmentname || '',
     team: teamname || '',
     employeeName: employeename || '',
-  }, departmentname, teamname ,employeename, rerender);
+  }, departmentname, teamname, employeename, rerender);
 
 
 
@@ -231,7 +229,6 @@ export default function EmployeeTable() {
     setResponseModal(!responseModal)
   }
 
-
   const togglePasswordVisibility = (index) => {
     setShowPassword((prevState) => ({
       ...prevState,
@@ -239,16 +236,12 @@ export default function EmployeeTable() {
     }));
   };
 
-
-
   const mapOptions = (data) => {
     return data.map(item => ({
       label: item.name,
       value: item.name
     }));
   }
-
-
 
   const handleDepartmentChange = (e, value) => {
 
@@ -266,7 +259,6 @@ export default function EmployeeTable() {
 
 
   }
-
 
   const handleEmployeeNameChange = (e) => {
 
@@ -515,28 +507,34 @@ export default function EmployeeTable() {
 
             :
 
-            <Box
-              sx={{
-                height: '70vh',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Grid
-                container
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                  <ErrorOutlineIcon sx={{ fontSize: 60, marginTop: '-40px', color: 'red' }} />
-                  <Typography variant='h5' sx={{ mt: '12px' }}>Sorry , There is no data available ....  </Typography>
-                </Grid>
+            // <Box
+            //   sx={{
+            //     height: '70vh',
+            //     width: '100%',
+            //     display: 'flex',
+            //     justifyContent: 'center',
+            //     alignItems: 'center',
+            //   }}
+            // >
+            //   <Grid
+            //     container
+            //     justifyContent="center"
+            //     alignItems="center"
+            //   >
+            //     <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+            //       <DotLottieReact
+            //         src="/nodatafound.json"
+            //         loop
+            //         autoplay
+            //       />
+            //       <Typography variant='h5' sx={{ mt: '25px', ml: 5 }}>Sorry , There is no data available ....  </Typography>
 
-              </Grid>
+            //     </Grid>
 
-            </Box>
+            //   </Grid>
+
+            // </Box>
+            <DatanotFound/>
 
           }
 

@@ -6,13 +6,11 @@ import Diversity2Icon from '@mui/icons-material/Diversity2';
 import { right } from '@popperjs/core';
 import CustomDrawer from '../CustomComponents/drawer';
 import CustomSelect from '../CustomComponents/customSelect';
+import DatanotFound from '../CustomComponents/datanotfound';
 
 const DeparmentMaster = () => {
 
   const [openModal, setOpenModal] = useState(false);
-
-  // console.log(age)
-
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -21,8 +19,6 @@ const DeparmentMaster = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
   }
-
-
 
 
   const data = [
@@ -155,60 +151,17 @@ const DeparmentMaster = () => {
 
           :
 
-          <Box
-            sx={{
-              height: '70vh',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Grid
-              container
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                <Diversity2Icon sx={{ fontSize: 100, marginTop: '-40px', color: 'gray' }} />
-                <Typography variant='h5' sx={{ mt: '30px' }}>Sorry , There is no Team available ....  </Typography>
-              </Grid>
-
-            </Grid>
-
-          </Box>
+          <DatanotFound />
 
         }
       </Grid>
+
 
       <CustomDrawer title={'Add new Department'} open={openModal} close={handleCloseModal}>
 
         <Grid container>
 
-          {/* <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 3, mt: 3 }}>
-            <Grid item xs={4}>
-              <Typography>
-                Photo
-              </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <input
-                type="file"
-                hidden
-                // onChange={handleProfileUpload}
-                id="file-input"
-              />
-              <label htmlFor="file-input">
-                <Avatar
-                  sx={{ width: 100, height: 100, cursor: 'pointer' }}
-                  alt="Profile Image"
-                // src={profileImageUrl}
-                />
-              </label>
-            </Grid>
-          </Grid> */}
-
-          <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 1, mt: 3  }}>
+          <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 1, mt: 3 }}>
             <Grid item xs={4}>
               <Typography>
                 Name
@@ -237,7 +190,6 @@ const DeparmentMaster = () => {
               />
             </Grid>
           </Grid>
-
 
           <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
             <Grid item xs={4}>
@@ -276,7 +228,6 @@ const DeparmentMaster = () => {
             </Grid>
           </Grid>
 
-
           <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
             <Grid item xs={4}>
               <Typography>
@@ -314,7 +265,6 @@ const DeparmentMaster = () => {
             </Grid>
           </Grid>
 
-
           <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 4 }}>
             <Grid item xs={4}>
               <Typography>
@@ -325,39 +275,6 @@ const DeparmentMaster = () => {
               <CustomSelect />
             </Grid>
           </Grid>
-{/* 
-          <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-            <Grid item xs={4}>
-              <Typography>
-                Description
-              </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <TextField
-                fullWidth
-                label="Mention description "
-                variant="outlined"
-                multiline
-                rows={3}
-                sx={{
-                  mb: 2,
-                  '& .MuiInputBase-root': {
-                    // height: 45,
-                    fontSize: '17px',
-                  },
-                  '& .MuiInputLabel-root': {
-                    top: '-4px',
-                    fontSize: '17px',
-                  },
-                  '& .MuiInputLabel-shrink': {
-                    top: 0,
-                  },
-                }}
-
-              />
-            </Grid>
-          </Grid> */}
-
         </Grid>
 
       </CustomDrawer>

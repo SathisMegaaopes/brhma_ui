@@ -8,7 +8,7 @@ import StepLabel from '@mui/material/StepLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { Alert, Autocomplete, Avatar, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Avatar, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -28,6 +28,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useSharedContext } from '../../Context';
 import { useNavigate } from 'react-router-dom';
+import { Modal } from 'rsuite';
+import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
@@ -344,7 +347,9 @@ export default function EmployeeForm() {
 
     const [uploadFileName, setUploadFileName] = React.useState(null)
 
-    const [uploadStatus, setUploadStatus] = React.useState(false)
+    const [uploadStatus, setUploadStatus] = React.useState(false);
+
+    const [openEdit, setOpenEdit] = React.useState((insertRequest === 0) ? true : false);
 
 
     const [formData1, setFormData1] = React.useState({
@@ -1115,14 +1120,25 @@ export default function EmployeeForm() {
                 profileUrl: profileImageUrl, available: available
             })
 
+            if (response.data.status === 1) {
+
+                ///inga the blur eluthanum , nybagam vachuko \
+
+                if (!openEdit && insertRequest === 0) {
+                    setOpenEdit(true);
+                }
+
+                const isStepValid = await trigger();
+                if (isStepValid) {
+                    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+                }
+            }
+
+
         } catch (error) {
             console.log(error, 'Getting error in moving towards the next page .... ')
         }
 
-        const isStepValid = await trigger();
-        if (isStepValid) {
-            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        }
 
     };
 
@@ -1151,27 +1167,58 @@ export default function EmployeeForm() {
 
     const handleSubmit2 = async () => {
 
-        let url = `${URL}employeeonboard/employeePaymentmode`;
+        let url;
+        let data
 
-        let data = formData6
+        if (activeStep === 0) {
+            url = `${URL}employeeonboard/basicInformation`;
+            // data = formData1;
+            data = updateAddressproofintoID();
+        } else if (activeStep === 1) {
+            url = `${URL}employeeonboard/employeePosition`;
+            // data = formData2;
+            data = updateFormData2();
+        } else if (activeStep === 2) {
+            url = `${URL}employeeonboard/employeeAddress`;
+            data = formData3;
+        } else if (activeStep === 3) {
+            url = `${URL}employeeonboard/employeeExperience`;
+            data = formData4;
+        } else if (activeStep === 4) {
+            url = `${URL}employeeonboard/employeeStatutoryinfo`;
+            data = formData5;
+        } else if (activeStep === 5) {
+            url = `${URL}employeeonboard/employeePaymentmode`;
+            data = formData6
+        }
+
+        // let url = `${URL}employeeonboard/employeePaymentmode`;
+
+        // let data = formData6
 
 
         try {
 
-            const response = await axios.post(url, { formData: data, operationType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep })
+            // const response = await axios.post(url, { formData: data, operationType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep })
 
+
+            const response = await axios.post(url, {
+                formData: data, operationType: insertRequest, requestType: interRequest, emp_id: Number(formData1.employeeNumber), referenceid: employeeAddTab.candidateId, activeStep: activeStep,
+                profileUrl: profileImageUrl, available: available
+            })
 
             if (response.data.status === 1) {
                 setSnackbarMessage(1);
                 setShowSnackbar(true);
 
                 setLoading(true);
+                
+                // setLoading(false);
+
+                // setShowSnackbar(false);
 
                 setTimeout(() => {
 
-                    setLoading(false);
-
-                    setShowSnackbar(false);
 
 
                     setEmployeeAddTab((prev) => ({
@@ -1180,7 +1227,7 @@ export default function EmployeeForm() {
                     }));
 
 
-                }, 1000);
+                },0);
             }
             else {
                 setSnackbarMessage(0);
@@ -1520,8 +1567,15 @@ export default function EmployeeForm() {
 
     }
 
+
+    console.log(openEdit, 'ithan open edit ah pathi solludhu dovvvvv');
+
+
     return (
         <Box sx={{ width: '100%', paddingLeft: 6 }}>
+
+            {/* {available && } */}
+
             {loading2 &&
 
                 <Box
@@ -1563,6 +1617,8 @@ export default function EmployeeForm() {
             </Snackbar>
 
 
+
+
             <Stack sx={{ width: '100%' }} spacing={4}>
                 <Stepper activeStep={activeStep} alternativeLabel connector={<ColorlibConnector />}>
                     {steps.map((label, index) => (
@@ -1573,7 +1629,52 @@ export default function EmployeeForm() {
                 </Stepper>
             </Stack>
 
-            <Box component="form" sx={{ mt: 6, }} onSubmit={handleSubmit(onSubmit)}  >
+            <Box component="form" sx={{ mt: 6, backgroundColor: '', position: 'relative', }} onSubmit={handleSubmit(onSubmit)}  >
+
+
+                {openEdit &&
+
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: -20,
+                            left: 0,
+                            right: 40,
+                            bottom: 0,
+                            backdropFilter: 'blur(0.6px)',
+                            zIndex: 1,
+                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            p: { xs: 2, sm: 3, md: 4 },
+                            borderRadius: 2,
+                        }}
+                    >
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<EditIcon />}
+                            onClick={() => setOpenEdit(false)}
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 20,
+                                zIndex: 5,
+                                backgroundColor: '#1976d2',
+                                '&:hover': {
+                                    backgroundColor: '#1565c0',
+                                },
+                            }}
+                        >
+                            Edit
+                        </Button>
+
+
+                    </Box>
+
+                }
+
 
                 <Grid container >  {/* Whole Parent Container */}
 
@@ -1855,9 +1956,13 @@ export default function EmployeeForm() {
                                                                 }));
                                                             }}
                                                         >
-                                                            <MenuItem value="Male">Male</MenuItem>
+                                                            {/* <MenuItem value="Male">Male</MenuItem>
                                                             <MenuItem value="Female">Female</MenuItem>
-                                                            <MenuItem value="Others">Others</MenuItem>
+                                                            <MenuItem value="Others">Others</MenuItem> */}
+
+                                                            <MenuItem value={1}>Male</MenuItem>
+                                                            <MenuItem value={2}>Female</MenuItem>
+                                                            <MenuItem value={3}>Others</MenuItem>
                                                         </StyledInput>
                                                     )}
                                                 />
@@ -2337,8 +2442,10 @@ export default function EmployeeForm() {
                                                             }));
                                                         }}
                                                     >
-                                                        <MenuItem value="Yes">Yes</MenuItem>
-                                                        <MenuItem value="No">No</MenuItem>
+                                                        {/* <MenuItem value="Yes">Yes</MenuItem>
+                                                        <MenuItem value="No">No</MenuItem> */}
+                                                        <MenuItem value={1}>Yes</MenuItem>
+                                                        <MenuItem value={0}>No</MenuItem>
                                                     </StyledInput>
                                                 )}
                                             />
@@ -2708,8 +2815,10 @@ export default function EmployeeForm() {
                                                     }}
 
                                                 >
-                                                    <MenuItem value="Probation">Probation</MenuItem>
-                                                    <MenuItem value="Confirmed">Confirmed</MenuItem>
+                                                    {/* <MenuItem value="Probation">Probation</MenuItem>
+                                                    <MenuItem value="Confirmed">Confirmed</MenuItem> */}
+                                                    <MenuItem value={0}>Probation</MenuItem>
+                                                    <MenuItem value={1}>Confirmed</MenuItem>
                                                 </StyledInput>
                                             )}
                                         />
@@ -2752,8 +2861,10 @@ export default function EmployeeForm() {
                                                     }}
 
                                                 >
-                                                    <MenuItem value="Active">Active</MenuItem>
-                                                    <MenuItem value="In Active">In Active</MenuItem>
+                                                    {/* <MenuItem value="Active">Active</MenuItem>
+                                                    <MenuItem value="In Active">In Active</MenuItem> */}
+                                                    <MenuItem value={1}>Active</MenuItem>
+                                                    <MenuItem value={0}>In Active</MenuItem>
                                                 </StyledInput>
                                             )}
                                         />
@@ -2945,8 +3056,10 @@ export default function EmployeeForm() {
                                                         }));
                                                     }}
                                                 >
-                                                    <MenuItem value="Yes">Yes</MenuItem>
-                                                    <MenuItem value="No">No</MenuItem>
+                                                    {/* <MenuItem value="Yes">Yes</MenuItem>
+                                                    <MenuItem value="No">No</MenuItem> */}
+                                                    <MenuItem value={1}>Yes</MenuItem>
+                                                    <MenuItem value={0}>No</MenuItem>
                                                 </StyledInput>
                                             )}
                                         />
@@ -3062,9 +3175,12 @@ export default function EmployeeForm() {
                                                         }));
                                                     }}
                                                 >
-                                                    <MenuItem value="Billable">Billable</MenuItem>
+                                                    {/* <MenuItem value="Billable">Billable</MenuItem>
                                                     <MenuItem value="Non-Billable">Non-Billable</MenuItem>
-                                                    <MenuItem value="Partially">Partially Billed</MenuItem>
+                                                    <MenuItem value="Partially">Partially Billed</MenuItem> */}
+                                                    <MenuItem value={0}>Billable</MenuItem>
+                                                    <MenuItem value={1}>Non-Billable</MenuItem>
+                                                    <MenuItem value={2}>Partially Billed</MenuItem>
                                                 </StyledInput>
                                             )}
                                         />
@@ -4525,12 +4641,14 @@ export default function EmployeeForm() {
 
                 </Grid>
 
+
             </Box>
 
             <Box
                 sx={{
                     display: 'flex',
                     flexDirection: 'row',
+                    justifyContent: 'center',
                     px: 12,
                     pb: 3,
                     position: 'fixed',
@@ -4552,7 +4670,7 @@ export default function EmployeeForm() {
 
                 <Box sx={{ flex: '1 1 auto' }} />
 
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mx: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mx: 2 }}>
                     <Gauge
                         width={70}
                         height={80}
@@ -4574,7 +4692,7 @@ export default function EmployeeForm() {
                     />
                 </Box>
 
-                {activeStep === steps.length - 1 ? (
+                {/* {activeStep === steps.length - 1 ? (
                     <Button variant="contained" color="primary" type="submit" onClick={handleSubmit2} disabled={!isValid}>
                         Submit
                     </Button>
@@ -4582,7 +4700,42 @@ export default function EmployeeForm() {
                     <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
                         Next
                     </Button>
+                )} */}
+
+
+                {insertRequest === 0 ? (
+                    <Grid display='flex' >
+                        {activeStep !== steps.length - 1 &&
+                            <Grid sx={{ paddingRight: 3 }}>
+                                <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
+                                    Next
+                                </Button>
+
+                            </Grid>
+
+                        }
+                        {(!openEdit || activeStep === steps.length - 1) &&
+                            <Grid >
+                                <Button variant="contained" color="primary" type="submit" onClick={handleSubmit2} disabled={!isValid}>
+                                    Submit
+                                </Button>
+                            </Grid>
+
+                        }
+                    </Grid >
+                ) : (
+                    activeStep === steps.length - 1 ? (
+                        <Button variant="contained" color="primary" type="submit" onClick={handleSubmit2} disabled={!isValid}>
+                            Submit
+                        </Button>
+                    ) : (
+                        <Button variant="outlined" color="primary" onClick={handleNext} disabled={!isValid}>
+                            Next
+                        </Button>
+                    )
                 )}
+
+
             </Box>
 
         </Box >

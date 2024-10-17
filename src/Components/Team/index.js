@@ -6,6 +6,7 @@ import Diversity2Icon from '@mui/icons-material/Diversity2';
 import { right } from '@popperjs/core';
 import CustomDrawer from '../CustomComponents/drawer';
 import CustomSelect from '../CustomComponents/customSelect';
+import DatanotFound from '../CustomComponents/datanotfound';
 
 const TeamMaster = () => {
 
@@ -153,28 +154,30 @@ const TeamMaster = () => {
 
                     :
 
-                    <Box
-                        sx={{
-                            height: '70vh',
-                            width: '100%',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Grid
-                            container
-                            justifyContent="center"
-                            alignItems="center"
-                        >
-                            <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                                <Diversity2Icon sx={{ fontSize: 100, marginTop: '-40px', color: 'gray' }} />
-                                <Typography variant='h5' sx={{ mt: '30px' }}>Sorry , There is no Team available ....  </Typography>
-                            </Grid>
+                    // <Box
+                    //     sx={{
+                    //         height: '70vh',
+                    //         width: '100%',
+                    //         display: 'flex',
+                    //         justifyContent: 'center',
+                    //         alignItems: 'center',
+                    //     }}
+                    // >
+                    //     <Grid
+                    //         container
+                    //         justifyContent="center"
+                    //         alignItems="center"
+                    //     >
+                    //         <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+                    //             <Diversity2Icon sx={{ fontSize: 100, marginTop: '-40px', color: 'gray' }} />
+                    //             <Typography variant='h5' sx={{ mt: '30px' }}>Sorry , There is no Team available ....  </Typography>
+                    //         </Grid>
 
-                        </Grid>
+                    //     </Grid>
 
-                    </Box>
+                    // </Box>
+
+                    <DatanotFound/>
 
                 }
             </Grid>
