@@ -1212,7 +1212,7 @@ export default function EmployeeForm() {
                 setShowSnackbar(true);
 
                 setLoading(true);
-                
+
                 // setLoading(false);
 
                 // setShowSnackbar(false);
@@ -1227,7 +1227,7 @@ export default function EmployeeForm() {
                     }));
 
 
-                },0);
+                }, 0);
             }
             else {
                 setSnackbarMessage(0);
@@ -1574,7 +1574,22 @@ export default function EmployeeForm() {
     return (
         <Box sx={{ width: '100%', paddingLeft: 6 }}>
 
-            {/* {available && } */}
+            { (available && interRequest === 1) ? (
+                <Box sx={{
+                    width: '20%',
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 9999
+                }}>
+                    {/* {available && insertRequest === 2 && ( */}
+                        <Alert variant="filled" severity="error">
+                            Employee Number is already present
+                        </Alert>
+                </Box>
+            ) : '' }
+            
 
             {loading2 &&
 
