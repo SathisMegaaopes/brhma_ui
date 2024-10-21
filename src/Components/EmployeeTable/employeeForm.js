@@ -31,6 +31,7 @@ import { useNavigate } from 'react-router-dom';
 import { Modal } from 'rsuite';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
+import ClearIcon from '@mui/icons-material/Clear';
 
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
@@ -1227,7 +1228,7 @@ export default function EmployeeForm() {
                     }));
 
 
-                }, 0);
+                }, 400);
             }
             else {
                 setSnackbarMessage(0);
@@ -1574,7 +1575,7 @@ export default function EmployeeForm() {
     return (
         <Box sx={{ width: '100%', paddingLeft: 6 }}>
 
-            { (available && interRequest === 1) ? (
+            {(available && interRequest === 1) ? (
                 <Box sx={{
                     width: '20%',
                     position: 'fixed',
@@ -1584,12 +1585,12 @@ export default function EmployeeForm() {
                     zIndex: 9999
                 }}>
                     {/* {available && insertRequest === 2 && ( */}
-                        <Alert variant="filled" severity="error">
-                            Employee Number is already present
-                        </Alert>
+                    <Alert variant="filled" severity="error">
+                        Employee Number is already present
+                    </Alert>
                 </Box>
-            ) : '' }
-            
+            ) : ''}
+
 
             {loading2 &&
 
@@ -1647,47 +1648,66 @@ export default function EmployeeForm() {
             <Box component="form" sx={{ mt: 6, backgroundColor: '', position: 'relative', }} onSubmit={handleSubmit(onSubmit)}  >
 
 
-                {openEdit &&
+                {interRequest === 0 &&
 
-                    <Box
-                        sx={{
-                            position: 'absolute',
-                            top: -20,
-                            left: 0,
-                            right: 40,
-                            bottom: 0,
-                            backdropFilter: 'blur(0.6px)',
-                            zIndex: 1,
-                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            p: { xs: 2, sm: 3, md: 4 },
-                            borderRadius: 2,
-                        }}
-                    >
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            startIcon={<EditIcon />}
-                            onClick={() => setOpenEdit(false)}
-                            sx={{
-                                position: 'absolute',
-                                top: 0,
-                                right: 20,
-                                zIndex: 5,
-                                backgroundColor: '#1976d2',
-                                '&:hover': {
-                                    backgroundColor: '#1565c0',
-                                },
-                            }}
-                        >
-                            Edit
-                        </Button>
+                    <>
+
+                        {openEdit ? (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => setOpenEdit(false)}
+                                sx={{
+                                    position: 'absolute',
+                                    top: -70,
+                                    right: 20,
+                                    zIndex: 5,
+                                    backgroundColor: '#1976d2',
+                                    borderRadius: '50%',
+                                    width: 50,
+                                    height: 50,
+                                    minWidth: 0,
+                                    padding: 0,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': {
+                                        backgroundColor: '#1565c0',
+                                    },
+                                }}
+                            >
+                                <EditIcon />
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => setOpenEdit(true)}
+                                sx={{
+                                    position: 'absolute',
+                                    top: -70,
+                                    right: 20,
+                                    zIndex: 5,
+                                    backgroundColor: '#1976d2',
+                                    borderRadius: '50%',
+                                    width: 50,
+                                    height: 50,
+                                    minWidth: 0,
+                                    padding: 0,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    '&:hover': {
+                                        backgroundColor: '#1565c0',
+                                    },
+                                }}
+                            >
+                                <ClearIcon />
+                            </Button>
+                        )}
 
 
-                    </Box>
-
+                    </>
                 }
 
 
@@ -1741,6 +1761,7 @@ export default function EmployeeForm() {
                                                                 variant="outlined"
                                                                 error={!!errors.firstname}
                                                                 helperText={errors.firstname ? errors.firstname.message : ''}
+                                                                disabled={openEdit}
                                                                 FormHelperTextProps={{
                                                                     style: { margin: 0, position: 'absolute', bottom: '-20px', width: 'max-content' }
                                                                 }}
@@ -1759,7 +1780,8 @@ export default function EmployeeForm() {
 
                                             <Grid xs={6} container alignItems="center" paddingBottom={2} >
                                                 <Grid item xs={4}>
-                                                    <StyledLabel>
+                                                    <StyledLabel
+                                                    >
                                                         Last Name <span style={{ color: 'red' }}>*</span>
                                                     </StyledLabel>
                                                 </Grid>
@@ -1778,6 +1800,7 @@ export default function EmployeeForm() {
                                                                 FormHelperTextProps={{
                                                                     style: { margin: 0, position: 'absolute', bottom: '-20px', width: 'max-content' }
                                                                 }}
+                                                                disabled={openEdit}
                                                                 onChange={(e) => {
                                                                     field.onChange(e);
                                                                     setFormData1((prev) => ({
@@ -1794,7 +1817,8 @@ export default function EmployeeForm() {
 
                                         <Grid container alignItems="center" paddingBottom={2}>
                                             <Grid item xs={4}>
-                                                <StyledLabel>
+                                                <StyledLabel
+                                                >
                                                     Employee Number <span style={{ color: 'red' }}>*</span>
                                                 </StyledLabel>
                                             </Grid>
@@ -1813,6 +1837,7 @@ export default function EmployeeForm() {
                                                             FormHelperTextProps={{
                                                                 style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                             }}
+                                                            disabled={openEdit}
                                                             onChange={(e) => {
                                                                 field.onChange(e);
                                                                 setFormData1((prev) => ({
@@ -1828,7 +1853,8 @@ export default function EmployeeForm() {
 
                                         <Grid container alignItems="center" paddingBottom={2}>
                                             <Grid item xs={4}>
-                                                <StyledLabel>
+                                                <StyledLabel
+                                                >
                                                     Email Address <span style={{ color: 'red' }}>*</span>
                                                 </StyledLabel>
                                             </Grid>
@@ -1847,6 +1873,7 @@ export default function EmployeeForm() {
                                                             FormHelperTextProps={{
                                                                 style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                             }}
+                                                            disabled={openEdit}
                                                             onChange={(e) => {
                                                                 field.onChange(e);
                                                                 setFormData1((prev) => ({
@@ -1862,7 +1889,8 @@ export default function EmployeeForm() {
 
                                         <Grid container alignItems="center" paddingBottom={2}>
                                             <Grid item xs={4}>
-                                                <StyledLabel>
+                                                <StyledLabel
+                                                >
                                                     Mobile Number <span style={{ color: 'red' }}>*</span>
                                                 </StyledLabel>
                                             </Grid>
@@ -1881,6 +1909,7 @@ export default function EmployeeForm() {
                                                             FormHelperTextProps={{
                                                                 style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                             }}
+                                                            disabled={openEdit}
                                                             onChange={(e) => {
                                                                 field.onChange(e);
                                                                 setFormData1((prev) => ({
@@ -1900,7 +1929,8 @@ export default function EmployeeForm() {
 
                                         <Grid container alignItems="center" paddingBottom={2}>
                                             <Grid item xs={4}>
-                                                <StyledLabel>
+                                                <StyledLabel
+                                                >
                                                     Date of Birth <span style={{ color: 'red' }}>*</span>
                                                 </StyledLabel>
                                             </Grid>
@@ -1921,6 +1951,7 @@ export default function EmployeeForm() {
                                                             FormHelperTextProps={{
                                                                 style: { margin: 0, position: 'relative', bottom: '-8px' }
                                                             }}
+                                                            disabled={openEdit}
                                                             onChange={(e) => {
                                                                 field.onChange(e);
                                                                 setFormData1((prev) => ({
@@ -1937,7 +1968,8 @@ export default function EmployeeForm() {
 
                                         <Grid container alignItems="center" paddingBottom={2}>
                                             <Grid item xs={4}>
-                                                <StyledLabel>
+                                                <StyledLabel
+                                                >
                                                     Gender <span style={{ color: 'red' }}>*</span>
                                                 </StyledLabel>
                                             </Grid>
@@ -1963,6 +1995,7 @@ export default function EmployeeForm() {
                                                                     color: '#2196f3'
                                                                 }
                                                             }}
+                                                            disabled={openEdit}
                                                             onChange={(e) => {
                                                                 field.onChange(e);
                                                                 setFormData1((prev) => ({
@@ -1986,7 +2019,8 @@ export default function EmployeeForm() {
 
                                         <Grid container alignItems="center" paddingBottom={2}>
                                             <Grid item xs={4}>
-                                                <StyledLabel>
+                                                <StyledLabel
+                                                >
                                                     Phone Number <span style={{ color: 'red' }}>*</span>
                                                 </StyledLabel>
                                             </Grid>
@@ -2005,6 +2039,7 @@ export default function EmployeeForm() {
                                                             FormHelperTextProps={{
                                                                 style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                             }}
+                                                            disabled={openEdit}
                                                             onChange={(e) => {
                                                                 field.onChange(e);
                                                                 setFormData1((prev) => ({
@@ -2020,7 +2055,8 @@ export default function EmployeeForm() {
 
                                         <Grid container alignItems="center" paddingBottom={2}>
                                             <Grid item xs={4}>
-                                                <StyledLabel>
+                                                <StyledLabel
+                                                >
                                                     Blood Group
                                                 </StyledLabel>
                                             </Grid>
@@ -2039,6 +2075,7 @@ export default function EmployeeForm() {
                                                             FormHelperTextProps={{
                                                                 style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                             }}
+                                                            disabled={openEdit}
                                                             onChange={(e) => {
                                                                 field.onChange(e);
                                                                 setFormData1((prev) => ({
@@ -2064,7 +2101,8 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
                                         <Grid item xs={4}>
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Date of Joining <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
                                         </Grid>
@@ -2086,6 +2124,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2101,7 +2140,8 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
                                         <Grid item xs={4} sx={{ paddingRight: '20px' }}>
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Emergency Contact Name <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
                                         </Grid>
@@ -2121,6 +2161,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2136,7 +2177,8 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
                                         <Grid item xs={4} sx={{ paddingRight: '20px' }}>
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Emergency Contact Number <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
                                         </Grid>
@@ -2156,6 +2198,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2172,7 +2215,8 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
                                         <Grid item xs={4} sx={{ paddingRight: '20px' }}>
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Emergency Contact Relation (Should be blood relative) <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
                                         </Grid>
@@ -2192,6 +2236,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2211,7 +2256,8 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
                                         <Grid item xs={4} >
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Father's Name <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
                                         </Grid>
@@ -2231,6 +2277,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2246,7 +2293,8 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
                                         <Grid item xs={4}>
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Father's Occupation
                                             </StyledLabel>
                                         </Grid>
@@ -2266,6 +2314,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2281,7 +2330,8 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
                                         <Grid item xs={4}>
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Spouse Name
                                             </StyledLabel>
                                         </Grid>
@@ -2301,6 +2351,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2318,7 +2369,8 @@ export default function EmployeeForm() {
                                     <Grid container alignItems="center" paddingBottom={2}>
 
                                         <Grid item xs={4} sx={{ paddingRight: '20px' }}>
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Education (Highest Level) <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
                                         </Grid>
@@ -2338,6 +2390,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2358,7 +2411,8 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
                                         <Grid item xs={4}>
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Country of Origin
                                             </StyledLabel>
                                         </Grid>
@@ -2378,6 +2432,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2393,7 +2448,8 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
                                         <Grid item xs={4}>
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Nationality
                                             </StyledLabel>
                                         </Grid>
@@ -2413,6 +2469,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2428,7 +2485,8 @@ export default function EmployeeForm() {
 
                                     <Grid container alignItems="center" paddingBottom={2}>
                                         <Grid item xs={4} sx={{ paddingRight: '20px' }}>
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Physically Challenged (Yes/No)
                                             </StyledLabel>
                                         </Grid>
@@ -2449,6 +2507,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2471,7 +2530,8 @@ export default function EmployeeForm() {
                                     <Grid container alignItems="center" paddingBottom={2}>
 
                                         <Grid item xs={4}>
-                                            <StyledLabel>
+                                            <StyledLabel
+                                            >
                                                 Address Proof <span style={{ color: 'red' }}>*</span>
                                             </StyledLabel>
                                         </Grid>
@@ -2492,6 +2552,7 @@ export default function EmployeeForm() {
                                                         FormHelperTextProps={{
                                                             style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                         }}
+                                                        disabled={openEdit}
                                                         onChange={(e) => {
                                                             field.onChange(e);
                                                             setFormData1((prev) => ({
@@ -2543,7 +2604,7 @@ export default function EmployeeForm() {
                                                         { label: 'Santhosh', value: 'Santhosh' }
                                                     ]}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
-
+                                                    disabled={openEdit}
                                                     onChange={(event, value) => {
                                                         const newValue = value ? value.value : null;
                                                         setFormData2((prevData) => ({
@@ -2602,6 +2663,7 @@ export default function EmployeeForm() {
                                                         }));
                                                         field.onChange(newValue);
                                                     }}
+                                                    disabled={openEdit}
                                                     renderInput={(params) => (
                                                         <StyledInput
                                                             {...params}
@@ -2645,6 +2707,7 @@ export default function EmployeeForm() {
                                                         }));
                                                         field.onChange(newValue);
                                                     }}
+                                                    disabled={openEdit}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
@@ -2689,6 +2752,7 @@ export default function EmployeeForm() {
                                                         }));
                                                         field.onChange(newValue);
                                                     }}
+                                                    disabled={openEdit}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
@@ -2733,6 +2797,7 @@ export default function EmployeeForm() {
                                                         field.onChange(newValue);
                                                     }}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
+                                                    disabled={openEdit}
                                                     renderInput={(params) => (
                                                         <StyledInput
                                                             {...params}
@@ -2777,6 +2842,7 @@ export default function EmployeeForm() {
                                                         }));
                                                         field.onChange(newValue);
                                                     }}
+                                                    disabled={openEdit}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
@@ -2821,6 +2887,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData2((prev) => ({
@@ -2867,6 +2934,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData2((prev) => ({
@@ -2910,6 +2978,7 @@ export default function EmployeeForm() {
                                                         }));
                                                         field.onChange(newValue);
                                                     }}
+                                                    disabled={openEdit}
                                                     isOptionEqualToValue={(option, value) => option.value === value}
                                                     renderInput={(params) => (
                                                         <StyledInput
@@ -2953,6 +3022,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData2((prev) => ({
@@ -2992,6 +3062,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData2((prev) => ({
@@ -3027,6 +3098,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData2((prev) => ({
@@ -3063,6 +3135,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData2((prev) => ({
@@ -3182,6 +3255,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData2((prev) => ({
@@ -3223,6 +3297,7 @@ export default function EmployeeForm() {
                                                         fullWidth
                                                         color="primary"
                                                         style={{ marginBottom: '3px' }}
+                                                        disabled={openEdit}
                                                     >
                                                         {uploadStatus ? 'File Uploaded' : 'Upload File'}
                                                         <input
@@ -3282,6 +3357,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData3((prev) => ({
@@ -3316,6 +3392,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData3((prev) => ({
@@ -3351,6 +3428,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData3((prev) => ({
@@ -3390,6 +3468,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData3((prev) => ({
@@ -3425,6 +3504,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData3((prev) => ({
@@ -3459,6 +3539,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData3((prev) => ({
@@ -3530,6 +3611,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -3565,6 +3647,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -3602,6 +3685,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -3639,6 +3723,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -3737,6 +3822,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -3771,6 +3857,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -3807,6 +3894,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -3844,6 +3932,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -3941,6 +4030,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -3975,6 +4065,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -4011,6 +4102,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -4047,6 +4139,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData4((prev) => ({
@@ -4125,6 +4218,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData5((prev) => ({
@@ -4159,6 +4253,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData5((prev) => ({
@@ -4193,6 +4288,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData5((prev) => ({
@@ -4227,6 +4323,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData5((prev) => ({
@@ -4252,6 +4349,7 @@ export default function EmployeeForm() {
                                                     checked={isPFChecked}
                                                     onChange={handleCheckboxChange}
                                                     color="primary"
+                                                    disabled={openEdit}
                                                 />
                                             }
                                             label="Include PF"
@@ -4264,6 +4362,7 @@ export default function EmployeeForm() {
                                                 <Checkbox
                                                     checked={isESIChecked}
                                                     onChange={handleCheckboxESIChange}
+                                                    disabled={openEdit}
                                                     color="primary"
                                                 />
                                             }
@@ -4277,6 +4376,7 @@ export default function EmployeeForm() {
                                                 <Checkbox
                                                     checked={isLWFChecked}
                                                     onChange={handleCheckboxLWFChange}
+                                                    disabled={openEdit}
                                                     color="primary"
                                                 />
                                             }
@@ -4306,6 +4406,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData5((prev) => ({
@@ -4340,6 +4441,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData5((prev) => ({
@@ -4374,6 +4476,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData5((prev) => ({
@@ -4410,6 +4513,7 @@ export default function EmployeeForm() {
                                                     FormHelperTextProps={{
                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                     }}
+                                                    disabled={openEdit}
                                                     onChange={(e) => {
                                                         field.onChange(e);
                                                         setFormData5((prev) => ({
@@ -4446,6 +4550,7 @@ export default function EmployeeForm() {
                                             name="modeofpayment"
                                             control={control}
                                             defaultValue={formData6.modeofpayment}
+                                            disabled={openEdit}
                                             render={({ field }) => (
                                                 <FormControl fullWidth variant="outlined" margin="normal" error={!!errors.modeofpayment}>
                                                     <InputLabel>
@@ -4528,6 +4633,7 @@ export default function EmployeeForm() {
                                                                     FormHelperTextProps={{
                                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                                     }}
+                                                                    disabled={openEdit}
                                                                     onChange={(e) => {
                                                                         field.onChange(e);
                                                                         setFormData6((prev) => ({
@@ -4562,6 +4668,7 @@ export default function EmployeeForm() {
                                                                     FormHelperTextProps={{
                                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                                     }}
+                                                                    disabled={openEdit}
                                                                     onChange={(e) => {
                                                                         field.onChange(e);
                                                                         setFormData6((prev) => ({
@@ -4596,6 +4703,7 @@ export default function EmployeeForm() {
                                                                     FormHelperTextProps={{
                                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                                     }}
+                                                                    disabled={openEdit}
                                                                     onChange={(e) => {
                                                                         field.onChange(e);
                                                                         setFormData6((prev) => ({
@@ -4630,6 +4738,7 @@ export default function EmployeeForm() {
                                                                     FormHelperTextProps={{
                                                                         style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                                                     }}
+                                                                    disabled={openEdit}
                                                                     onChange={(e) => {
                                                                         field.onChange(e);
                                                                         setFormData6((prev) => ({
