@@ -358,7 +358,7 @@ export default function EmployeeTable() {
         <Grid item xs={2} md={2}>
           <TextField
             value={employeename || ''}
-            label="Enter Employee Name"
+            label="Enter Employee ( Name or Number ) "
             sx={{
               width: 200,
               '& .MuiInputBase-root': {
