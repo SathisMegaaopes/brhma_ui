@@ -20,6 +20,7 @@ import BadgeIcon from '@mui/icons-material/Badge';
 import DeparmentMaster from "../Departments";
 import TeamMaster from "../Team";
 import DesignationMaster from "../Designation";
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 
 
 
@@ -222,18 +223,31 @@ function Sidebar() {
                 {AuthorizedPerson === 1 && (
                     <SidebarIcon
                         disableRipple
-                        aria-label="EmployeeMaster"
+                        // aria-label="EmployeeMaster"
                         isopen={isopen}
-                        onClick={() => handleTabChange('EmployeeMaster')}
-                        isactive={activeTab === 'EmployeeMaster'}
+                        // onClick={() => handleTabChange('EmployeeMaster')}
+                        // isactive={activeTab === 'EmployeeMaster'}
                         style={{ marginTop: '-20px' }}
                     >
-                        <SupervisorAccountIcon sx={{ fontSize: 30 }} />
-                        {isopen && <span>&nbsp;&nbsp;&nbsp;Employee Master</span>}
+                        <CorporateFareIcon sx={{ fontSize: 30 }} />
+                        {isopen && <span>&nbsp;&nbsp;&nbsp;Organisation</span>}
                     </SidebarIcon>
                 )}
 
                 <div style={{ marginLeft: '45px', marginTop: '0px' }}>
+
+                    <SidebarIcon
+                        disableRipple
+                        aria-label="EmployeeMaster"
+                        isopen={isopen}
+                        onClick={() => handleTabChange('EmployeeMaster')}
+                        isactive={activeTab === 'EmployeeMaster'}
+                        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', marginTop: '-30px' }}
+                    >
+                        <SupervisorAccountIcon sx={{ fontSize: 20 }} />
+                        {isopen && <span>&nbsp;&nbsp;&nbsp;Employee</span>}
+                    </SidebarIcon>
+
 
                     <SidebarIcon
                         disableRipple
