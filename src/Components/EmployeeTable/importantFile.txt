@@ -526,3 +526,61 @@
                     //     </Grid>
 
                     // </Box>
+
+
+
+                        {/* // <Box
+                            //     sx={{
+                            //         position: 'absolute',
+                            //         top: -20,
+                            //         left: 0,
+                            //         right: 40,
+                            //         bottom: 0,
+                            //         zIndex: 0,
+                            //         display: 'flex',
+                            //         justifyContent: 'center',
+                            //         alignItems: 'center',
+                            //         // p: { xs: 2, sm: 3, md: 4 },
+                            //         // borderRadius: 2,
+                            //     }}
+                            // > */}
+                        {/* {openEdit ? <Button
+                                variant="contained"
+                                color="primary"
+                                startIcon={<EditIcon />}
+                                onClick={() => setOpenEdit(false)}
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 20,
+                                    zIndex: 5,
+                                    backgroundColor: '#1976d2',
+                                    '&:hover': {
+                                        backgroundColor: '#1565c0',
+                                    },
+                                }}
+                            />
+
+                                :
+
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    startIcon={<ClearIcon />}
+                                    onClick={() => setOpenEdit(true)}
+                                    sx={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        right: 20,
+                                        zIndex: 5,
+                                        backgroundColor: '#1976d2',
+                                        '&:hover': {
+                                            backgroundColor: '#1565c0',
+                                        },
+                                    }}
+                                />
+
+
+                            } */}
+
+                                                // </Box>

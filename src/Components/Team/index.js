@@ -154,39 +154,16 @@ const TeamMaster = () => {
 
                     :
 
-                    // <Box
-                    //     sx={{
-                    //         height: '70vh',
-                    //         width: '100%',
-                    //         display: 'flex',
-                    //         justifyContent: 'center',
-                    //         alignItems: 'center',
-                    //     }}
-                    // >
-                    //     <Grid
-                    //         container
-                    //         justifyContent="center"
-                    //         alignItems="center"
-                    //     >
-                    //         <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-                    //             <Diversity2Icon sx={{ fontSize: 100, marginTop: '-40px', color: 'gray' }} />
-                    //             <Typography variant='h5' sx={{ mt: '30px' }}>Sorry , There is no Team available ....  </Typography>
-                    //         </Grid>
-
-                    //     </Grid>
-
-                    // </Box>
-
-                    <DatanotFound/>
+                    <DatanotFound />
 
                 }
             </Grid>
 
-            <CustomDrawer title={'Add new Team'} open={openModal} close={handleCloseModal}>
+            <CustomDrawer title={'Add New Team'} open={openModal} close={handleCloseModal}>
 
                 <Grid container>
 
-                    <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 3, mt: 3 }}>
+                    {/* <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 3, mt: 3 }}>
                         <Grid item xs={4}>
                             <Typography>
                                 Photo
@@ -207,7 +184,7 @@ const TeamMaster = () => {
                                 />
                             </label>
                         </Grid>
-                    </Grid>
+                    </Grid> */}
 
                     <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 0 }}>
                         <Grid item xs={4}>
