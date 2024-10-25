@@ -14,6 +14,7 @@ const EmployeeBasicInformation = ({ handleProfileUpload, profileImageUrl, contro
   margin-right: 16px; 
 `;
 
+    // console.log(fetchAvailable , 'cOMMINGNNGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG')
 
     return (
         <div>
@@ -139,7 +140,7 @@ const EmployeeBasicInformation = ({ handleProfileUpload, profileImageUrl, contro
                                             FormHelperTextProps={{
                                                 style: { margin: 0, position: 'absolute', bottom: '-20px' }
                                             }}
-                                            disabled={interRequest === 0 ? true : false }
+                                            disabled={(interRequest === 0) ? true : false}
                                             onChange={(e) => {
                                                 field.onChange(e);
                                                 setFormData1((prev) => ({

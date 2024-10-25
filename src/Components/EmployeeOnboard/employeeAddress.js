@@ -245,7 +245,7 @@ const EmployeeAddress = ({
               <Checkbox
                 checked={copyToPermanent}
                 onChange={handleCheckboxChange2}
-                disabled={!(formData3.currentaddress && formData3.currentCity && formData3.currentPincode)}
+                disabled={!(formData3.currentaddress && formData3.currentCity && formData3.currentPincode) || openEdit }
               />
             }
             label="Same as Current Address"

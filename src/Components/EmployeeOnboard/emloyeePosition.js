@@ -13,10 +13,6 @@ const EmployeePosition = ({
   formData2, StyledInput, errors, openEdit, setFormData2, employeeMap, handleProofUpload, shifts
 }) => {
 
-    console.log(departments , 'Deprtments inside the empoloyeePosition')
-    console.log(designation , 'Deprtments inside the empoloyeePosition')
-    console.log(teams , 'Deprtments inside the empoloyeePosition')
-    console.log(employees , 'Deprtments inside the empoloyeePosition')
 
   return (
     <Grid container>
@@ -472,7 +468,7 @@ const EmployeePosition = ({
                     }));
                   }}
                 >
-                  {grade.map(item => (
+                  {grade?.map(item => (
                     <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>
                   ))}
                 </StyledInput>
