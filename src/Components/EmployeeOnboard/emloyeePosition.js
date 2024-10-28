@@ -34,12 +34,13 @@ const EmployeePosition = ({
               render={({ field }) => (
                 <Autocomplete
                   {...field}
-                  options={[
-                    { label: 'Kannan R', value: 'Kannan R' },
-                    { label: 'Shamala Nagaveni', value: 'Shamala Nagaveni' },
-                    { label: 'Sathis Kumar', value: 'Sathis Kumar' },
-                    { label: 'Santhosh', value: 'Santhosh' }
-                  ]}
+                  // options={[
+                  //   { label: 'Kannan R', value: 'Kannan R' },
+                  //   { label: 'Shamala Nagaveni', value: 'Shamala Nagaveni' },
+                  //   { label: 'Sathis Kumar', value: 'Sathis Kumar' },
+                  //   { label: 'Santhosh', value: 'Santhosh' }
+                  // ]}
+                  options={employeeMap(employees)}
                   isOptionEqualToValue={(option, value) => option.value === value}
                   disabled={openEdit}
                   onChange={(event, value) => {
@@ -85,12 +86,13 @@ const EmployeePosition = ({
 
                 <Autocomplete
                   {...field}
-                  options={[
-                    { label: 'Kannan R  ', value: 'Kannan R' },
-                    { label: 'Shamala Nagaveni ', value: 'Shamala Nagaveni' },
-                    { label: 'Sathis Kumar ', value: 'Sathis Kumar' },
-                    { label: 'Santhosh ', value: 'Santhosh' }
-                  ]}
+                  // options={[
+                  //   { label: 'Kannan R  ', value: 'Kannan R' },
+                  //   { label: 'Shamala Nagaveni ', value: 'Shamala Nagaveni' },
+                  //   { label: 'Sathis Kumar ', value: 'Sathis Kumar' },
+                  //   { label: 'Santhosh ', value: 'Santhosh' }
+                  // ]}
+                  options={employeeMap(employees)}
                   isOptionEqualToValue={(option, value) => option.value === value}
                   onChange={(event, value) => {
                     const newValue = value ? value.value : null;

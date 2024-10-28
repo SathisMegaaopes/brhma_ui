@@ -249,6 +249,17 @@ function Sidebar() {
                         {isopen && <span>&nbsp;&nbsp;&nbsp;Employee</span>}
                     </SidebarIcon>
 
+                    <SidebarIcon
+                        disableRipple
+                        aria-label="Department"
+                        isopen={isopen}
+                        onClick={() => handleTabChange('Department')}
+                        isactive={activeTab === 'Department'}
+                        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', marginTop: '-30px' }}
+                    >
+                        <BusinessIcon sx={{ fontSize: 20 }} />
+                        {isopen && <span>&nbsp;&nbsp;&nbsp;Department</span>}
+                    </SidebarIcon>
 
                     <SidebarIcon
                         disableRipple
@@ -262,17 +273,7 @@ function Sidebar() {
                         {isopen && <span>&nbsp;&nbsp;&nbsp;Team</span>}
                     </SidebarIcon>
 
-                    <SidebarIcon
-                        disableRipple
-                        aria-label="Department"
-                        isopen={isopen}
-                        onClick={() => handleTabChange('Department')}
-                        isactive={activeTab === 'Department'}
-                        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', marginTop: '-30px' }}
-                    >
-                        <BusinessIcon sx={{ fontSize: 20 }} />
-                        {isopen && <span>&nbsp;&nbsp;&nbsp;Department</span>}
-                    </SidebarIcon>
+
 
                     <SidebarIcon
                         disableRipple

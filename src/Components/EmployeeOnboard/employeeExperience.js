@@ -7,7 +7,7 @@ import { Controller } from 'react-hook-form';
 
 const EmployeeExperience = ({
 
-  control,StyledLabel,
+  control, StyledLabel, insertRequest,
   formData4, StyledInput, errors, openEdit, setFormData4
 
 }) => {
@@ -15,7 +15,7 @@ const EmployeeExperience = ({
   return (
     <Grid container >
 
-      <Grid container xs={12} bgcolor={''} sx={{ borderBottom: '1px solid black', width: '20%' }}> {/* First Horizontal view page - 3 container */}
+      <Grid container xs={12} bgcolor={''} sx={{ borderBottom: insertRequest === 0 ? '' : '1px solid black', width: '20%' }}> {/* First Horizontal view page - 3 container */}
 
         <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}
           <Grid item xs={4}>
@@ -218,7 +218,7 @@ const EmployeeExperience = ({
 
       </Grid>
 
-      <Grid container xs={12} bgcolor={''} sx={{ borderBottom: '1px solid black' }} > {/* Second Horizontal view page - 3 container */}
+      <Grid container xs={12} bgcolor={''} sx={{  borderBottom: insertRequest === 0 ? '' : '1px solid black', width: '20%' }} > {/* Second Horizontal view page - 3 container */}
 
 
         <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}

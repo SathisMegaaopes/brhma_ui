@@ -1,4 +1,4 @@
-import { Autocomplete, Avatar, Box, Button, Divider, Drawer, FormControl, Grid, IconButton, InputAdornment, InputBase, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Autocomplete, Avatar, Box, Button, CircularProgress, Divider, Drawer, FormControl, Grid, IconButton, InputAdornment, InputBase, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -7,10 +7,13 @@ import { right } from '@popperjs/core';
 import CustomDrawer from '../CustomComponents/drawer';
 import CustomSelect from '../CustomComponents/customSelect';
 import DatanotFound from '../CustomComponents/datanotfound';
+import { useFetchData } from '../EmployeeTable/customHook';
+import URL from '../Global/Utils/url_route';
 
 const DeparmentMaster = () => {
 
   const [openModal, setOpenModal] = useState(false);
+  const [searchData, setSearchData] = useState(null)
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -21,47 +24,18 @@ const DeparmentMaster = () => {
   }
 
 
-  const data = [
+  const departmentUrl = `${URL}department`;
 
-    {
-      id: 1,
-      name: 'Software Department',
-      company: 'MegaaOpes Solutions Private Limited',
-      leadname: 'Sathis kumar R'
-    },
-    {
-      id: 2,
-      name: 'Operations Department',
-      company: 'MegaaOpes Solutions Private Limited',
-      leadname: 'Kannan R'
-    }, {
-      id: 3,
-      name: 'IT Department',
-      company: 'MegaaOpes Solutions Private Limited',
-      leadname: 'Shamala Srinivas'
-    }, {
-      id: 4,
-      name: 'Human Resource Department',
-      company: 'MegaaOpes Solutions Private Limited',
-      leadname: 'Kannan R'
-    }, {
-      id: 5,
-      name: 'Business Development Department',
-      company: 'MegaaOpes Solutions Private Limited',
-      leadname: 'Sathis kumar R'
-    }, {
-      id: 6,
-      name: 'Admin and Facility Department',
-      company: 'MegaaOpes Solutions Private Limited',
-      leadname: 'Sathis kumar R'
-    },
-  ]
+  const { data: departmentData, loading: departmentLoading, error: departmentError } = useFetchData(departmentUrl,
+    { searchData: searchData }, searchData
+  );
 
 
   return (
     <Grid container sx={{ width: '100%', paddingLeft: 6, paddingTop: 3 }}>
 
       <Grid container xs={12} sx={{ backgroundColor: '', paddingRight: 4 }}>
+
         <Grid item xs={3}>
           <Typography
             variant='h5'
@@ -83,6 +57,9 @@ const DeparmentMaster = () => {
               sx={{ ml: 1, flex: 1, color: 'black' }}
               placeholder="Search Department Names"
               inputProps={{ 'aria-label': 'Search Department Names' }}
+              onChange={(e) => {
+                setSearchData(e.target.value)
+              }}
             />
           </Paper>
         </Grid>
@@ -96,7 +73,60 @@ const DeparmentMaster = () => {
 
       <Grid item xs={12} sx={{ paddingTop: 2, paddingRight: 4 }} >
 
-        {data.length > 0 ?
+
+        {departmentLoading && (
+
+          <Box
+            sx={{
+              height: '70vh',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Grid
+              container
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <CircularProgress />
+              </Grid>
+
+            </Grid>
+
+          </Box>
+
+        )}
+
+
+        {departmentError && (
+
+          <Box
+            sx={{
+              height: '70vh',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Grid
+              container
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                Something went wrong dude eh ....
+              </Grid>
+
+            </Grid>
+
+          </Box>
+        )}
+
+        {departmentData?.data?.length > 0 && !departmentLoading ?
 
           <TableContainer component={Paper} variant="outlined" >
 
@@ -113,7 +143,7 @@ const DeparmentMaster = () => {
 
               <TableBody >
 
-                {data.map((item, index) => (
+                {departmentData?.data?.map((item, index) => (
 
                   <TableRow key={item.id} style={{ cursor: 'pointer' }} >
 
@@ -125,7 +155,7 @@ const DeparmentMaster = () => {
 
 
                       <Typography sx={{ color: 'gray' }}>
-                        {item.company}
+                        {item.parent_department}
                       </Typography>
 
                     </TableCell>
@@ -133,7 +163,7 @@ const DeparmentMaster = () => {
                     <TableCell>
 
                       <Typography sx={{ fontWeight: 400 }}>
-                        {item.leadname}
+                        {item.lead_name}
                       </Typography>
 
 

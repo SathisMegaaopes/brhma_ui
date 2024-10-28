@@ -14,8 +14,6 @@ const EmployeeBasicInformation = ({ handleProfileUpload, profileImageUrl, contro
   margin-right: 16px; 
 `;
 
-    // console.log(fetchAvailable , 'cOMMINGNNGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG')
-
     return (
         <div>
             <Grid container xs={12} paddingLeft={0}  > {/* First Half  Parent Container */}
@@ -28,12 +26,19 @@ const EmployeeBasicInformation = ({ handleProfileUpload, profileImageUrl, contro
                             hidden
                             onChange={handleProfileUpload}
                             id="file-input"
+                            disabled={openEdit}
                         />
                         <label htmlFor="file-input">
                             <Avatar
-                                sx={{ width: 200, height: 200, cursor: 'pointer' }}
+                                sx={{
+                                    width: 200,
+                                    height: 200,
+                                    cursor: openEdit ? 'not-allowed' : 'pointer',
+                                    opacity: openEdit ? 0.7 : 1,
+                                }}
                                 alt="Profile Image"
                                 src={profileImageUrl}
+
                             />
                         </label>
                     </Grid>

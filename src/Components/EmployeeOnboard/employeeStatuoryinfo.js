@@ -6,8 +6,8 @@ import { Controller } from 'react-hook-form';
 
 const EmployeeStatuoryinfo = ({
 
-  isPFChecked,handleCheckboxChange,isESIChecked,handleCheckboxESIChange,
-  isLWFChecked,handleCheckboxLWFChange,
+  isPFChecked, handleCheckboxChange, isESIChecked, handleCheckboxESIChange,
+  isLWFChecked, handleCheckboxLWFChange,
 
   control, StyledLabel,
   formData5, StyledInput, errors, openEdit, setFormData5
@@ -207,147 +207,215 @@ const EmployeeStatuoryinfo = ({
           </Grid>
         </Grid>
 
-        <Grid xs={4} container alignItems="center" paddingBottom={2} style={{ visibility: isPFChecked ? 'visible' : 'hidden' }} >
-          <Grid item xs={4}>
-            <StyledLabel>
-              PF Number
-            </StyledLabel>
+        <Grid container xs={12}>
+          <Grid xs={4}>
+            {isPFChecked &&
+              <>
+                <Grid xs={12} container alignItems="center" paddingBottom={2} style={{ visibility: isPFChecked ? 'visible' : 'hidden' }} >
+                  <Grid item xs={4}>
+                    <StyledLabel>
+                      PF Number
+                    </StyledLabel>
+                  </Grid>
+                  <Grid item xs={7}>
+                    <Controller
+                      name="pfnumber"
+                      control={control}
+                      defaultValue={formData5.pfnumber || ''}
+                      render={({ field }) => (
+                        <StyledInput
+                          fullWidth
+                          {...field}
+                          variant="outlined"
+                          error={!!errors.pfnumber}
+                          helperText={errors.pfnumber ? errors.pfnumber.message : ''}
+                          FormHelperTextProps={{
+                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                          }}
+                          disabled={openEdit}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            setFormData5((prev) => ({
+                              ...prev,
+                              pfnumber: e.target.value,
+                            }));
+                          }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid xs={12} container alignItems="center" paddingBottom={2} style={{ visibility: isPFChecked ? 'visible' : 'hidden', }} >
+                  <Grid item xs={4}>
+                    <StyledLabel>
+                      PF Join Date
+                    </StyledLabel>
+                  </Grid>
+                  <Grid item xs={7}>
+                    <Controller
+                      name="pfjoindate"
+                      control={control}
+                      defaultValue={formData5.pfjoindate}
+                      render={({ field }) => (
+                        <StyledInput
+                          fullWidth
+                          {...field}
+                          type="date"
+                          variant="outlined"
+                          InputLabelProps={{ shrink: true }}
+                          error={!!errors.pfjoindate}
+                          helperText={errors.pfjoindate ? errors.pfjoindate.message : ''}
+                          FormHelperTextProps={{
+                            style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                          }}
+                          disabled={openEdit}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            setFormData5((prev) => ({
+                              ...prev,
+                              pfjoindate: e.target.value,
+                            }));
+                          }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </>
+            }
           </Grid>
-          <Grid item xs={7}>
-            <Controller
-              name="pfnumber"
-              control={control}
-              defaultValue={formData5.pfnumber || ''}
-              render={({ field }) => (
-                <StyledInput
-                  fullWidth
-                  {...field}
-                  variant="outlined"
-                  error={!!errors.pfnumber}
-                  helperText={errors.pfnumber ? errors.pfnumber.message : ''}
-                  FormHelperTextProps={{
-                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                  }}
-                  disabled={openEdit}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    setFormData5((prev) => ({
-                      ...prev,
-                      pfnumber: e.target.value,
-                    }));
-                  }}
-                />
-              )}
-            />
+
+
+
+          <Grid container xs={4}>
+            {isESIChecked &&
+              <Grid xs={12} container alignItems="" paddingBottom={2} style={{ visibility: isESIChecked ? 'visible' : 'hidden' }}>
+                <Grid item xs={4}>
+                  <StyledLabel>
+                    ESI Number
+                  </StyledLabel>
+                </Grid>
+                <Grid item xs={7}>
+                  <Controller
+                    name="esinumber"
+                    control={control}
+                    defaultValue={formData5.esinumber || ''}
+                    render={({ field }) => (
+                      <StyledInput
+                        fullWidth
+                        {...field}
+                        variant="outlined"
+                        error={!!errors.esinumber}
+                        helperText={errors.esinumber ? errors.esinumber.message : ''}
+                        FormHelperTextProps={{
+                          style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                        }}
+                        disabled={openEdit}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setFormData5((prev) => ({
+                            ...prev,
+                            esinumber: e.target.value,
+                          }));
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+            }
+
           </Grid>
+
+
+          <Grid xs={4}>
+            {isLWFChecked &&
+              <Grid xs={12} container alignItems="center" paddingBottom={2} style={{ visibility: isLWFChecked ? 'visible' : 'hidden' }} >
+                <Grid item xs={4}>
+                  <StyledLabel>
+                    LWF Number
+                  </StyledLabel>
+                </Grid>
+                <Grid item xs={7}>
+                  <Controller
+                    name="lwfnumber"
+                    control={control}
+                    defaultValue={formData5.lwfnumber || ''}
+                    render={({ field }) => (
+                      <StyledInput
+                        fullWidth
+                        {...field}
+                        variant="outlined"
+                        error={!!errors.lwfnumber}
+                        helperText={errors.lwfnumber ? errors.lwfnumber.message : ''}
+                        FormHelperTextProps={{
+                          style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                        }}
+                        disabled={openEdit}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setFormData5((prev) => ({
+                            ...prev,
+                            lwfnumber: e.target.value,
+                          }));
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+            }
+          </Grid>
+
         </Grid>
 
-        <Grid xs={4} container alignItems="center" paddingBottom={2} style={{ visibility: isESIChecked ? 'visible' : 'hidden' }}>
-          <Grid item xs={4}>
-            <StyledLabel>
-              ESI Number
-            </StyledLabel>
-          </Grid>
-          <Grid item xs={7}>
-            <Controller
-              name="esinumber"
-              control={control}
-              defaultValue={formData5.esinumber || ''}
-              render={({ field }) => (
-                <StyledInput
-                  fullWidth
-                  {...field}
-                  variant="outlined"
-                  error={!!errors.esinumber}
-                  helperText={errors.esinumber ? errors.esinumber.message : ''}
-                  FormHelperTextProps={{
-                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                  }}
-                  disabled={openEdit}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    setFormData5((prev) => ({
-                      ...prev,
-                      esinumber: e.target.value,
-                    }));
-                  }}
-                />
-              )}
-            />
-          </Grid>
-        </Grid>
 
-        <Grid xs={4} container alignItems="center" paddingBottom={2} style={{ visibility: isLWFChecked ? 'visible' : 'hidden' }} >
-          <Grid item xs={4}>
-            <StyledLabel>
-              LWF Number
-            </StyledLabel>
-          </Grid>
-          <Grid item xs={7}>
-            <Controller
-              name="lwfnumber"
-              control={control}
-              defaultValue={formData5.lwfnumber || ''}
-              render={({ field }) => (
-                <StyledInput
-                  fullWidth
-                  {...field}
-                  variant="outlined"
-                  error={!!errors.lwfnumber}
-                  helperText={errors.lwfnumber ? errors.lwfnumber.message : ''}
-                  FormHelperTextProps={{
-                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                  }}
-                  disabled={openEdit}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    setFormData5((prev) => ({
-                      ...prev,
-                      lwfnumber: e.target.value,
-                    }));
-                  }}
-                />
-              )}
-            />
-          </Grid>
-        </Grid>
 
-        <Grid xs={4} container alignItems="center" paddingBottom={2} style={{ visibility: isPFChecked ? 'visible' : 'hidden', }} >
-          <Grid item xs={4}>
-            <StyledLabel>
-              PF Join Date
-            </StyledLabel>
+
+
+
+
+
+        {/* {isPFChecked &&
+          <Grid xs={4} container alignItems="center" paddingBottom={2} style={{ visibility: isPFChecked ? 'visible' : 'hidden', }} >
+            <Grid item xs={4}>
+              <StyledLabel>
+                PF Join Date
+              </StyledLabel>
+            </Grid>
+            <Grid item xs={7}>
+              <Controller
+                name="pfjoindate"
+                control={control}
+                defaultValue={formData5.pfjoindate}
+                render={({ field }) => (
+                  <StyledInput
+                    fullWidth
+                    {...field}
+                    type="date"
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}
+                    error={!!errors.pfjoindate}
+                    helperText={errors.pfjoindate ? errors.pfjoindate.message : ''}
+                    FormHelperTextProps={{
+                      style: { margin: 0, position: 'absolute', bottom: '-20px' }
+                    }}
+                    disabled={openEdit}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setFormData5((prev) => ({
+                        ...prev,
+                        pfjoindate: e.target.value,
+                      }));
+                    }}
+                  />
+                )}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={7}>
-            <Controller
-              name="pfjoindate"
-              control={control}
-              defaultValue={formData5.pfjoindate}
-              render={({ field }) => (
-                <StyledInput
-                  fullWidth
-                  {...field}
-                  type="date"
-                  variant="outlined"
-                  InputLabelProps={{ shrink: true }}
-                  error={!!errors.pfjoindate}
-                  helperText={errors.pfjoindate ? errors.pfjoindate.message : ''}
-                  FormHelperTextProps={{
-                    style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                  }}
-                  disabled={openEdit}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    setFormData5((prev) => ({
-                      ...prev,
-                      pfjoindate: e.target.value,
-                    }));
-                  }}
-                />
-              )}
-            />
-          </Grid>
-        </Grid>
+        } */}
+
 
       </Grid>
     </Grid>
