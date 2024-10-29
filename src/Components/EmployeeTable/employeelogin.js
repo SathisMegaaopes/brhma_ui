@@ -6,20 +6,21 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Alert, Autocomplete, Box, Button, Drawer, Grid, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Drawer, Grid, Menu, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import URL from '../Global/Utils/url_route';
-import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { DateFormater } from '../Global/Utils/common_data';
 import { useSharedContext } from '../../Context';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useFetchData } from './customHook';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import DatanotFound from '../CustomComponents/datanotfound';
+import Fade from '@mui/material/Fade';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
+
 
 export default function EmployeeTable() {
 
@@ -47,6 +48,18 @@ export default function EmployeeTable() {
   const [departmentname, setDepartmentName] = React.useState(null);
   const [teamname, setTeamName] = React.useState(null);
   const [employeename, setEmployeeName] = React.useState(null);
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const openOptions = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseOptions = () => {
+    setAnchorEl(null);
+  };
+
 
 
   const url = URL + "employeemaster"
@@ -83,7 +96,6 @@ export default function EmployeeTable() {
 
   }, [departData, departmentList])
 
-
   React.useEffect(() => {
 
     if (teamData) {
@@ -103,10 +115,14 @@ export default function EmployeeTable() {
   }, [employeeDAta])
 
 
+
+
+
   const handleChange = (id) => {
 
     setaddorUpdate(0)
     setDrawerName('Update Credentials')
+    setAnchorEl(null)
 
     const selectedData = employeeData.filter((item) => {
       return item.employee_number === id
@@ -190,7 +206,6 @@ export default function EmployeeTable() {
     setOpen(!open)
   }
 
-
   const handleAddUser = () => {
 
     setInsertRequest(2);
@@ -217,7 +232,6 @@ export default function EmployeeTable() {
   const isFormIncomplete = () => {
     return Object.values(data).some(value => value === '' || value === null);
   };
-
 
   const changeintohalf = (password) => {
     const halfLength = Math.ceil(password.length / 2);
@@ -280,6 +294,7 @@ export default function EmployeeTable() {
     setTeamName(value.value);
     setEmployeeName(null);
   }
+
 
 
   return (
@@ -452,7 +467,7 @@ export default function EmployeeTable() {
 
                       <TableCell align='center'>User Role</TableCell>
 
-                      <TableCell align='center'>Update</TableCell>
+                      <TableCell align='center'>Actions</TableCell>
 
                     </TableRow>
                   </TableHead>
@@ -489,17 +504,41 @@ export default function EmployeeTable() {
 
                         <TableCell align='center' >{item.user_role}</TableCell>
 
-                        <TableCell align='center' >
-                          <IconButton color='primary' onClick={() => handleChange(item.employee_number)} sx={{ padding: 0.5 }} >
-                            <EditNoteRoundedIcon
-                              sx={{ fontSize: '32px' }}
-                            />
+                        <TableCell align="center" sx={{ padding: 0 }}>
+
+                          <IconButton color='primary' sx={{ padding: 0.5 }} >
+                            <Button
+                              id="fade-button"
+                              aria-controls={openOptions ? 'fade-menu' : undefined}
+                              aria-haspopup="true"
+                              aria-expanded={openOptions ? 'true' : undefined}
+                              onClick={handleClick}
+                            >
+                              <MoreVertIcon />
+                            </Button>
+                            <Menu
+                              id="fade-menu"
+                              MenuListProps={{
+                                'aria-labelledby': 'fade-button',
+                              }}
+                              anchorEl={anchorEl}
+                              open={openOptions}
+                              onClose={handleCloseOptions}
+                              TransitionComponent={Fade}
+                            >
+                              <MenuItem onClick={() => handleEdit(item.employee_number)}>View & Edit</MenuItem>
+                              <MenuItem onClick={() => handleChange(item.employee_number)}>Edit Password</MenuItem>
+                              <MenuItem onClick={''}>Activate</MenuItem>
+                            </Menu>
+
                           </IconButton>
                         </TableCell>
-
                       </TableRow>
                     ))}
                   </TableBody>
+
+
+
                 </Table>
               </TableContainer>
 
@@ -507,40 +546,25 @@ export default function EmployeeTable() {
 
             :
 
-            // <Box
-            //   sx={{
-            //     height: '70vh',
-            //     width: '100%',
-            //     display: 'flex',
-            //     justifyContent: 'center',
-            //     alignItems: 'center',
-            //   }}
-            // >
-            //   <Grid
-            //     container
-            //     justifyContent="center"
-            //     alignItems="center"
-            //   >
-            //     <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-            //       <DotLottieReact
-            //         src="/nodatafound.json"
-            //         loop
-            //         autoplay
-            //       />
-            //       <Typography variant='h5' sx={{ mt: '25px', ml: 5 }}>Sorry , There is no data available ....  </Typography>
-
-            //     </Grid>
-
-            //   </Grid>
-
-            // </Box>
-            <DatanotFound/>
+            <DatanotFound />
 
           }
 
         </Grid>
 
       )}
+
+
+      {/*                         
+                        <TableCell align='center' >
+                           <IconButton color='primary' onClick={() => handleChange(item.employee_number)} sx={{ padding: 0.5 }} >
+                            <EditNoteRoundedIcon
+                              sx={{ fontSize: '32px' }}
+                            />
+                          </IconButton> 
+                        </TableCell> */}
+
+
 
 
       <DrawerComponent open={open} name={drawername} data={data} handleValueChange={handleValueChange} setOpen={setOpen} handleUpdate={handleUpdate} addorUpdate={addorUpdate} isFormIncomplete={isFormIncomplete} handleClose={handleClose} />
@@ -708,3 +732,96 @@ function DrawerComponent({ open, name, data, handleValueChange, handleUpdate, ad
 
             </Box>
           )} */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// <TableBody>
+// {employeeData && employeeData.map((item, index) => (
+//   <TableRow key={item.emp_id} style={{ cursor: 'pointer' }}>
+//     <TableCell onClick={() => handleEdit(item.employee_number)}>
+//       {item.first_name} {item.last_name}
+//     </TableCell>
+//     <TableCell>{item.employee_number}</TableCell>
+//     <TableCell>{item.email}</TableCell>
+//     <TableCell>{item.mobile_number}</TableCell>
+//     <TableCell>{DateFormater(item.date_of_join)}</TableCell>
+//     <TableCell align='left' style={{ whiteSpace: 'nowrap' }}>{item.user_name}</TableCell>
+//     <TableCell align="left" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+//       {showPassword[index] ? item.user_pwd : changeintohalf(item.user_pwd)}
+//     </TableCell>
+//     <TableCell align="center">
+//       <IconButton onClick={() => togglePasswordVisibility(index)}>
+//         {showPassword[index] ? <VisibilityIcon /> : <VisibilityOffIcon />}
+//       </IconButton>
+//     </TableCell>
+//     <TableCell align='center'>{item.user_role}</TableCell>
+//     <TableCell align="center" sx={{ position: 'absolute' }}>
+
+{/* <SpeedDial
+                  ariaLabel="SpeedDial tooltip example"
+                  icon={<SpeedDialIcon />}
+                  onClose={handleDialClose}
+                  onOpen={handleDialOpen}
+                  open={DialOpen}
+
+                  direction='down'
+                >
+
+
+                  {actions.map((action) => (
+                    <SpeedDialAction
+                      sx={{ bgcolor: 'yellow' }}
+                      key={action.name}
+                      icon={action.icon}
+                      tooltipTitle={action.name}
+                      tooltipOpen
+                      onClick={handleDialClose}
+                    />
+                  ))}
+                </SpeedDial> */}
+
+
+{/* <SpeedDial
+                  ariaLabel="SpeedDial tooltip example"
+                  icon={<SpeedDialIcon />}
+                  onClose={handleDialClose}
+                  onOpen={handleDialOpen}
+                  open={DialOpen}
+                  direction='down'
+                  sx={{ zIndex: 99999 , height:'100%' , width:'100%' }}
+                >
+                  {actions.map((action) => (
+                    <SpeedDialAction
+                      key={action.name}
+                      icon={action.icon}
+                      tooltipTitle={action.name}
+                      tooltipOpen
+                      onClick={handleDialClose}
+                      sx={{
+                        bgcolor: 'yellow',
+                        display: DialOpen ? 'block' : 'none', 
+                      }}
+                    />
+                  ))}
+                </SpeedDial>
+
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody> */}

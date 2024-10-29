@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 
 const EmployeePosition = ({
   StyledLabel, control, mapOptions, designation, departments, teams, employees, grade, uploadStatus, uploadFileName,
-  formData2, StyledInput, errors, openEdit, setFormData2, employeeMap, handleProofUpload, shifts
+  formData2, StyledInput, errors, openEdit, setFormData2, employeeMap, handleProofUpload, shifts , mapShiftOptions
 }) => {
 
 
@@ -408,7 +408,8 @@ const EmployeePosition = ({
 
                 <Autocomplete
                   {...field}
-                  options={mapOptions(shifts)}
+                  // options={mapOptions(shifts)}
+                  options={mapShiftOptions(shifts)}
                   onChange={(event, value) => {
                     const newValue = value ? value.value : null;
                     setFormData2((prevData) => ({

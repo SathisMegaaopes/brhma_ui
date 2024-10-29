@@ -1,34 +1,161 @@
-import { Autocomplete, Avatar, Box, Button, CircularProgress, Divider, Drawer, FormControl, Grid, IconButton, InputAdornment, InputBase, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import {
+  Alert,
+  Autocomplete, Box, Button, CircularProgress, Grid, IconButton, InputBase, Menu, MenuItem,
+  Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
+} from '@mui/material';
 import React, { useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import Diversity2Icon from '@mui/icons-material/Diversity2';
-import { right } from '@popperjs/core';
 import CustomDrawer from '../CustomComponents/drawer';
-import CustomSelect from '../CustomComponents/customSelect';
 import DatanotFound from '../CustomComponents/datanotfound';
 import { useFetchData } from '../EmployeeTable/customHook';
 import URL from '../Global/Utils/url_route';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Fade from '@mui/material/Fade';
+import axios from 'axios'
+
 
 const DeparmentMaster = () => {
 
   const [openModal, setOpenModal] = useState(false);
-  const [searchData, setSearchData] = useState(null)
+  const [searchData, setSearchData] = useState(null);
+
+  const [departmentName, setDepartmentName] = useState(null);
+  const [parentDepartment, setParentDepartment] = useState(null);
+  const [leadeName, setLeadName] = useState(null);
+
+  const [showSnackbar, setShowSnackbar] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+
+  const [viewMode, setViewMode] = useState(false);
+
+  const [editMode, setEditMode] = useState(false);
+
+  const [addMode, setAddMode] = useState(false)
+
 
   const handleOpenModal = () => {
+    setAddMode(true)
     setOpenModal(true);
   }
 
   const handleCloseModal = () => {
+
     setOpenModal(false);
+    setDepartmentName(null);
+    setParentDepartment(null);
+    setLeadName(null);
+
+    setViewMode(false);
+    setEditMode(false);
+    setAddMode(false);
+
   }
 
+  React.useEffect(() => {
+
+    const handlePopulate = async () => {
+
+      /// Thaniya API eluthu , edhuku na for Data va populate panna ui la , mabye ui vandhu fully ok nu than nenaikuren
+      /// but also , last ah oru check panniko ellam correct ah iruka nu
+      /// Change na view vandhu mathanum , view mode la konjam nalla illa 
+      /// let me see , tomorrow , what will be happening nu ..... 
+
+    }
+
+  }, [])
+
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const openOptions = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseOptions = () => {
+    setAnchorEl(null);
+  };
+
+
+  const options1 = [
+    { label: 'MegaaOpes Solutions Private Limited', value: 'MegaaOpes Solutions Private Limited' },
+  ];
+
+
+  const handleCreate = async () => {
+
+    let url = `${URL}department`;
+
+    const apiPostData = {
+      "departmentName": departmentName,
+      "parentDepartment": parentDepartment,
+      "leadeName": leadeName
+    }
+
+    try {
+
+      const response = await axios.post(url, apiPostData)
+
+      if (response?.data?.status === 1) {
+
+        setDepartmentName(null);
+        setParentDepartment(null);
+        setLeadName(null);
+
+
+        setShowSnackbar(true)
+        setSnackbarMessage(1)
+
+        setOpenModal(false);
+
+      } else {
+
+        setShowSnackbar(true);
+        setSnackbarMessage(0);
+
+      }
+
+
+    } catch (error) {
+      console.error(error, 'This is the error in the uploadfile')
+      setShowSnackbar(true)
+      setSnackbarMessage(0)
+    }
+
+    console.log(departmentName, parentDepartment, leadeName)
+  }
 
   const departmentUrl = `${URL}department`;
+  const employeeUrl = `${URL}todolist/employee`;
+
 
   const { data: departmentData, loading: departmentLoading, error: departmentError } = useFetchData(departmentUrl,
     { searchData: searchData }, searchData
   );
+
+  const { data: employeeData, loading: employeeLoading, error: employeeError } = useFetchData(employeeUrl);
+
+
+  const employeeMap = (data) => {
+    if (data) {
+      return data.map((item) => ({
+        label: item.f_name + " " + item.l_name,
+        value: item.f_name + " " + item.l_name
+      }))
+
+    } else {
+      return [{
+        label: 'Loading data',
+        value: 'Loading data'
+      }, {
+        label: 'Loading data',
+        value: 'Loading data'
+      }
+      ]
+    }
+  }
+
+
 
 
   return (
@@ -118,7 +245,11 @@ const DeparmentMaster = () => {
               alignItems="center"
             >
               <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                Something went wrong dude eh ....
+
+                <Typography variant='h6'>
+                  Something went wrong ... Please infrom to your Software Developer ...
+                </Typography>
+
               </Grid>
 
             </Grid>
@@ -137,6 +268,8 @@ const DeparmentMaster = () => {
                   <TableCell sx={{ fontSize: 18 }}> Department Name</TableCell>
 
                   <TableCell sx={{ fontSize: 18 }}>Lead Name</TableCell>
+
+                  <TableCell sx={{ textAlign: 'center', fontSize: 18 }}>Actions</TableCell>
 
                 </TableRow>
               </TableHead>
@@ -169,6 +302,68 @@ const DeparmentMaster = () => {
 
                     </TableCell>
 
+
+                    <TableCell align="center" sx={{ padding: 0 }}>
+
+                      <IconButton color='primary' sx={{ padding: 0.5, boxShadow: 'none' }} >
+                        <Button
+                          id="fade-button"
+                          aria-controls={openOptions ? 'fade-menu' : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={openOptions ? 'true' : undefined}
+                          onClick={handleClick}
+                        >
+                          <MoreVertIcon />
+                        </Button>
+                        <Menu
+                          id="fade-menu"
+                          MenuListProps={{
+                            'aria-labelledby': 'fade-button',
+                          }}
+                          anchorEl={anchorEl}
+                          open={Boolean(anchorEl)}
+                          onClose={handleCloseOptions}
+                          TransitionComponent={Fade}
+                          sx={{
+                            '& .MuiPaper-root': {
+                              border: '1px solid black',
+                              boxShadow: 'none',
+                            },
+                          }}
+                        >
+                          <MenuItem onClick={() => {
+                            setViewMode(true)
+                            setOpenModal(true)
+                            setAnchorEl(false)
+                          }
+                          }>
+                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
+                              View
+                            </Button>
+                          </MenuItem>
+                          <MenuItem onClick={
+                            () => {
+                              setEditMode(true)
+                              setOpenModal(true)
+                              setAnchorEl(false)
+                            }
+                          }>
+                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
+                              Edit
+                            </Button>
+                          </MenuItem>
+                          <MenuItem onClick={''}>
+                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
+                              Activate
+                            </Button>
+                          </MenuItem>
+
+                        </Menu>
+
+                      </IconButton>
+                    </TableCell>
+
+
                   </TableRow>
 
                 ))}
@@ -186,128 +381,200 @@ const DeparmentMaster = () => {
         }
       </Grid>
 
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setShowSnackbar(!showSnackbar)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        sx={{
+          zIndex: 99999,
+        }}
+      >
+        <Alert
+          onClose={() => setShowSnackbar(!showSnackbar)}
+          severity={snackbarMessage === 1 ? 'success' : 'error'}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage === 1 ? ' Successfully Created The Department ' : 'Something went Wrong !'}
+        </Alert>
+      </Snackbar>
 
-      <CustomDrawer title={'Add new Department'} open={openModal} close={handleCloseModal}>
+      <CustomDrawer title={'Add new Department'} open={openModal} close={handleCloseModal} handleCreate={handleCreate} viewMode={viewMode} editMode={editMode} addMode={addMode} >
 
-        <Grid container>
 
-          <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 1, mt: 3 }}>
-            <Grid item xs={4}>
-              <Typography>
-                Name
-              </Typography>
+        {viewMode && (
+
+          <Grid container>
+
+            <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 1, mt: 3 }}>
+              <Grid item xs={4}>
+                <Typography>
+                  Name
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+
+                <Typography variant='h6'>
+                  Test Data
+                </Typography>
+
+              </Grid>
             </Grid>
-            <Grid item xs={8}>
-              <TextField
-                fullWidth
-                label="Enter Department Name"
-                variant="outlined"
-                sx={{
-                  mb: 2,
-                  '& .MuiInputBase-root': {
-                    height: 45,
-                    fontSize: '17px',
-                  },
-                  '& .MuiInputLabel-root': {
-                    top: '-4px',
-                    fontSize: '17px',
-                  },
-                  '& .MuiInputLabel-shrink': {
-                    top: 0,
-                  },
-                }}
 
-              />
+            <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+              <Grid item xs={4}>
+                <Typography>
+                  Parent Department
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+
+                <Typography variant='h6'>
+                  Test Data
+                </Typography>
+
+              </Grid>
             </Grid>
+
+            <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+              <Grid item xs={4}>
+                <Typography>
+                  Lead Name
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+
+                <Typography variant='h6'>
+                  Test Data
+                </Typography>
+
+              </Grid>
+            </Grid>
+
           </Grid>
 
-          <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
-            <Grid item xs={4}>
-              <Typography>
-                Parent Department
-              </Typography>
-            </Grid>
-            <Grid item xs={8}>
+        )}
 
-              <Autocomplete
-                disablePortal
-                value={'MegaaOpes Solutions Private Limited'}
-                options={{ label: 'MegaaOpes Solutions Private Limited', value: 'MegaaOpes Solutions Private Limited  ' }}
-                // onChange={(e, value) => handleDepartmentChange(e, value)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    // label="Select Department"
-                    sx={{
-                      '& .MuiInputBase-root': {
-                        height: '50px',
-                        fontSize: '14px',
-                      },
-                      '& .MuiInputLabel-root': {
-                        top: '-8px',
-                        fontSize: '14px',
-                      },
-                      '& .MuiInputLabel-shrink': {
-                        top: 0,
-                      },
-                    }}
-                  />
-                )}
-              />
+        {addMode || editMode ? (
 
+          <Grid container>
+
+            <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 1, mt: 3 }}>
+              <Grid item xs={4}>
+                <Typography>
+                  Name
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                  fullWidth
+                  label="Enter Department Name"
+                  variant="outlined"
+                  value={departmentName || ''}
+                  onChange={(e) => setDepartmentName(e.target.value)}
+                  sx={{
+                    mb: 2,
+                    '& .MuiInputBase-root': {
+                      height: 45,
+                      fontSize: '17px',
+                    },
+                    '& .MuiInputLabel-root': {
+                      top: '-4px',
+                      fontSize: '17px',
+                    },
+                    '& .MuiInputLabel-shrink': {
+                      top: 0,
+                    },
+                  }}
+
+                />
+              </Grid>
             </Grid>
+
+            <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+              <Grid item xs={4}>
+                <Typography>
+                  Parent Department
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+
+                <Autocomplete
+                  disablePortal
+                  // value={'MegaaOpes Solutions Private Limited'}
+                  value={parentDepartment}
+                  // options={{ label: 'MegaaOpes Solutions Private Limited', value: 'MegaaOpes Solutions Private Limited  ' }}
+                  options={options1}
+                  onChange={(e, value) => setParentDepartment(value.value)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      // label="Select Department"
+                      sx={{
+                        '& .MuiInputBase-root': {
+                          height: '50px',
+                          fontSize: '14px',
+                        },
+                        '& .MuiInputLabel-root': {
+                          top: '-8px',
+                          fontSize: '14px',
+                        },
+                        '& .MuiInputLabel-shrink': {
+                          top: 0,
+                        },
+                      }}
+                    />
+                  )}
+                />
+
+              </Grid>
+            </Grid>
+
+            <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+              <Grid item xs={4}>
+                <Typography>
+                  Lead Name
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+
+                <Autocomplete
+                  disablePortal
+                  // value={'Sathis kumar  R'}
+                  value={leadeName}
+                  options={employeeMap(employeeData?.data)}
+                  onChange={(e, value) => setLeadName(value.value)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      // label="Select Department"
+                      sx={{
+                        '& .MuiInputBase-root': {
+                          height: '50px',
+                          fontSize: '14px',
+                        },
+                        '& .MuiInputLabel-root': {
+                          top: '-8px',
+                          fontSize: '14px',
+                        },
+                        '& .MuiInputLabel-shrink': {
+                          top: 0,
+                        },
+                      }}
+                    />
+                  )}
+                />
+
+              </Grid>
+            </Grid>
+
           </Grid>
 
-          <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
-            <Grid item xs={4}>
-              <Typography>
-                Lead Name
-              </Typography>
-            </Grid>
-            <Grid item xs={8}>
+        ) : ''}
 
-              <Autocomplete
-                disablePortal
-                value={'Kannan R'}
-                options={{ label: 'Kannan R', value: 'Kannan R  ' }}
-                // onChange={(e, value) => handleDepartmentChange(e, value)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    // label="Select Department"
-                    sx={{
-                      '& .MuiInputBase-root': {
-                        height: '50px',
-                        fontSize: '14px',
-                      },
-                      '& .MuiInputLabel-root': {
-                        top: '-8px',
-                        fontSize: '14px',
-                      },
-                      '& .MuiInputLabel-shrink': {
-                        top: 0,
-                      },
-                    }}
-                  />
-                )}
-              />
 
-            </Grid>
-          </Grid>
-
-          <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 4 }}>
-            <Grid item xs={4}>
-              <Typography>
-                Add Members
-              </Typography>
-            </Grid>
-            <Grid item xs={8}>
-              <CustomSelect />
-            </Grid>
-          </Grid>
-        </Grid>
-
-      </CustomDrawer>
+      </CustomDrawer >
 
     </Grid>
   )

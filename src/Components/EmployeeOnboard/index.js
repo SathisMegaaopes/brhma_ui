@@ -1052,11 +1052,11 @@ export default function EmployeeForm() {
         const demoData = { ...formData2 };
 
         if (departments) {
-            const secondDemo = Object.entries(departments).find(([key, value]) => value.name === demoData.department)?.[1];
+            const secondDemo = Object.entries(departments).find(([key, value]) => value?.name === demoData?.department)?.[1];
 
-            const thirdDemo = Object.entries(teams).find(([key, value]) => value.name === demoData.team)?.[1];
+            const thirdDemo = Object.entries(teams).find(([key, value]) => value?.name === demoData?.team)?.[1];
 
-            const fourthDemo = Object.entries(employees).find(([key, value]) => `${value.f_name} ${value.l_name}` === demoData.referrdby)?.[1];
+            const fourthDemo = Object.entries(employees).find(([key, value]) => `${value?.f_name} ${value?.l_name}` === demoData?.referrdby)?.[1];
 
             demoData.department = secondDemo?.id;
             demoData.team = thirdDemo?.id;
@@ -1094,16 +1094,18 @@ export default function EmployeeForm() {
         }
     };
 
+
+
     const updateFormData2 = () => {
         const demoData = { ...formData2 };
 
         if (departments) {
 
-            const secondDemo = Object.entries(departments).find(([key, value]) => value.name === demoData.department)?.[1];
-            const thirdDemo = Object.entries(teams).find(([key, value]) => value.name === demoData.team)?.[1];
-            const fourthDemo = Object.entries(employees).find(([key, value]) => `${value.f_name} ${value.l_name}` === demoData.referrdby)?.[1];
-            const shiftChange = Object.entries(shifts).find(([key, value]) => value.name === demoData.shift)?.[1];
-            const gradeChange = Object.entries(grade).find(([key, value]) => value.name === demoData.grade)?.[1];
+            const secondDemo = Object.entries(departments).find(([key, value]) => value?.name === demoData?.department)?.[1];
+            const thirdDemo = Object.entries(teams).find(([key, value]) => value?.name === demoData?.team)?.[1];
+            const fourthDemo = Object.entries(employees).find(([key, value]) => `${value?.f_name} ${value.l_name}` === demoData?.referrdby)?.[1];
+            const shiftChange = Object.entries(shifts).find(([key, value]) => `${value?.start}-${value?.end}` === demoData?.shift)?.[1];
+            const gradeChange = Object.entries(grade).find(([key, value]) => value?.name === demoData?.grade)?.[1];
 
             demoData.department = secondDemo?.id;
             demoData.team = thirdDemo?.id;
@@ -1118,13 +1120,15 @@ export default function EmployeeForm() {
         return formData2;
     };
 
+
+
     const updateAddressproofintoID = () => {
 
         const demoData = { ...formData1 };
 
         if (addressprof) {
 
-            const addresdproofId = Object.entries(addressprof).find(([key, value]) => value.name === demoData.addressprofType)?.[1];
+            const addresdproofId = Object.entries(addressprof).find(([key, value]) => value?.name === demoData?.addressprofType)?.[1];
 
             demoData.addressprofType = addresdproofId?.id;
 
@@ -1137,6 +1141,7 @@ export default function EmployeeForm() {
 
     }
 
+    
     const handleNext = async () => {
         let url;
         let data
@@ -1477,6 +1482,28 @@ export default function EmployeeForm() {
         }
     }
 
+
+    const mapShiftOptions = (data) => {
+        if (data) {
+            return data.map(item => ({
+                label: `${item?.start}-${item?.end}`,
+                value: `${item?.start}-${item?.end}`
+            }));
+        } else {
+
+            return [{
+                label: 'Loading data',
+                value: 'Loading data'
+            }, {
+                label: 'Loading data',
+                value: 'Loading data'
+            }
+            ]
+        }
+    }
+
+
+
     const employeeMap = (data) => {
         if (data) {
             return data.map((item) => ({
@@ -1694,7 +1721,6 @@ export default function EmployeeForm() {
     }, [activeStep])
 
 
-
     return (
 
 
@@ -1807,6 +1833,7 @@ export default function EmployeeForm() {
                                         employeeMap={employeeMap}
                                         StyledLabel={StyledLabel}
                                         mapOptions={mapOptions}
+                                        mapShiftOptions={mapShiftOptions}
                                         control={control}
                                         formData2={formData2}
                                         StyledInput={StyledInput}
@@ -2044,6 +2071,7 @@ export default function EmployeeForm() {
                                         openEdit={openEdittwo}
                                         addressprof={addressprof}
                                         setFormData2={setFormData2}
+                                        mapShiftOptions={mapShiftOptions}
                                     />
 
                                     <Grid display='flex' justifyContent='flex-end' sx={{ paddingRight: 6, pb: 3 }} >
