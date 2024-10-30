@@ -18,20 +18,16 @@ const DeparmentMaster = () => {
 
   const [openModal, setOpenModal] = useState(false);
   const [searchData, setSearchData] = useState(null);
-
   const [departmentName, setDepartmentName] = useState(null);
   const [parentDepartment, setParentDepartment] = useState(null);
   const [leadeName, setLeadName] = useState(null);
-
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
-
   const [viewMode, setViewMode] = useState(false);
-
   const [editMode, setEditMode] = useState(false);
-
-  const [addMode, setAddMode] = useState(false)
-
+  const [addMode, setAddMode] = useState(false);
+  const [editmodeID, setEditModeId] = useState(null);
+  const [reload, setReload] = useState(false);
 
   const handleOpenModal = () => {
     setAddMode(true)
@@ -51,18 +47,53 @@ const DeparmentMaster = () => {
 
   }
 
-  React.useEffect(() => {
 
-    const handlePopulate = async () => {
+  //mode === 1 => Edit , mode === 0 => View
 
-      /// Thaniya API eluthu , edhuku na for Data va populate panna ui la , mabye ui vandhu fully ok nu than nenaikuren
-      /// but also , last ah oru check panniko ellam correct ah iruka nu
-      /// Change na view vandhu mathanum , view mode la konjam nalla illa 
-      /// let me see , tomorrow , what will be happening nu ..... 
+  const handleUpdateData = async (id, mode) => {
 
+    let url = `${URL}department/${id}`
+
+    try {
+
+      const response = await axios.get(url);
+
+      if (response?.data?.status === 1) {
+        if (mode === 1) {
+          setEditMode(true)
+          setOpenModal(true)
+          setEditModeId(id)
+
+        } else if (mode === 0) {
+          setViewMode(true)
+          setOpenModal(true)
+
+        } else {
+          setShowSnackbar(true);
+          setSnackbarMessage(0);
+          setOpenModal(false)
+          setDepartmentName(null);
+          setParentDepartment(null);
+          setLeadName(null);
+        }
+        // setOpenModal(true)
+        setAnchorEl(false)
+
+        setDepartmentName(response?.data?.data[0]?.name);
+        setParentDepartment(response?.data?.data[0]?.parent_department);
+        setLeadName(response?.data?.data[0]?.lead_name);
+
+      } else {
+        setShowSnackbar(true);
+        setSnackbarMessage(0);
+      }
+
+    } catch (error) {
+      setShowSnackbar(true);
+      setSnackbarMessage(0);
     }
 
-  }, [])
+  }
 
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -82,15 +113,18 @@ const DeparmentMaster = () => {
   ];
 
 
-  const handleCreate = async () => {
+  const handleCreate = async (mode) => {
 
     let url = `${URL}department`;
 
     const apiPostData = {
       "departmentName": departmentName,
       "parentDepartment": parentDepartment,
-      "leadeName": leadeName
+      "leadeName": leadeName,
+      "mode": mode,
+      "editmodeID": editmodeID,
     }
+    
 
     try {
 
@@ -101,12 +135,11 @@ const DeparmentMaster = () => {
         setDepartmentName(null);
         setParentDepartment(null);
         setLeadName(null);
-
-
         setShowSnackbar(true)
         setSnackbarMessage(1)
-
         setOpenModal(false);
+
+        setReload(true);
 
       } else {
 
@@ -121,8 +154,6 @@ const DeparmentMaster = () => {
       setShowSnackbar(true)
       setSnackbarMessage(0)
     }
-
-    console.log(departmentName, parentDepartment, leadeName)
   }
 
   const departmentUrl = `${URL}department`;
@@ -130,7 +161,7 @@ const DeparmentMaster = () => {
 
 
   const { data: departmentData, loading: departmentLoading, error: departmentError } = useFetchData(departmentUrl,
-    { searchData: searchData }, searchData
+    { searchData: searchData }, searchData ,reload
   );
 
   const { data: employeeData, loading: employeeLoading, error: employeeError } = useFetchData(employeeUrl);
@@ -332,26 +363,25 @@ const DeparmentMaster = () => {
                           }}
                         >
                           <MenuItem onClick={() => {
-                            setViewMode(true)
-                            setOpenModal(true)
-                            setAnchorEl(false)
+
+                            handleUpdateData(item.id, 0)
                           }
                           }>
                             <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
                               View
                             </Button>
                           </MenuItem>
+
                           <MenuItem onClick={
                             () => {
-                              setEditMode(true)
-                              setOpenModal(true)
-                              setAnchorEl(false)
+                              handleUpdateData(item.id, 1)
                             }
                           }>
                             <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
                               Edit
                             </Button>
                           </MenuItem>
+
                           <MenuItem onClick={''}>
                             <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
                               Activate
@@ -396,7 +426,7 @@ const DeparmentMaster = () => {
           variant="filled"
           sx={{ width: '100%' }}
         >
-          {snackbarMessage === 1 ? ' Successfully Created The Department ' : 'Something went Wrong !'}
+          {snackbarMessage === 1 ? ' Executed Successfully ' : 'Something went Wrong !'}
         </Alert>
       </Snackbar>
 
@@ -416,7 +446,7 @@ const DeparmentMaster = () => {
               <Grid item xs={8}>
 
                 <Typography variant='h6'>
-                  Test Data
+                  {departmentName}
                 </Typography>
 
               </Grid>
@@ -431,7 +461,7 @@ const DeparmentMaster = () => {
               <Grid item xs={8}>
 
                 <Typography variant='h6'>
-                  Test Data
+                  {parentDepartment}
                 </Typography>
 
               </Grid>
@@ -446,7 +476,7 @@ const DeparmentMaster = () => {
               <Grid item xs={8}>
 
                 <Typography variant='h6'>
-                  Test Data
+                  {leadeName}
                 </Typography>
 
               </Grid>

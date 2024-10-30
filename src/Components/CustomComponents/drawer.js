@@ -49,7 +49,7 @@ const CustomDrawer = ({ title, children, open, close, handleCreate, viewMode, ed
                     <Box sx={{ width: 500, height: '100%', display: 'flex', flexDirection: 'column', p: 3, pt: 12 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Typography variant="h6" sx={{ pl: 1 }}>
-                                {editMode ? 'Update Department Details'  : title}
+                                {editMode ? 'Update Department Details' : title}
                             </Typography>
                             <Button disableRipple sx={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'flex-end', '&:hover': {
@@ -69,8 +69,8 @@ const CustomDrawer = ({ title, children, open, close, handleCreate, viewMode, ed
                             <Button sx={{ mr: 1 }} color='error' onClick={close}>
                                 Cancel
                             </Button>
-                            <Button variant="outlined" color="primary" onClick={handleCreate} >
-                               {editMode ? 'Update' : 'Create' } 
+                            <Button variant="outlined" color="primary" onClick={() => handleCreate(editMode ? 1 : 0)} >
+                                {editMode ? 'Update' : 'Create'}
                             </Button>
                         </Box>
                     </Box>
