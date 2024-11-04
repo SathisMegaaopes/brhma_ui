@@ -1,7 +1,7 @@
 import {
-  Alert,
-  Autocomplete, Box, Button, CircularProgress, Grid, IconButton, InputBase, Menu, MenuItem,
-  Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography
+  Alert, Autocomplete, Box, Button, CircularProgress, Grid, IconButton, InputBase,
+  Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  TextField, Typography
 } from '@mui/material';
 import React, { useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
@@ -9,9 +9,8 @@ import CustomDrawer from '../CustomComponents/drawer';
 import DatanotFound from '../CustomComponents/datanotfound';
 import { useFetchData } from '../EmployeeTable/customHook';
 import URL from '../Global/Utils/url_route';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Fade from '@mui/material/Fade';
 import axios from 'axios'
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 
 const DeparmentMaster = () => {
@@ -20,6 +19,7 @@ const DeparmentMaster = () => {
   const [searchData, setSearchData] = useState(null);
   const [departmentName, setDepartmentName] = useState(null);
   const [parentDepartment, setParentDepartment] = useState(null);
+  const [departmentDesc, setDepartmentDesc] = useState(null);
   const [leadeName, setLeadName] = useState(null);
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
@@ -28,6 +28,7 @@ const DeparmentMaster = () => {
   const [addMode, setAddMode] = useState(false);
   const [editmodeID, setEditModeId] = useState(null);
   const [reload, setReload] = useState(false);
+
 
   const handleOpenModal = () => {
     setAddMode(true)
@@ -40,10 +41,13 @@ const DeparmentMaster = () => {
     setDepartmentName(null);
     setParentDepartment(null);
     setLeadName(null);
+    setDepartmentDesc(null);
 
     setViewMode(false);
     setEditMode(false);
     setAddMode(false);
+
+
 
   }
 
@@ -59,6 +63,7 @@ const DeparmentMaster = () => {
       const response = await axios.get(url);
 
       if (response?.data?.status === 1) {
+
         if (mode === 1) {
           setEditMode(true)
           setOpenModal(true)
@@ -75,13 +80,14 @@ const DeparmentMaster = () => {
           setDepartmentName(null);
           setParentDepartment(null);
           setLeadName(null);
-        }
-        // setOpenModal(true)
-        setAnchorEl(false)
+          setDepartmentDesc(null);
 
+
+        }
         setDepartmentName(response?.data?.data[0]?.name);
         setParentDepartment(response?.data?.data[0]?.parent_department);
         setLeadName(response?.data?.data[0]?.lead_name);
+        setDepartmentDesc(response?.data?.data[0]?.description)
 
       } else {
         setShowSnackbar(true);
@@ -95,23 +101,11 @@ const DeparmentMaster = () => {
 
   }
 
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const openOptions = Boolean(anchorEl);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleCloseOptions = () => {
-    setAnchorEl(null);
-  };
-
-
   const options1 = [
-    { label: 'MegaaOpes Solutions Private Limited', value: 'MegaaOpes Solutions Private Limited' },
+    { label: 'MegaaOpes Solutions Private Limited ', value: 'MegaaOpes Solutions Private Limited ' },
+    { label: 'MegaaOpes Solutions LLP ', value: 'MegaaOpes Solutions LLP ' },
+    { label: 'MegaaOpes Solutions OPC ', value: 'MegaaOpes Solutions OPC ' },
   ];
-
 
   const handleCreate = async (mode) => {
 
@@ -123,8 +117,8 @@ const DeparmentMaster = () => {
       "leadeName": leadeName,
       "mode": mode,
       "editmodeID": editmodeID,
+      "description": departmentDesc
     }
-    
 
     try {
 
@@ -135,11 +129,11 @@ const DeparmentMaster = () => {
         setDepartmentName(null);
         setParentDepartment(null);
         setLeadName(null);
+        setDepartmentDesc(null);
         setShowSnackbar(true)
         setSnackbarMessage(1)
         setOpenModal(false);
-
-        setReload(true);
+        setReload(!reload);
 
       } else {
 
@@ -147,7 +141,6 @@ const DeparmentMaster = () => {
         setSnackbarMessage(0);
 
       }
-
 
     } catch (error) {
       console.error(error, 'This is the error in the uploadfile')
@@ -161,8 +154,7 @@ const DeparmentMaster = () => {
 
 
   const { data: departmentData, loading: departmentLoading, error: departmentError } = useFetchData(departmentUrl,
-    { searchData: searchData }, searchData ,reload
-  );
+    { searchData: searchData }, searchData, reload);
 
   const { data: employeeData, loading: employeeLoading, error: employeeError } = useFetchData(employeeUrl);
 
@@ -185,7 +177,6 @@ const DeparmentMaster = () => {
       ]
     }
   }
-
 
 
 
@@ -288,6 +279,8 @@ const DeparmentMaster = () => {
           </Box>
         )}
 
+
+
         {departmentData?.data?.length > 0 && !departmentLoading ?
 
           <TableContainer component={Paper} variant="outlined" >
@@ -298,7 +291,9 @@ const DeparmentMaster = () => {
 
                   <TableCell sx={{ fontSize: 18 }}> Department Name</TableCell>
 
-                  <TableCell sx={{ fontSize: 18 }}>Lead Name</TableCell>
+                  <TableCell sx={{ fontSize: 18 }}> Description </TableCell>
+
+                  <TableCell sx={{ fontSize: 18 }}>Manager</TableCell>
 
                   <TableCell sx={{ textAlign: 'center', fontSize: 18 }}>Actions</TableCell>
 
@@ -309,12 +304,16 @@ const DeparmentMaster = () => {
 
                 {departmentData?.data?.map((item, index) => (
 
-                  <TableRow key={item.id} style={{ cursor: 'pointer' }} >
+                  <TableRow key={item.id}
+
+                    style={{ cursor: 'pointer' }} >
 
                     <TableCell sx={{ padding: 2 }}>
 
-                      <Typography sx={{ fontWeight: 400, fontSize: 20 }}>
-                        {item.name}
+                      <Typography sx={{ fontWeight: 400, fontSize: 20 }} onClick={() => {
+                        handleUpdateData(item.id, 0)
+                      }}>
+                        {item.name} Department
                       </Typography>
 
 
@@ -327,70 +326,32 @@ const DeparmentMaster = () => {
                     <TableCell>
 
                       <Typography sx={{ fontWeight: 400 }}>
-                        {item.lead_name}
+                        {item.description}
                       </Typography>
-
 
                     </TableCell>
 
+                    <TableCell>
 
-                    <TableCell align="center" sx={{ padding: 0 }}>
+                      <Typography sx={{ fontWeight: 400 }}>
+                        {item.lead_name}
+                      </Typography>
 
-                      <IconButton color='primary' sx={{ padding: 0.5, boxShadow: 'none' }} >
-                        <Button
-                          id="fade-button"
-                          aria-controls={openOptions ? 'fade-menu' : undefined}
-                          aria-haspopup="true"
-                          aria-expanded={openOptions ? 'true' : undefined}
-                          onClick={handleClick}
-                        >
-                          <MoreVertIcon />
-                        </Button>
-                        <Menu
-                          id="fade-menu"
-                          MenuListProps={{
-                            'aria-labelledby': 'fade-button',
-                          }}
-                          anchorEl={anchorEl}
-                          open={Boolean(anchorEl)}
-                          onClose={handleCloseOptions}
-                          TransitionComponent={Fade}
-                          sx={{
-                            '& .MuiPaper-root': {
-                              border: '1px solid black',
-                              boxShadow: 'none',
-                            },
-                          }}
-                        >
-                          <MenuItem onClick={() => {
+                    </TableCell>
 
-                            handleUpdateData(item.id, 0)
-                          }
-                          }>
-                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
-                              View
-                            </Button>
-                          </MenuItem>
+                    <TableCell sx={{ textAlign: 'center' }} >
 
-                          <MenuItem onClick={
-                            () => {
-                              handleUpdateData(item.id, 1)
-                            }
-                          }>
-                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
-                              Edit
-                            </Button>
-                          </MenuItem>
+                      <Button onClick={
+                        () => {
+                          handleUpdateData(item.id, 1);
+                        }}
 
-                          <MenuItem onClick={''}>
-                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
-                              Activate
-                            </Button>
-                          </MenuItem>
+                      >
+                        <ModeEditIcon />
+                      </Button>
 
-                        </Menu>
 
-                      </IconButton>
+
                     </TableCell>
 
 
@@ -455,7 +416,7 @@ const DeparmentMaster = () => {
             <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
               <Grid item xs={4}>
                 <Typography>
-                  Parent Department
+                  Organisation
                 </Typography>
               </Grid>
               <Grid item xs={8}>
@@ -470,7 +431,7 @@ const DeparmentMaster = () => {
             <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
               <Grid item xs={4}>
                 <Typography>
-                  Lead Name
+                  Manager
                 </Typography>
               </Grid>
               <Grid item xs={8}>
@@ -481,6 +442,23 @@ const DeparmentMaster = () => {
 
               </Grid>
             </Grid>
+
+
+            <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+              <Grid item xs={4}>
+                <Typography>
+                  Description
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+
+                <Typography variant='h6'>
+                  {departmentDesc}
+                </Typography>
+
+              </Grid>
+            </Grid>
+
 
           </Grid>
 
@@ -525,7 +503,7 @@ const DeparmentMaster = () => {
             <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
               <Grid item xs={4}>
                 <Typography>
-                  Parent Department
+                  Organisation
                 </Typography>
               </Grid>
               <Grid item xs={8}>
@@ -564,7 +542,7 @@ const DeparmentMaster = () => {
             <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
               <Grid item xs={4}>
                 <Typography>
-                  Lead Name
+                  Manager
                 </Typography>
               </Grid>
               <Grid item xs={8}>
@@ -599,6 +577,41 @@ const DeparmentMaster = () => {
               </Grid>
             </Grid>
 
+            <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+              <Grid item xs={4}>
+                <Typography>
+                  Description
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                  fullWidth
+                  label="Mention Department Description "
+                  value={departmentDesc || ''}
+                  variant="outlined"
+                  onChange={(e) => setDepartmentDesc(e.target.value)}
+                  multiline
+                  rows={3}
+                  sx={{
+                    mb: 2,
+                    '& .MuiInputBase-root': {
+                      // height: 45,
+                      fontSize: '17px',
+                    },
+                    '& .MuiInputLabel-root': {
+                      top: '-4px',
+                      fontSize: '17px',
+                    },
+                    '& .MuiInputLabel-shrink': {
+                      top: 0,
+                    },
+                  }}
+
+                />
+              </Grid>
+            </Grid>
+
+
           </Grid>
 
         ) : ''}
@@ -611,3 +624,69 @@ const DeparmentMaster = () => {
 }
 
 export default DeparmentMaster
+
+
+
+
+
+
+
+{/* <TableCell align="center" sx={{ padding: 0 }}>
+
+                      <IconButton color='primary' sx={{ padding: 0.5, boxShadow: 'none' }} >
+                        <Button
+                          id="fade-button"
+                          aria-controls={openOptions ? 'fade-menu' : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={openOptions ? 'true' : undefined}
+                          onClick={handleClick}
+                        >
+                          <MoreVertIcon />
+                        </Button>
+                        <Menu
+                          id="fade-menu"
+                          MenuListProps={{
+                            'aria-labelledby': 'fade-button',
+                          }}
+                          anchorEl={anchorEl}
+                          open={Boolean(anchorEl)}
+                          onClose={handleCloseOptions}
+                          TransitionComponent={Fade}
+                          sx={{
+                            '& .MuiPaper-root': {
+                              border: '1px solid black',
+                              boxShadow: 'none',
+                            },
+                          }}
+                        >
+                          <MenuItem onClick={() => {
+
+                            handleUpdateData(item.id, 0)
+                            console.log(item.id, 'ID ID ID ID ID ID ID ID ID ID ID ID ID ')
+                          }
+                          }>
+                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
+                              View
+                            </Button>
+                          </MenuItem>
+
+                          <MenuItem onClick={
+                            () => {
+                              handleUpdateData(item.id, 1)
+                            }
+                          }>
+                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
+                              Edit
+                            </Button>
+                          </MenuItem>
+
+                          <MenuItem onClick={''}>
+                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
+                              Activate
+                            </Button>
+                          </MenuItem>
+
+                        </Menu>
+
+                      </IconButton>
+                    </TableCell> */}

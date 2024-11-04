@@ -24,10 +24,6 @@ export function SharedProvider({ children }) {
     });
 
 
-    console.log(insertRequest,'inserRequest')
-    console.log(employeeAddTab,'employeeAddTab')
-
-    
 
     return (
         <SharedContext.Provider value={{ sharedTab, setSharedTab, rerender, setRerender, insertRequest, setInsertRequest ,employeeAddTab ,setEmployeeAddTab}}>
