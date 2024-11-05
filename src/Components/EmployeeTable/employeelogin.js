@@ -64,10 +64,6 @@ export default function EmployeeTable() {
 
   const url = URL + "employeemaster"
 
-  // const fetchDepartmentUrl = `${URL}employeeonboard/dynamicDepartments`;
-
-  // const fetchTeamUrl = `${URL}employeeonboard/dynamicTeams`;
-
   const fetchDepartment = `${URL}todolist/department`;
 
   const fetchTeams = `${URL}todolist/teams`;
@@ -169,7 +165,7 @@ export default function EmployeeTable() {
           setResponseModal(!responseModal)
         })
         .catch((err) => {
-          console.log('This is the err in the Frontend', err)
+          console.error('This is the err in the Frontend', err)
         })
         .finally(() => {
           setData({
@@ -189,7 +185,7 @@ export default function EmployeeTable() {
           setResponseModal(!responseModal)
         })
         .catch((err) => {
-          console.log('This is the err in the Frontend', err)
+          console.error('This is the err in the Frontend', err)
         })
         .finally(() => {
           setData({
@@ -293,6 +289,20 @@ export default function EmployeeTable() {
     setDepartmentName(null);
     setTeamName(value.value);
     setEmployeeName(null);
+  }
+
+  const handleDeActivate = async (id) => {
+
+    const deActivateURL = `${URL}employeemaster/deActivate`;
+
+    const data = { "id": id }
+
+    const response = await axios.post(deActivateURL, data);
+
+    if (response?.data?.status === 1) {
+      serRerender(!rerender)
+    }
+
   }
 
 
@@ -528,7 +538,7 @@ export default function EmployeeTable() {
                             >
                               <MenuItem onClick={() => handleEdit(item.employee_number)}>View & Edit</MenuItem>
                               <MenuItem onClick={() => handleChange(item.employee_number)}>Edit Password</MenuItem>
-                              <MenuItem onClick={''}>Activate</MenuItem>
+                              <MenuItem onClick={() => handleDeActivate(item.employee_number)}>De-Activate</MenuItem>
                             </Menu>
 
                           </IconButton>
@@ -553,18 +563,6 @@ export default function EmployeeTable() {
         </Grid>
 
       )}
-
-
-      {/*                         
-                        <TableCell align='center' >
-                           <IconButton color='primary' onClick={() => handleChange(item.employee_number)} sx={{ padding: 0.5 }} >
-                            <EditNoteRoundedIcon
-                              sx={{ fontSize: '32px' }}
-                            />
-                          </IconButton> 
-                        </TableCell> */}
-
-
 
 
       <DrawerComponent open={open} name={drawername} data={data} handleValueChange={handleValueChange} setOpen={setOpen} handleUpdate={handleUpdate} addorUpdate={addorUpdate} isFormIncomplete={isFormIncomplete} handleClose={handleClose} />
@@ -703,125 +701,3 @@ function DrawerComponent({ open, name, data, handleValueChange, handleUpdate, ad
     </Drawer >
   )
 }
-
-
-
-
-
-
-
-
-
-{/* {departmentListView && (
-
-            <Box>
-
-              {departmentLoading && (
-                <CircularProgress />
-              )}
-
-              {departmentList.length > 0 && (
-                <List sx={{ zIndex: 2, position: 'absolute', backgroundColor: 'grey', height: '40vh', overflowY: 'auto', width: '20vw' }}>
-                  {departmentList.map((dept, index) => (
-                    <ListItem key={index} >
-                      <ListItemText onClick={() => handleSelectDepartment(dept.name)} primary={dept.name} />
-                    </ListItem>
-                  ))}
-                </List>
-              )}
-
-            </Box>
-          )} */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// <TableBody>
-// {employeeData && employeeData.map((item, index) => (
-//   <TableRow key={item.emp_id} style={{ cursor: 'pointer' }}>
-//     <TableCell onClick={() => handleEdit(item.employee_number)}>
-//       {item.first_name} {item.last_name}
-//     </TableCell>
-//     <TableCell>{item.employee_number}</TableCell>
-//     <TableCell>{item.email}</TableCell>
-//     <TableCell>{item.mobile_number}</TableCell>
-//     <TableCell>{DateFormater(item.date_of_join)}</TableCell>
-//     <TableCell align='left' style={{ whiteSpace: 'nowrap' }}>{item.user_name}</TableCell>
-//     <TableCell align="left" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-//       {showPassword[index] ? item.user_pwd : changeintohalf(item.user_pwd)}
-//     </TableCell>
-//     <TableCell align="center">
-//       <IconButton onClick={() => togglePasswordVisibility(index)}>
-//         {showPassword[index] ? <VisibilityIcon /> : <VisibilityOffIcon />}
-//       </IconButton>
-//     </TableCell>
-//     <TableCell align='center'>{item.user_role}</TableCell>
-//     <TableCell align="center" sx={{ position: 'absolute' }}>
-
-{/* <SpeedDial
-                  ariaLabel="SpeedDial tooltip example"
-                  icon={<SpeedDialIcon />}
-                  onClose={handleDialClose}
-                  onOpen={handleDialOpen}
-                  open={DialOpen}
-
-                  direction='down'
-                >
-
-
-                  {actions.map((action) => (
-                    <SpeedDialAction
-                      sx={{ bgcolor: 'yellow' }}
-                      key={action.name}
-                      icon={action.icon}
-                      tooltipTitle={action.name}
-                      tooltipOpen
-                      onClick={handleDialClose}
-                    />
-                  ))}
-                </SpeedDial> */}
-
-
-{/* <SpeedDial
-                  ariaLabel="SpeedDial tooltip example"
-                  icon={<SpeedDialIcon />}
-                  onClose={handleDialClose}
-                  onOpen={handleDialOpen}
-                  open={DialOpen}
-                  direction='down'
-                  sx={{ zIndex: 99999 , height:'100%' , width:'100%' }}
-                >
-                  {actions.map((action) => (
-                    <SpeedDialAction
-                      key={action.name}
-                      icon={action.icon}
-                      tooltipTitle={action.name}
-                      tooltipOpen
-                      onClick={handleDialClose}
-                      sx={{
-                        bgcolor: 'yellow',
-                        display: DialOpen ? 'block' : 'none', 
-                      }}
-                    />
-                  ))}
-                </SpeedDial>
-
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody> */}

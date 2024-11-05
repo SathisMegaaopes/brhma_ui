@@ -1,14 +1,13 @@
 import React from 'react'
-import { Alert, Autocomplete, Avatar, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Checkbox,FormControlLabel, Grid } from '@mui/material';
 import { Controller } from 'react-hook-form';
 
 
 
 const EmployeeAddress = ({
-  copyToPermanent,handleCheckboxChange2,MultilineTextField,
+  copyToPermanent, handleCheckboxChange2, MultilineTextField,
 
-  control,StyledLabel,
+  control, StyledLabel,
   formData3, StyledInput, errors, openEdit, setFormData3
 }) => {
   return (
@@ -245,7 +244,7 @@ const EmployeeAddress = ({
               <Checkbox
                 checked={copyToPermanent}
                 onChange={handleCheckboxChange2}
-                disabled={!(formData3.currentaddress && formData3.currentCity && formData3.currentPincode) || openEdit }
+                disabled={!(formData3.currentaddress && formData3.currentCity && formData3.currentPincode) || openEdit}
               />
             }
             label="Same as Current Address"

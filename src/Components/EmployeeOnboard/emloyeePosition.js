@@ -1,16 +1,14 @@
 import React from 'react'
-import { Alert, Autocomplete, Avatar, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Autocomplete, FormHelperText, Grid, MenuItem } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
-import CloseIcon from '@mui/icons-material/Close';
 import Button from '@mui/material/Button';
 
 
 const EmployeePosition = ({
   StyledLabel, control, mapOptions, designation, departments, teams, employees, grade, uploadStatus, uploadFileName,
-  formData2, StyledInput, errors, openEdit, setFormData2, employeeMap, handleProofUpload, shifts , mapShiftOptions
+  formData2, StyledInput, errors, openEdit, setFormData2, employeeMap, handleProofUpload, shifts, mapShiftOptions
 }) => {
 
 
@@ -34,12 +32,6 @@ const EmployeePosition = ({
               render={({ field }) => (
                 <Autocomplete
                   {...field}
-                  // options={[
-                  //   { label: 'Kannan R', value: 'Kannan R' },
-                  //   { label: 'Shamala Nagaveni', value: 'Shamala Nagaveni' },
-                  //   { label: 'Sathis Kumar', value: 'Sathis Kumar' },
-                  //   { label: 'Santhosh', value: 'Santhosh' }
-                  // ]}
                   options={employeeMap(employees)}
                   isOptionEqualToValue={(option, value) => option.value === value}
                   disabled={openEdit}
@@ -86,12 +78,6 @@ const EmployeePosition = ({
 
                 <Autocomplete
                   {...field}
-                  // options={[
-                  //   { label: 'Kannan R  ', value: 'Kannan R' },
-                  //   { label: 'Shamala Nagaveni ', value: 'Shamala Nagaveni' },
-                  //   { label: 'Sathis Kumar ', value: 'Sathis Kumar' },
-                  //   { label: 'Santhosh ', value: 'Santhosh' }
-                  // ]}
                   options={employeeMap(employees)}
                   isOptionEqualToValue={(option, value) => option.value === value}
                   onChange={(event, value) => {
@@ -408,7 +394,6 @@ const EmployeePosition = ({
 
                 <Autocomplete
                   {...field}
-                  // options={mapOptions(shifts)}
                   options={mapShiftOptions(shifts)}
                   onChange={(event, value) => {
                     const newValue = value ? value.value : null;

@@ -8,8 +8,11 @@ import StepLabel from '@mui/material/StepLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import { Alert, Autocomplete, Avatar, Breadcrumbs, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, IconButton, InputLabel, Link, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
-import { useForm, Controller, useWatch } from 'react-hook-form';
+import {
+    Alert, Breadcrumbs, CircularProgress, Grid,
+    Link, Snackbar, TextField, Typography
+} from '@mui/material';
+import { useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -17,32 +20,22 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import PersonIcon from '@mui/icons-material/Person';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
-import { useQuery } from '@tanstack/react-query';
 import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import dayjs from 'dayjs';
 import URL from '../Global/Utils/url_route';
 import axios from 'axios';
 import { useFetchData } from '../EmployeeTable/customHook';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
 import { useSharedContext } from '../../Context';
 import { useNavigate } from 'react-router-dom';
-import { Modal } from 'rsuite';
 import EditIcon from '@mui/icons-material/Edit';
-import CloseIcon from '@mui/icons-material/Close';
-import ClearIcon from '@mui/icons-material/Clear';
 import EmployeeBasicInformation from './employeeBasicInformation';
 import EmployeePosition from './emloyeePosition';
 import EmployeeAddress from './employeeAddress';
 import EmployeeExperience from './employeeExperience';
 import EmployeeStatuoryinfo from './employeeStatuoryinfo';
 import EmployeePaymentMode from './employeePaymentMode';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+
 
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
@@ -376,7 +369,6 @@ export default function EmployeeForm() {
     const [uploadStatus, setUploadStatus] = React.useState(false);
 
     const [openEdit, setOpenEdit] = React.useState((insertRequest === 0) ? true : false);
-    // const [openEdit, setOpenEdit] = React.useState(true);  /// ithu ena nu pakkanum sathis ...... 
     const [openEdittwo, setOpenEdittwo] = React.useState((insertRequest === 0) ? true : false);
     const [openEditthree, setOpenEditthree] = React.useState((insertRequest === 0) ? true : false);
     const [openEditfour, setOpenEditfour] = React.useState((insertRequest === 0) ? true : false);
@@ -1046,7 +1038,6 @@ export default function EmployeeForm() {
         }
     }, [formData1.firstname, formData1.lastname, formData1.employeeNumber, formData1.dateOfJoining]);
 
-    //ithula error iruku pakkanum da sathis , keep in mind .......
     React.useEffect(() => {
 
         const demoData = { ...formData2 };
@@ -1141,7 +1132,7 @@ export default function EmployeeForm() {
 
     }
 
-    
+
     const handleNext = async () => {
         let url;
         let data
@@ -1234,7 +1225,7 @@ export default function EmployeeForm() {
                         status: 2,
                     }));
 
-                }, 200);
+                }, 0);
             }
             else {
                 setSnackbarMessage(0);

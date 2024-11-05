@@ -1,12 +1,14 @@
 import React from 'react'
-import { Alert, Autocomplete, Avatar, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import {
+  FormControl, FormHelperText, Grid, InputLabel, MenuItem,
+  Select,
+} from '@mui/material';
 import { Controller } from 'react-hook-form';
 
 
 
 const EmployeePaymentMode = ({
-  formData1,selectedPaymentType,handlePaymentTypeChange,
+  formData1, selectedPaymentType, handlePaymentTypeChange,
 
   control, StyledLabel,
   formData6, StyledInput, errors, openEdit, setFormData6

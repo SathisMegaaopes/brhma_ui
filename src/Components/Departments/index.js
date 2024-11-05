@@ -280,8 +280,102 @@ const DeparmentMaster = () => {
         )}
 
 
+        {!departmentLoading && (
 
-        {departmentData?.data?.length > 0 && !departmentLoading ?
+          departmentData?.data?.length > 0 ? (
+
+            <TableContainer component={Paper} variant="outlined" >
+
+              <Table size='small'>
+                <TableHead sx={{ height: 50 }}>
+                  <TableRow>
+
+                    <TableCell sx={{ fontSize: 18 }}> Department Name</TableCell>
+
+                    <TableCell sx={{ fontSize: 18 }}> Description </TableCell>
+
+                    <TableCell sx={{ fontSize: 18 }}>Manager</TableCell>
+
+                    <TableCell sx={{ textAlign: 'center', fontSize: 18 }}>Actions</TableCell>
+
+                  </TableRow>
+                </TableHead>
+
+                <TableBody >
+
+                  {departmentData?.data?.map((item, index) => (
+
+                    <TableRow key={item.id}
+
+                      style={{ cursor: 'pointer' }} >
+
+                      <TableCell sx={{ padding: 2 }}>
+
+                        <Typography sx={{ fontWeight: 400, fontSize: 20 }} onClick={() => {
+                          handleUpdateData(item.id, 0)
+                        }}>
+                          {item.name} Department
+                        </Typography>
+
+
+                        <Typography sx={{ color: 'gray' }}>
+                          {item.parent_department}
+                        </Typography>
+
+                      </TableCell>
+
+                      <TableCell>
+
+                        <Typography sx={{ fontWeight: 400 }}>
+                          {item.description}
+                        </Typography>
+
+                      </TableCell>
+
+                      <TableCell>
+
+                        <Typography sx={{ fontWeight: 400 }}>
+                          {item.lead_name}
+                        </Typography>
+
+                      </TableCell>
+
+                      <TableCell sx={{ textAlign: 'center' }} >
+
+                        <Button onClick={
+                          () => {
+                            handleUpdateData(item.id, 1);
+                          }}
+
+                        >
+                          <ModeEditIcon />
+                        </Button>
+
+
+
+                      </TableCell>
+
+
+                    </TableRow>
+
+                  ))}
+
+                </TableBody>
+
+
+              </Table>
+
+            </TableContainer>
+
+          )
+            :
+            (
+              <DatanotFound />
+            )
+        )}
+
+
+        {/* {departmentData?.data?.length > 0 && !departmentLoading ?
 
           <TableContainer component={Paper} variant="outlined" >
 
@@ -369,7 +463,9 @@ const DeparmentMaster = () => {
 
           <DatanotFound />
 
-        }
+        } */}
+
+
       </Grid>
 
       <Snackbar

@@ -69,6 +69,8 @@ function Sidebar() {
 
     const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('activeTab') || 'info');
 
+    // const [activeTab, setActiveTab] = useState('info');
+
 
     const navigate = useNavigate();
     const userinfo = JSON.parse(sessionStorage.getItem("user_info"));

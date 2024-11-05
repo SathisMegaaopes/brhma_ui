@@ -22,8 +22,6 @@ const TeamMaster = () => {
     const [manager, setManager] = useState(null);
     const [teamLead, setTeamLead] = useState(null);
     const [members, setMembers] = useState([]);
-    // { 'label': 'Kannan R', 'value': 'Kannan R' }, { 'label': 'Adarsh B M', 'value': 'Adarsh B M' }
-    // Intha mari than , backend la irunthu varanum seriya , so don't be lazy dude eh .....
     const [teamDescription, setTeamDescription] = useState(null);
     const [showSnackbar, setShowSnackbar] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
@@ -156,6 +154,9 @@ const TeamMaster = () => {
 
     const handleUpdateData = async (id, mode) => {
 
+
+        console.log(id, 'ID that is comming inside the handleUpdateData function da Sathis uh .....')
+
         let url = `${URL}team/${id}`
 
         try {
@@ -181,13 +182,18 @@ const TeamMaster = () => {
                     setManager(null);
                     setTeamLead(null);
                     setTeamDescription(null);
+                    setMembers(null);
+
+
                 }
+
+                console.log(response.data.data)
 
                 setTeamName(response?.data?.data[0]?.name);
                 setDepartment(response?.data?.data[0]?.department);
                 setManager(response?.data?.data[0]?.manager);
                 setTeamLead(response?.data?.data[0]?.teamLead);
-                // setMembers(response?.data?.data[0]?.);
+                setMembers(response?.data?.data[0]?.members);
                 setTeamDescription(response?.data?.data[0]?.description);
 
             } else {
@@ -311,78 +317,80 @@ const TeamMaster = () => {
                     </Box>
                 )}
 
-                {teamData?.data?.length > 0 && !teamLoading ?
+                {!teamLoading && (
+                    teamData?.data?.length > 0 ? (
+                        <TableContainer component={Paper} variant="outlined" >
 
-                    <TableContainer component={Paper} variant="outlined" >
+                            <Table size='small'>
+                                <TableHead sx={{ height: 50 }}>
+                                    <TableRow>
 
-                        <Table size='small'>
-                            <TableHead sx={{ height: 50 }}>
-                                <TableRow>
+                                        <TableCell sx={{ fontSize: 18 }}> Team Name</TableCell>
 
-                                    <TableCell sx={{ fontSize: 18 }}> Team Name</TableCell>
+                                        <TableCell sx={{ fontSize: 18 }}>Description</TableCell>
 
-                                    <TableCell sx={{ fontSize: 18 }}>Description</TableCell>
+                                        <TableCell sx={{ fontSize: 18 }}>Lead Name</TableCell>
 
-                                    <TableCell sx={{ fontSize: 18 }}>Lead Name</TableCell>
+                                        <TableCell sx={{ fontSize: 18, textAlign: 'center' }}>Actions</TableCell>
 
-                                    <TableCell sx={{ fontSize: 18, textAlign: 'center' }}>Actions</TableCell>
+                                    </TableRow>
+                                </TableHead>
 
-                                </TableRow>
-                            </TableHead>
+                                <TableBody >
 
-                            <TableBody >
+                                    {teamData.data?.map((item, index) => (
 
-                                {teamData.data?.map((item, index) => (
+                                        <TableRow key={item.id} style={{ cursor: 'pointer' }} >
 
-                                    <TableRow key={item.id} style={{ cursor: 'pointer' }} >
+                                            <TableCell onClick={() => {
+                                                handleUpdateData(item.id, 0)
+                                            }} sx={{ padding: 2 }} >
+                                                <Typography
+                                                    sx={{ fontWeight: 400, fontSize: 20 }}
+                                                >
+                                                    {item.name} Team
+                                                </Typography>
 
-                                        <TableCell sx={{ padding: 2 }} onClick={() => {
-                                        }}>
-                                            <Typography
-                                                sx={{ fontWeight: 400, fontSize: 20 }}
-                                                onClick={() => {
-                                                    handleUpdateData(item.id, 0)
-                                                }}
-                                            >
-                                                {item.name} Team
-                                            </Typography>
+                                                <Typography sx={{ color: 'gray' }}>
+                                                    MegaaOpes Solutions Private Limited
+                                                </Typography>
+                                            </TableCell>
 
-                                            <Typography sx={{ color: 'gray' }}>
-                                                MegaaOpes Solutions Private Limited
-                                            </Typography>
-                                        </TableCell>
+                                            <TableCell>
+                                                <Typography sx={{ fontWeight: 400 }}>
+                                                    {item.description}
+                                                </Typography>
+                                            </TableCell>
 
-                                        <TableCell>
-                                            <Typography sx={{ fontWeight: 400 }}>
-                                                {item.description}
-                                            </Typography>
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <Typography sx={{ fontWeight: 400 }}>
-                                                {item.teamLead}
-                                            </Typography>
-                                        </TableCell>
+                                            <TableCell>
+                                                <Typography sx={{ fontWeight: 400 }}>
+                                                    {item.teamLead}
+                                                </Typography>
+                                            </TableCell>
 
 
-                                        <TableCell sx={{ textAlign: 'center' }} >
-                                            <Button
+                                            <TableCell
                                                 onClick={() => {
                                                     handleUpdateData(item.id, 1);
                                                 }}
 
-                                            >
-                                                <ModeEditIcon />
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    :
-                    <DatanotFound />
-                }
+                                                sx={{ textAlign: 'center' }} >
+                                                <Button
+
+                                                >
+                                                    <ModeEditIcon />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    ) : (
+                        <DatanotFound />
+                    )
+                )}
+
             </Grid>
 
             <Snackbar
@@ -412,7 +420,7 @@ const TeamMaster = () => {
 
                     <Grid container>
 
-                        <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 1, mt: 3 }}>
+                        <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 1, mt: 3, borderBottom: '1px solid gray', paddingBottom: 1 }}>
 
                             <Grid item xs={4}>
                                 <Typography>
@@ -429,7 +437,7 @@ const TeamMaster = () => {
 
                         </Grid>
 
-                        <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+                        <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2, borderBottom: '1px solid gray', paddingBottom: 1 }}>
 
                             <Grid item xs={4}>
                                 <Typography>
@@ -446,7 +454,7 @@ const TeamMaster = () => {
 
                         </Grid>
 
-                        <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+                        <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2, borderBottom: '1px solid gray', paddingBottom: 1 }}>
 
                             <Grid item xs={4}>
                                 <Typography>
@@ -463,7 +471,7 @@ const TeamMaster = () => {
 
                         </Grid>
 
-                        <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+                        <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2, borderBottom: '1px solid gray', paddingBottom: 1 }}>
 
                             <Grid item xs={4}>
                                 <Typography>
@@ -480,16 +488,33 @@ const TeamMaster = () => {
 
                         </Grid>
 
-                        <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+                        <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2, borderBottom: '1px solid gray', paddingBottom: 1 }}>
 
                             <Grid item xs={4}>
                                 <Typography>
+                                    Members
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                                {members.map((item) => (
+                                    <Typography variant="body1" key={item?.id}>
+                                        {item?.value}
+                                    </Typography>
+                                ))}
+                            </Grid>
+
+                        </Grid>
+
+                        <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2, borderBottom: '1px solid gray', paddingBottom: 1 }}>
+
+                            <Grid item xs={4}>
+                                <Typography >
                                     Team Description
                                 </Typography>
                             </Grid>
                             <Grid item xs={8}>
 
-                                <Typography variant='h6'>
+                                <Typography variant='body1'>
                                     {teamDescription}
                                 </Typography>
                             </Grid>
@@ -551,7 +576,7 @@ const TeamMaster = () => {
                                     disablePortal
                                     value={department || ''}
                                     options={mapOptions(departmentData?.data)}
-                                    onChange={(e, value) => setDepartment(value.value)}
+                                    onChange={(e, value) => setDepartment(value?.value)}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}

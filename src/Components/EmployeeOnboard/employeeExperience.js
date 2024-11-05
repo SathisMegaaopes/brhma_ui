@@ -1,6 +1,5 @@
 import React from 'react'
-import { Alert, Autocomplete, Avatar, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Grid } from '@mui/material';
 import { Controller } from 'react-hook-form';
 
 
@@ -218,7 +217,7 @@ const EmployeeExperience = ({
 
       </Grid>
 
-      <Grid container xs={12} bgcolor={''} sx={{  borderBottom: insertRequest === 0 ? '' : '1px solid black', width: '20%' }} > {/* Second Horizontal view page - 3 container */}
+      <Grid container xs={12} bgcolor={''} sx={{ borderBottom: insertRequest === 0 ? '' : '1px solid black', width: '20%' }} > {/* Second Horizontal view page - 3 container */}
 
 
         <Grid container xs={12} alignItems="center" paddingBottom={2}> {/*This is the empty oness... */}

@@ -1,8 +1,7 @@
 import React from 'react'
-import { Alert, Autocomplete, Avatar, Checkbox, CircularProgress, FormControl, FormControlLabel, FormHelperText, Grid, IconButton, InputLabel, MenuItem, Select, Snackbar, TextField, Typography } from '@mui/material';
+import { Avatar, Grid, MenuItem } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Controller } from 'react-hook-form';
-
 
 
 const EmployeeBasicInformation = ({ handleProfileUpload, profileImageUrl, control, interRequest,

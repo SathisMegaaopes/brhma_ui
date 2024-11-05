@@ -1,4 +1,4 @@
-import { Autocomplete, Avatar, Box, Button, Divider, Drawer, FormControl, Grid, IconButton, InputAdornment, InputBase, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Avatar, Box, Button, CircularProgress, Divider, Drawer, FormControl, Grid, IconButton, InputAdornment, InputBase, InputLabel, MenuItem, Paper, Select, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -7,9 +7,20 @@ import { right } from '@popperjs/core';
 import CustomDrawer from '../CustomComponents/drawer';
 import CustomSelect from '../CustomComponents/customSelect';
 import DatanotFound from '../CustomComponents/datanotfound';
+import { useFetchData } from '../EmployeeTable/customHook';
+import URL from '../Global/Utils/url_route';
+import axios from 'axios';
+
 const DesignationMaster = () => {
 
     const [openModal, setOpenModal] = useState(false);
+    const [searchInuputData, setSearchInputData] = useState(null);
+    const [leadeName, setLeadName] = useState(null);
+    const [designationName, setDesignationName] = useState(null)
+    const [billableStatus, setBillableStatus] = useState(null);
+    const [showSnackbar, setShowSnackbar] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const [reload, setReload] = useState(false);
 
     const handleOpenModal = () => {
         setOpenModal(true);
@@ -20,42 +31,76 @@ const DesignationMaster = () => {
     }
 
 
+    const searchData = { "searchData": searchInuputData }
 
-    const data = [
+    const designationsURL = `${URL}designations`
+    const employeeUrl = `${URL}todolist/employee`;
 
-        {
-            id: 1,
-            name: 'Software Developer',
-            company: 'MegaaOpes Solutions Private Limited',
-            leadname: 'Sathis kumar R'
-        },
-        {
-            id: 2,
-            name: 'Operations Manager',
-            company: 'MegaaOpes Solutions Private Limited',
-            leadname: 'Kannan R'
-        }, {
-            id: 3,
-            name: 'IT Adminstrator',
-            company: 'MegaaOpes Solutions Private Limited',
-            leadname: 'Shamala Srinivas'
-        }, {
-            id: 4,
-            name: `HR's Executive`,
-            company: 'MegaaOpes Solutions Private Limited',
-            leadname: 'Kannan R'
-        }, {
-            id: 5,
-            name: 'Business Development Executive',
-            company: 'MegaaOpes Solutions Private Limited',
-            leadname: 'Sathis kumar R'
-        }, {
-            id: 6,
-            name: 'Admin and Facility ',
-            company: 'MegaaOpes Solutions Private Limited',
-            leadname: 'Sathis kumar R'
-        },
-    ]
+    const { data: designationData, error: designationError, loading: designationLoading } = useFetchData(designationsURL, searchData, searchInuputData , reload);
+
+    const { data: employeeData, loading: employeeLoading, error: employeeError } = useFetchData(employeeUrl);
+
+    const employeeMap = (data) => {
+        if (data) {
+            return data.map((item) => ({
+                label: item.f_name + " " + item.l_name,
+                value: item.f_name + " " + item.l_name
+            }))
+
+        } else {
+            return [{
+                label: 'Loading data',
+                value: 'Loading data'
+            }, {
+                label: 'Loading data',
+                value: 'Loading data'
+            }
+            ]
+        }
+    }
+
+    // handleCreate
+
+
+    const handleCreate = async () => {
+
+        let url = `${URL}department`;
+
+        const apiPostData = {
+            "designationName": designationName,
+            "leadeName": leadeName,
+            "billable": billableStatus
+        }
+
+        try {
+
+            const response = await axios.post(designationsURL, apiPostData)
+
+            if (response?.data?.status === 1) {
+
+
+                setBillableStatus(null);
+                setDesignationName(null);
+                setLeadName(null);
+
+                setShowSnackbar(true)
+                setSnackbarMessage(1)
+                setOpenModal(false);
+                setReload(!reload);
+
+            } else {
+
+                setShowSnackbar(true);
+                setSnackbarMessage(0);
+
+            }
+
+        } catch (error) {
+            console.error(error, 'This is the error in the uploadfile')
+            setShowSnackbar(true)
+            setSnackbarMessage(0)
+        }
+    }
 
 
     return (
@@ -81,6 +126,7 @@ const DesignationMaster = () => {
                         </IconButton>
                         <InputBase
                             sx={{ ml: 1, flex: 1, color: 'black' }}
+                            onChange={(e) => setSearchInputData(e.target.value)}
                             placeholder="Search Designation Names"
                             inputProps={{ 'aria-label': 'Search Designation Names' }}
                         />
@@ -96,62 +142,98 @@ const DesignationMaster = () => {
 
             <Grid item xs={12} sx={{ paddingTop: 2, paddingRight: 4 }} >
 
-                {data.length > 0 ?
 
-                    <TableContainer component={Paper} variant="outlined" >
+                {designationLoading && (
 
-                        <Table size='small'>
-                            <TableHead sx={{ height: 50 }}>
-                                <TableRow>
+                    <Box
+                        sx={{
+                            height: '70vh',
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Grid
+                            container
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Grid item sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <CircularProgress />
+                            </Grid>
 
-                                    <TableCell sx={{ fontSize: 18 }}> Desgination Name</TableCell>
+                        </Grid>
 
-                                    <TableCell sx={{ fontSize: 18 }}>Lead Name</TableCell>
+                    </Box>
 
-                                </TableRow>
-                            </TableHead>
-
-                            <TableBody >
-
-                                {data.map((item, index) => (
-
-                                    <TableRow key={item.id} style={{ cursor: 'pointer' }} >
-
-                                        <TableCell sx={{ padding: 2 }}>
-
-                                            <Typography sx={{ fontWeight: 400, fontSize: 20 }}>
-                                                {item.name}
-                                            </Typography>
-
-                                        </TableCell>
-
-                                        <TableCell>
-
-                                            <Typography sx={{ fontWeight: 400 }}>
-                                                {item.leadname}
-                                            </Typography>
+                )}
 
 
-                                        </TableCell>
+                {!designationLoading && (
 
+                    designationData?.data?.length > 0 ? (
+                        <TableContainer component={Paper} variant="outlined">
+                            <Table size="small">
+                                <TableHead sx={{ height: 50 }}>
+                                    <TableRow>
+                                        <TableCell sx={{ fontSize: 18 }}>Designation Name</TableCell>
+                                        <TableCell sx={{ fontSize: 18 }}>Lead Name</TableCell>
+                                        <TableCell sx={{ fontSize: 18 }}>Status</TableCell>
                                     </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {designationData?.data?.map((item) => (
+                                        <TableRow key={item.id} style={{ cursor: 'pointer' }}>
+                                            <TableCell sx={{ padding: 2 }}>
+                                                <Typography sx={{ fontWeight: 400, fontSize: 20 }}>
+                                                    {item.name}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography sx={{ fontWeight: 400 }}>
+                                                    {item.manager}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography sx={{ fontWeight: 400 }}>
+                                                    {item.billable === 0 ? 'Billable' : 'Non - Billable'}
+                                                </Typography>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    ) : (
+                        <DatanotFound />
+                    )
+                )}
 
-                                ))}
-
-                            </TableBody>
-
-
-                        </Table>
-                    </TableContainer>
-
-                    :
-
-                    <DatanotFound />
-
-                }
             </Grid>
 
-            <CustomDrawer title={'Add new Department'} open={openModal} close={handleCloseModal}>
+
+            <Snackbar
+                open={showSnackbar}
+                autoHideDuration={3000}
+                onClose={() => setShowSnackbar(!showSnackbar)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                sx={{
+                    zIndex: 99999,
+                }}
+            >
+                <Alert
+                    onClose={() => setShowSnackbar(!showSnackbar)}
+                    severity={snackbarMessage === 1 ? 'success' : 'error'}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMessage === 1 ? ' Executed Successfully ' : 'Something went Wrong !'}
+                </Alert>
+            </Snackbar>
+
+
+            <CustomDrawer title={'Add new Department'} open={openModal} close={handleCloseModal} handleCreate={handleCreate}>
 
                 <Grid container>
 
@@ -166,6 +248,8 @@ const DesignationMaster = () => {
                                 fullWidth
                                 label="Enter Designation Name"
                                 variant="outlined"
+                                value={designationName || ''}
+                                onChange={(e) => setDesignationName(e.target.value)}
                                 sx={{
                                     mb: 2,
                                     '& .MuiInputBase-root': {
@@ -185,31 +269,29 @@ const DesignationMaster = () => {
                         </Grid>
                     </Grid>
 
-
                     <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
                         <Grid item xs={4}>
                             <Typography>
-                                Billable Status
+                                Manager
                             </Typography>
                         </Grid>
                         <Grid item xs={8}>
+
                             <Autocomplete
                                 disablePortal
-                                value={'Billable'}
-                                options={[{ label: 'Billable', value: 'Billable' },
-                                { label: 'Non Billable', value: 'Non Billable' }]}
-                                // onChange={(e, value) => handleDepartmentChange(e, value)}
+                                value={leadeName}
+                                options={employeeMap(employeeData?.data)}
+                                onChange={(e, value) => setLeadName(value?.value)}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        // label="Select Department"
+                                        label="Select Manager"
                                         sx={{
                                             '& .MuiInputBase-root': {
                                                 height: '50px',
                                                 fontSize: '14px',
                                             },
                                             '& .MuiInputLabel-root': {
-                                                top: '-8px',
                                                 fontSize: '14px',
                                             },
                                             '& .MuiInputLabel-shrink': {
@@ -219,19 +301,42 @@ const DesignationMaster = () => {
                                     />
                                 )}
                             />
+
                         </Grid>
                     </Grid>
 
-
-
-                    <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 4 }}>
+                    <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
                         <Grid item xs={4}>
                             <Typography>
-                                Add Members
+                                Billable Status
                             </Typography>
                         </Grid>
                         <Grid item xs={8}>
-                            <CustomSelect />
+                            <Select
+                                value={billableStatus}
+                                onChange={(e) => setBillableStatus(e.target.value)}
+                                sx={{
+                                    height: '50px',
+                                    width: '100%',
+                                    fontSize: '14px',
+                                    '& .MuiSelect-root': {
+                                        height: '50px',
+
+                                    },
+                                    '& .MuiInputLabel-root': {
+                                        top: '-8px',
+                                        fontSize: '14px',
+                                    },
+                                    '& .MuiInputLabel-shrink': {
+                                        top: 0,
+                                    },
+                                }}
+                                displayEmpty
+                            >
+                                <MenuItem value={0}>Billable</MenuItem>
+                                <MenuItem value={1}>Non Billable</MenuItem>
+                            </Select>
+
                         </Grid>
                     </Grid>
 
@@ -239,6 +344,7 @@ const DesignationMaster = () => {
                 </Grid>
 
             </CustomDrawer>
+
 
         </Grid>
     )
