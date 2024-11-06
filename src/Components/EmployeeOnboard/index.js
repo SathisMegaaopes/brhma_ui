@@ -375,6 +375,8 @@ export default function EmployeeForm() {
     const [openEditfive, setOpenEditfive] = React.useState((insertRequest === 0) ? true : false);
     const [openEditsix, setOpenEditsix] = React.useState((insertRequest === 0) ? true : false);
 
+    const [isClicked, setIsClicked] = React.useState(false);
+
 
     const [formData1, setFormData1] = React.useState({
         firstname: null,
@@ -1183,6 +1185,8 @@ export default function EmployeeForm() {
 
     const handleSubmit2 = async () => {
 
+        setIsClicked(true);
+
         let url;
         let data
 
@@ -1237,6 +1241,12 @@ export default function EmployeeForm() {
             setSnackbarMessage(0);
             setShowSnackbar(true);
             setLoading(false);
+
+        } finally {
+
+            setTimeout(() => {
+                setIsClicked(false);
+            }, 5000);
 
         }
 
@@ -1917,7 +1927,7 @@ export default function EmployeeForm() {
                                             Employee
                                         </Link>
 
-                                        <Typography color="text.primary" variant='h5'>Employee Form</Typography>
+                                        <Typography color="text.primary" variant='h5'>Employee Details  </Typography>
                                     </Breadcrumbs>
                                 </Grid>
 
@@ -2521,7 +2531,7 @@ export default function EmployeeForm() {
                         </Box>
 
                         {activeStep === steps.length - 1 ? (
-                            <Button variant="contained" color="primary" type="submit" onClick={handleSubmit2} disabled={!isValid}>
+                            <Button variant="contained" color="primary" type="submit" onClick={handleSubmit2} disabled={!isValid || isClicked}>
                                 Submit
                             </Button>
                         ) : (

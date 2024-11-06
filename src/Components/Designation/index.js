@@ -36,7 +36,7 @@ const DesignationMaster = () => {
     const designationsURL = `${URL}designations`
     const employeeUrl = `${URL}todolist/employee`;
 
-    const { data: designationData, error: designationError, loading: designationLoading } = useFetchData(designationsURL, searchData, searchInuputData , reload);
+    const { data: designationData, error: designationError, loading: designationLoading } = useFetchData(designationsURL, searchData, searchInuputData, reload);
 
     const { data: employeeData, loading: employeeLoading, error: employeeError } = useFetchData(employeeUrl);
 
@@ -228,12 +228,12 @@ const DesignationMaster = () => {
                     variant="filled"
                     sx={{ width: '100%' }}
                 >
-                    {snackbarMessage === 1 ? ' Executed Successfully ' : 'Something went Wrong !'}
+                    {snackbarMessage === 1 ? ' Successfully Completed ' : 'Something went Wrong !'}
                 </Alert>
             </Snackbar>
 
 
-            <CustomDrawer title={'Add new Department'} open={openModal} close={handleCloseModal} handleCreate={handleCreate}>
+            <CustomDrawer title={'Add new Department'} editTitle={'Update Department Details'} open={openModal} close={handleCloseModal} handleCreate={handleCreate}>
 
                 <Grid container>
 
@@ -246,7 +246,6 @@ const DesignationMaster = () => {
                         <Grid item xs={8}>
                             <TextField
                                 fullWidth
-                                label="Enter Designation Name"
                                 variant="outlined"
                                 value={designationName || ''}
                                 onChange={(e) => setDesignationName(e.target.value)}
@@ -285,7 +284,6 @@ const DesignationMaster = () => {
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        label="Select Manager"
                                         sx={{
                                             '& .MuiInputBase-root': {
                                                 height: '50px',

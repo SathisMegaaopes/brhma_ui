@@ -155,8 +155,6 @@ const TeamMaster = () => {
     const handleUpdateData = async (id, mode) => {
 
 
-        console.log(id, 'ID that is comming inside the handleUpdateData function da Sathis uh .....')
-
         let url = `${URL}team/${id}`
 
         try {
@@ -186,8 +184,6 @@ const TeamMaster = () => {
 
 
                 }
-
-                console.log(response.data.data)
 
                 setTeamName(response?.data?.data[0]?.name);
                 setDepartment(response?.data?.data[0]?.department);
@@ -352,7 +348,7 @@ const TeamMaster = () => {
                                                 </Typography>
 
                                                 <Typography sx={{ color: 'gray' }}>
-                                                    MegaaOpes Solutions Private Limited
+                                                    {item.parentCompany}
                                                 </Typography>
                                             </TableCell>
 
@@ -408,12 +404,12 @@ const TeamMaster = () => {
                     variant="filled"
                     sx={{ width: '100%' }}
                 >
-                    {snackbarMessage === 1 ? ' Executed Successfully ' : 'Something went Wrong !'}
+                    {snackbarMessage === 1 ? ' Successfully  Completed' : 'Something went Wrong !'}
                 </Alert>
             </Snackbar>
 
 
-            <CustomDrawer title={'Add new Department'} open={openModal} close={handleCloseModal} handleCreate={handleCreate} viewMode={viewMode} editMode={editMode} addMode={addMode} >
+            <CustomDrawer title={'Add New Team'} editTitle={'Update Team Details'} open={openModal} close={handleCloseModal} handleCreate={handleCreate} viewMode={viewMode} editMode={editMode} addMode={addMode} >
 
 
                 {viewMode && (
@@ -540,7 +536,6 @@ const TeamMaster = () => {
                             <Grid item xs={8}>
                                 <TextField
                                     fullWidth
-                                    label="Enter Team Name"
                                     variant="outlined"
                                     value={teamName || ''}
                                     onChange={(e) => setTeamName(e.target.value)}
@@ -580,7 +575,6 @@ const TeamMaster = () => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            // label="Select Department"
                                             sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '50px',
@@ -617,7 +611,6 @@ const TeamMaster = () => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            // label="Select Department"
                                             sx={{
                                                 '& .MuiInputBase-root': {
                                                     height: '50px',
@@ -695,7 +688,7 @@ const TeamMaster = () => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label="Select Employee"
+                                            // label="Select Employee"
                                             placeholder="Search or Select"
                                             sx={{
                                                 '& .MuiInputBase-root': {
@@ -728,7 +721,6 @@ const TeamMaster = () => {
                             <Grid item xs={8}>
                                 <TextField
                                     fullWidth
-                                    label="Mention description "
                                     value={teamDescription || ''}
                                     variant="outlined"
                                     onChange={(e) => setTeamDescription(e.target.value)}

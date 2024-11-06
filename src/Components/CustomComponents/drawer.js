@@ -2,7 +2,7 @@ import { Box, Button, Divider, Drawer, TextField, Typography } from '@mui/materi
 import React, { Children } from 'react'
 import CloCseIcon from '@mui/icons-material/Close';
 
-const CustomDrawer = ({ title, children, open, close, handleCreate, viewMode, editMode }) => {
+const CustomDrawer = ({ title, editTitle, children, open, close, handleCreate, viewMode, editMode }) => {
     return (
         <div>
             <Drawer
@@ -49,7 +49,8 @@ const CustomDrawer = ({ title, children, open, close, handleCreate, viewMode, ed
                     <Box sx={{ width: 500, height: '100%', display: 'flex', flexDirection: 'column', p: 3, pt: 12 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Typography variant="h6" sx={{ pl: 1 }}>
-                                {editMode ? 'Update Department Details' : title}
+                                {/* {editMode ? 'Update Department Details' : title} */}
+                                {editMode ? editTitle : title}
                             </Typography>
                             <Button disableRipple sx={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'flex-end', '&:hover': {

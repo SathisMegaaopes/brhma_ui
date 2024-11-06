@@ -11,6 +11,7 @@ import { useFetchData } from '../EmployeeTable/customHook';
 import URL from '../Global/Utils/url_route';
 import axios from 'axios'
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import debounce from 'lodash.debounce'
 
 
 const DeparmentMaster = () => {
@@ -28,6 +29,7 @@ const DeparmentMaster = () => {
   const [addMode, setAddMode] = useState(false);
   const [editmodeID, setEditModeId] = useState(null);
   const [reload, setReload] = useState(false);
+  const [debounceSearch, setDebounceSearch] = useState(searchData)
 
 
   const handleOpenModal = () => {
@@ -151,12 +153,26 @@ const DeparmentMaster = () => {
 
   const departmentUrl = `${URL}department`;
   const employeeUrl = `${URL}todolist/employee`;
+  const companyUrl = `${URL}company`
+
+
+  const debouncedSearchData = debounce((value) => {
+    setDebounceSearch(value)
+  }, 500)
+
+
+  // const { data: departmentData, loading: departmentLoading, error: departmentError } = useFetchData(departmentUrl,
+  //   { searchData: searchData }, searchData, reload);
 
 
   const { data: departmentData, loading: departmentLoading, error: departmentError } = useFetchData(departmentUrl,
-    { searchData: searchData }, searchData, reload);
+    { searchData: debounceSearch }, debounceSearch, reload);
+
+  console.log(departmentLoading, 'loading da')
 
   const { data: employeeData, loading: employeeLoading, error: employeeError } = useFetchData(employeeUrl);
+
+  const { data: companyData, loading: companyLoading, error: companyError } = useFetchData(companyUrl);
 
 
   const employeeMap = (data) => {
@@ -167,6 +183,26 @@ const DeparmentMaster = () => {
       }))
 
     } else {
+      return [{
+        label: 'Loading data',
+        value: 'Loading data'
+      }, {
+        label: 'Loading data',
+        value: 'Loading data'
+      }
+      ]
+    }
+  }
+
+  const mapOptions = (data) => {
+
+    if (data) {
+      return data.map(item => ({
+        label: item?.name,
+        value: item?.name
+      }));
+    } else {
+
       return [{
         label: 'Loading data',
         value: 'Loading data'
@@ -207,7 +243,8 @@ const DeparmentMaster = () => {
               placeholder="Search Department Names"
               inputProps={{ 'aria-label': 'Search Department Names' }}
               onChange={(e) => {
-                setSearchData(e.target.value)
+                // setSearchData(e.target.value);
+                debouncedSearchData(e.target.value);
               }}
             />
           </Paper>
@@ -483,11 +520,11 @@ const DeparmentMaster = () => {
           variant="filled"
           sx={{ width: '100%' }}
         >
-          {snackbarMessage === 1 ? ' Executed Successfully ' : 'Something went Wrong !'}
+          {snackbarMessage === 1 ? ' Successfully Completed ' : 'Something went Wrong !'}
         </Alert>
       </Snackbar>
 
-      <CustomDrawer title={'Add new Department'} open={openModal} close={handleCloseModal} handleCreate={handleCreate} viewMode={viewMode} editMode={editMode} addMode={addMode} >
+      <CustomDrawer title={'Add new Department'} editTitle={'Update Department Details'} open={openModal} close={handleCloseModal} handleCreate={handleCreate} viewMode={viewMode} editMode={editMode} addMode={addMode} >
 
 
         {viewMode && (
@@ -573,7 +610,6 @@ const DeparmentMaster = () => {
               <Grid item xs={8}>
                 <TextField
                   fullWidth
-                  label="Enter Department Name"
                   variant="outlined"
                   value={departmentName || ''}
                   onChange={(e) => setDepartmentName(e.target.value)}
@@ -606,15 +642,13 @@ const DeparmentMaster = () => {
 
                 <Autocomplete
                   disablePortal
-                  // value={'MegaaOpes Solutions Private Limited'}
                   value={parentDepartment}
-                  // options={{ label: 'MegaaOpes Solutions Private Limited', value: 'MegaaOpes Solutions Private Limited  ' }}
-                  options={options1}
+                  // options={options1}
+                  options={mapOptions(companyData?.data)}
                   onChange={(e, value) => setParentDepartment(value.value)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      // label="Select Department"
                       sx={{
                         '& .MuiInputBase-root': {
                           height: '50px',
@@ -645,14 +679,12 @@ const DeparmentMaster = () => {
 
                 <Autocomplete
                   disablePortal
-                  // value={'Sathis kumar  R'}
                   value={leadeName}
                   options={employeeMap(employeeData?.data)}
                   onChange={(e, value) => setLeadName(value.value)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      // label="Select Department"
                       sx={{
                         '& .MuiInputBase-root': {
                           height: '50px',
@@ -682,7 +714,6 @@ const DeparmentMaster = () => {
               <Grid item xs={8}>
                 <TextField
                   fullWidth
-                  label="Mention Department Description "
                   value={departmentDesc || ''}
                   variant="outlined"
                   onChange={(e) => setDepartmentDesc(e.target.value)}
@@ -721,68 +752,3 @@ const DeparmentMaster = () => {
 
 export default DeparmentMaster
 
-
-
-
-
-
-
-{/* <TableCell align="center" sx={{ padding: 0 }}>
-
-                      <IconButton color='primary' sx={{ padding: 0.5, boxShadow: 'none' }} >
-                        <Button
-                          id="fade-button"
-                          aria-controls={openOptions ? 'fade-menu' : undefined}
-                          aria-haspopup="true"
-                          aria-expanded={openOptions ? 'true' : undefined}
-                          onClick={handleClick}
-                        >
-                          <MoreVertIcon />
-                        </Button>
-                        <Menu
-                          id="fade-menu"
-                          MenuListProps={{
-                            'aria-labelledby': 'fade-button',
-                          }}
-                          anchorEl={anchorEl}
-                          open={Boolean(anchorEl)}
-                          onClose={handleCloseOptions}
-                          TransitionComponent={Fade}
-                          sx={{
-                            '& .MuiPaper-root': {
-                              border: '1px solid black',
-                              boxShadow: 'none',
-                            },
-                          }}
-                        >
-                          <MenuItem onClick={() => {
-
-                            handleUpdateData(item.id, 0)
-                            console.log(item.id, 'ID ID ID ID ID ID ID ID ID ID ID ID ID ')
-                          }
-                          }>
-                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
-                              View
-                            </Button>
-                          </MenuItem>
-
-                          <MenuItem onClick={
-                            () => {
-                              handleUpdateData(item.id, 1)
-                            }
-                          }>
-                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
-                              Edit
-                            </Button>
-                          </MenuItem>
-
-                          <MenuItem onClick={''}>
-                            <Button variant='outlined' color='primary' sx={{ bgcolor: '', width: '100%' }}>
-                              Activate
-                            </Button>
-                          </MenuItem>
-
-                        </Menu>
-
-                      </IconButton>
-                    </TableCell> */}
