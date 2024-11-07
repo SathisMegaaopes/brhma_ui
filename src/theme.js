@@ -1,15 +1,4 @@
-// src/theme.js
 import { createTheme } from '@mui/material/styles';
-
-// const theme = createTheme({
-//   typography: {
-//     fontFamily: 'Noto Sans, Arial, sans-serif',
-//     h1: {
-//       fontFamily: 'Kalnia Glaze, serif',
-//     },
-//     // You can define other typography variants here
-//   },
-// });
 
 
 const theme = createTheme({

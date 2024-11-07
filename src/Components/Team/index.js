@@ -12,6 +12,7 @@ import URL from '../Global/Utils/url_route';
 import { useFetchData } from '../EmployeeTable/customHook';
 import axios from 'axios';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import debounce from 'lodash.debounce';
 
 
 const TeamMaster = () => {
@@ -30,6 +31,7 @@ const TeamMaster = () => {
     const [editMode, setEditMode] = useState(false);
     const [editmodeID, setEditModeId] = useState(null);
     const [reload, setReload] = useState(false);
+    const [debouncedSearchData, setDebouncedSearchData] = useState(searchData);
 
 
     const handleOpenModal = () => {
@@ -61,7 +63,13 @@ const TeamMaster = () => {
     const { data: departmentData, loading: departmentLoading, error: departmentError } = useFetchData(departmentUrl);
 
     const { data: teamData, loading: teamLoading, error: teamError } = useFetchData(teamUrl,
-        { searchData: searchData }, searchData, reload);
+        { searchData: debouncedSearchData }, debouncedSearchData, reload);
+
+
+    const debouncedSetSearchData = debounce((value) => {
+        setDebouncedSearchData(value);
+    }, 500);
+
 
 
     const employeeMap = (data) => {
@@ -242,7 +250,8 @@ const TeamMaster = () => {
                             placeholder="Search Team Names"
                             inputProps={{ 'aria-label': 'search team names' }}
                             onChange={(e) => {
-                                setSearchData(e.target.value)
+                                debouncedSetSearchData(e.target.value)
+                                // setSearchData(e.target.value)
                             }}
                         />
                     </Paper>
@@ -675,7 +684,6 @@ const TeamMaster = () => {
                                 </Typography>
                             </Grid>
                             <Grid item xs={8}>
-                                {/* <CustomSelect /> */}
 
                                 <Autocomplete
                                     multiple
@@ -688,11 +696,9 @@ const TeamMaster = () => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            // label="Select Employee"
                                             placeholder="Search or Select"
                                             sx={{
                                                 '& .MuiInputBase-root': {
-                                                    // height: '50px',
                                                     fontSize: '14px',
                                                 },
                                                 '& .MuiInputLabel-root': {
@@ -729,7 +735,6 @@ const TeamMaster = () => {
                                     sx={{
                                         mb: 2,
                                         '& .MuiInputBase-root': {
-                                            // height: 45,
                                             fontSize: '17px',
                                         },
                                         '& .MuiInputLabel-root': {

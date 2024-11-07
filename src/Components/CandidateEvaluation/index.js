@@ -1,7 +1,6 @@
 import * as React from 'react';
 
-import {
-    Container, Grid,
+import { Grid,
     Button, TextField, Typography,
     Card, CardActions, CardContent, CardHeader,
     Select, MenuItem, FormControl, FormLabel,
@@ -34,19 +33,6 @@ function CandidateEvaluation(props) {
     const rating5 = [{ id: 0, value: "Poor" }, { id: 1, value: "Below Average" },
     { id: 2, value: "Average" }, { id: 3, value: "Met Expectation" },
     { id: 4, value: "Above Expectation" }, { id: 5, value: "Exceptional" }];
-
-    const RatingName = (id) => {
-
-        let final = rating.find(item => item.id = id);
-
-        if (final !== undefined) {
-            return final.value;
-        }
-        else {
-            return null
-        }
-
-    }
 
     const [dress, setDress] = React.useState();
     const [grooming, setGrooming] = React.useState();

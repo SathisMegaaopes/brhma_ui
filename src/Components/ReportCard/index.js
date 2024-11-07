@@ -104,19 +104,6 @@ const InterviewResult = (round, candidate) => {
 }
 
 
-// const finalStatus = (data) =>{
-//     let result = interview_status.find(item => item.id == data);
-
-//     if(result===undefined)
-//     {
-//         return "Awaiting Final Status";
-//     }
-//     else
-//     {
-//         return result.name;
-//     }
-// }
-
 
 function CandidateReportCard(props) {
 
@@ -140,8 +127,6 @@ function CandidateReportCard(props) {
     let personal_url = URL + "candidateupload";
     let full_url = `${personal_url}/${candidate_id}`;
 
-
-    console.log(distance, 'this is distances')
 
     useEffect(() => {
         const handleFetchImageUrl = async () => {

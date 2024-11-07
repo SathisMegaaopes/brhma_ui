@@ -37,35 +37,6 @@ export default function MOSDashboard() {
     const [reload, setReload] = useState(false);
     const [onbreak, setOnbreak] = useState(false);
 
-    // const userinfo = JSON.parse(sessionStorage.getItem("user_info"));
-
-    // const handleBeforeUnload = async (event) => {
-    //     let url = URL + "login/validateUser";
-    //     let request = {
-    //         user_name: userinfo.user_name,
-    //         user_pwd: userinfo.user_pwd,
-    //         type: 'logout',
-    //     };
-
-    //     try {
-    //         await axios.post(url, request);
-    //     } catch (error) {
-    //         console.error('There was a problem with the API call:', error);
-    //     }
-
-    //     event.preventDefault();
-    //     event.returnValue = '';
-    // };
-
-    // React.useEffect(() => {
-    //     window.addEventListener('beforeunload', handleBeforeUnload);
-
-    //     return () => {
-    //         window.removeEventListener('beforeunload', handleBeforeUnload);
-    //     };
-    // }, []);
-
-
     const date = new Date();
 
     let day = date.getDate().toString().padStart(2, "0");

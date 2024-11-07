@@ -13,7 +13,6 @@ import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import EmployeeTable from "../EmployeeTable";
 import EmployeeTable1 from "../EmployeeTable";
 import { useSharedContext } from "../../Context";
-// import EmployeeForm from "../EmployeeTable/employeeForm";
 import EmployeeForm from "../EmployeeOnboard";
 import GroupsIcon from '@mui/icons-material/Groups';
 import BusinessIcon from '@mui/icons-material/Business';
@@ -38,7 +37,6 @@ const SidebarContainer = styled('div')(({ isopen, isactive }) => ({
     overflowY: "auto",
     transition: "width 0.5s, background-color 0.5s",
     whiteSpace: "nowrap",
-    // boxShadow: "2px 0 5px rgba(0,0,0,0.5)",
 }));
 
 const MainContainer = styled('div')(() => ({
@@ -66,10 +64,7 @@ function Sidebar() {
     const { search } = useLocation();
     const queryParams = new URLSearchParams(search);
     const [isopen, setIsOpen] = useState(false);
-
     const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem('activeTab') || 'info');
-
-    // const [activeTab, setActiveTab] = useState('info');
 
 
     const navigate = useNavigate();
@@ -226,10 +221,7 @@ function Sidebar() {
                 {AuthorizedPerson === 1 && (
                     <SidebarIcon
                         disableRipple
-                        // aria-label="EmployeeMaster"
                         isopen={isopen}
-                        // onClick={() => handleTabChange('EmployeeMaster')}
-                        // isactive={activeTab === 'EmployeeMaster'}
                         style={{ marginTop: '-20px' }}
                     >
                         <CorporateFareIcon sx={{ fontSize: 30 }} />

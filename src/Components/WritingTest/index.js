@@ -60,8 +60,6 @@ function WritingTest(props)
         .finally();
     }
 
-    // console.log(rating,'This is the rating inside the writting text value')
-
 
     return (
         <Grid container spacing={2}  sx={{marginTop:"8px"}}>

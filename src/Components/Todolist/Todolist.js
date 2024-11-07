@@ -48,12 +48,6 @@ const Todolist = () => {
     const [updateStatus, setUpdateStatus] = useState(null)
     const [comment, setComment] = useState('');
 
-
-
-    // console.log(selectedTask)
-    // console.log(![2].includes(selectedTask.status))
-
-
     const handleChange = (event, id) => {
         setSelect(event.target.value);
 
@@ -207,7 +201,6 @@ const Todolist = () => {
             const hours = Math.floor(seconds / 3600);
             const minutes = Math.floor((seconds % 3600) / 60);
             const secs = seconds % 60;
-            // return `${hours}h ${minutes}m ${secs}s`;
             return `${hours}h ${minutes}m ${secs}s`;
         };
 
@@ -224,7 +217,6 @@ const Todolist = () => {
 
         <>
             <Grid container sx={{ gap: 2, height: '80vh' }}>
-                {/* <Box sx={{ backgroundColor: 'white', width: '100%', maxHeight: '0vh' }}> */}
                 <Box sx={{ backgroundColor: 'white', width: '100%', height: '50%', overflow: 'auto' }} >
                     <TableContainer component={Paper} variant='outlined'>
                         <Table stickyHeader >
@@ -353,7 +345,6 @@ const Todolist = () => {
                     </TableContainer>
                 </Box>
 
-                {/* <Box sx={{ backgroundColor: 'White', width: '100%', maxHeight: '0vh' }}> */}
                 <Box sx={{ backgroundColor: 'white', width: '100%', height: '50%', overflow: 'auto' }}>
                     <TableContainer component={Paper} variant='outlined' >
                         <Table stickyHeader >
@@ -726,8 +717,6 @@ const Todolist = () => {
                                                         {selectedTask.status === 2 && <MenuItem value="reopen">Re-open</MenuItem>}
                                                         {selectedTask.status === 2 && <MenuItem value="done">Done</MenuItem>}
                                                         {![2].includes(selectedTask.status) && <MenuItem value="" disabled>No Status Available</MenuItem>}
-                                                        {/* <MenuItem value="reopen">Re-open</MenuItem> */}
-                                                        {/* <MenuItem value="done">Done</MenuItem> */}
                                                     </Select>
                                                 </FormControl>
                                             ) : (

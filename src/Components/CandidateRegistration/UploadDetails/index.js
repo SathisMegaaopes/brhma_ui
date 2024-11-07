@@ -6,9 +6,7 @@ import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import { Container, Grid } from "@mui/material";
 import URL from '../../Global/Utils/url_route.js';
-import { csCZ } from '@mui/x-date-pickers';
 import Alert from '@mui/material/Alert';
-import CheckIcon from '@mui/icons-material/Check';
 import Stack from '@mui/material/Stack';
 
 
@@ -85,7 +83,6 @@ const UploadDetails = (props) => {
 
 
     const handleClick = () => {
-        console.log(props, 'this is the props man')
 
         props.handleNext();
 

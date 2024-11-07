@@ -121,7 +121,6 @@ const IdleTimerComponent = ({ setReload, reload }) => {
         <IdleTimerProvider
             ref={idleTimerRef}
             timeout={1000 * 60 * 5}
-            // timeout={1000 * 5}
             onIdle={onIdle}
             debounce={500}
         >

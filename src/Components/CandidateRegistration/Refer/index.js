@@ -23,7 +23,6 @@ function ReferDetails(props) {
             mobile2: mobile2, name3: name3, mobile3: mobile3, name4: name4, mobile4: mobile4
         }
         props.handleRefer(referData);
-        //props.handleSubmit();
     }
 
     return (
@@ -99,12 +98,7 @@ function ReferDetails(props) {
                         value={mobile4}
                         onChange={e => setMobile4(e.target.value)} />
                 </Grid>
-                {/* <Grid item xs={6} sm={5} md={5}>
-          
-          <Button variant='contained' color='primary' disableElevation fullWidth onClick={props.handlePrev}>
-              Previous 
-          </Button> 
-      </Grid> */}
+
                 <Grid item xs={12} sm={12} md={12}>
                     <Button variant='contained' color='success'
                         disableElevation fullWidth onClick={handleClick}>

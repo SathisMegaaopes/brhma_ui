@@ -4,7 +4,6 @@ import React from 'react'
 
 const DatanotFound = () => {
     return (
-        // <>
         <Grid container spacing={2} sx={{ paddingX: 0, paddingTop: 3, display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%'>
             <Box
                 sx={{
@@ -34,7 +33,6 @@ const DatanotFound = () => {
 
             </Box>
         </Grid >
-        // </>
     )
 }
 

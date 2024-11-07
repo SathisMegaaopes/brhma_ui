@@ -373,52 +373,6 @@ const EmployeeStatuoryinfo = ({
         </Grid>
 
 
-
-
-
-
-
-
-        {/* {isPFChecked &&
-          <Grid xs={4} container alignItems="center" paddingBottom={2} style={{ visibility: isPFChecked ? 'visible' : 'hidden', }} >
-            <Grid item xs={4}>
-              <StyledLabel>
-                PF Join Date
-              </StyledLabel>
-            </Grid>
-            <Grid item xs={7}>
-              <Controller
-                name="pfjoindate"
-                control={control}
-                defaultValue={formData5.pfjoindate}
-                render={({ field }) => (
-                  <StyledInput
-                    fullWidth
-                    {...field}
-                    type="date"
-                    variant="outlined"
-                    InputLabelProps={{ shrink: true }}
-                    error={!!errors.pfjoindate}
-                    helperText={errors.pfjoindate ? errors.pfjoindate.message : ''}
-                    FormHelperTextProps={{
-                      style: { margin: 0, position: 'absolute', bottom: '-20px' }
-                    }}
-                    disabled={openEdit}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      setFormData5((prev) => ({
-                        ...prev,
-                        pfjoindate: e.target.value,
-                      }));
-                    }}
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-        } */}
-
-
       </Grid>
     </Grid>
   )

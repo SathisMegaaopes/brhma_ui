@@ -33,9 +33,6 @@ function PersonalDetails(props) {
 
         props.handlePersonal(personalData);
 
-        // console.log(sess)
-        // sessionStorage.setItem("")
-        // props.handleNext();
     }
 
 
@@ -110,7 +107,6 @@ function PersonalDetails(props) {
                         variant="outlined"
                         size="small"
                         value={fatherName}
-                        // onChange={e => setFname(e.target.value)}
                         onChange ={handleInputs}
                     />
                 </Grid>
@@ -125,7 +121,6 @@ function PersonalDetails(props) {
                         variant="outlined"
                         size="small"
                         value={fatherAge}
-                        // onChange={e => setFAge(e.target.value)}
                         onChange ={handleInputs}
 
                     />
@@ -141,7 +136,6 @@ function PersonalDetails(props) {
                         variant="outlined"
                         size="small"
                         value={fatherOccu}
-                        // onChange={e => setFOccu(e.target.value)}
                         onChange ={handleInputs}
 
                     />
@@ -157,7 +151,6 @@ function PersonalDetails(props) {
                         variant="outlined"
                         size="small"
                         value={fatherMob}
-                        // onChange={e => setFMob(e.target.value)}
                         onChange ={handleInputs}
 
                     />
@@ -174,8 +167,6 @@ function PersonalDetails(props) {
                         size="small"
                         value={motherName}
                         onChange ={handleInputs}
-
-                        // onChange={e => setMname(e.target.value)}
                     />
                 </Grid>
 
@@ -190,8 +181,6 @@ function PersonalDetails(props) {
                         size="small"
                         value={motherAge}
                         onChange ={handleInputs}
-
-                        // onChange={e => setMAge(e.target.value)}
                     />
                 </Grid>
 
@@ -206,8 +195,6 @@ function PersonalDetails(props) {
                         size="small"
                         value={motherOccu}
                         onChange ={handleInputs}
-
-                        // onChange={e => setMOccu(e.target.value)}
                     />
                 </Grid>
 
@@ -222,8 +209,6 @@ function PersonalDetails(props) {
                         size="small"
                         value={motherMob}
                         onChange ={handleInputs}
-
-                        // onChange={e => setMMob(e.target.value)}
                     />
                 </Grid>
 
@@ -238,8 +223,6 @@ function PersonalDetails(props) {
                         size="small"
                         value={guardName}
                         onChange ={handleInputs}
-
-                        // onChange={e => setGname(e.target.value)}
                     />
                 </Grid>
 
@@ -254,8 +237,6 @@ function PersonalDetails(props) {
                         size="small"
                         value={guardAge}
                         onChange ={handleInputs}
-
-                        // onChange={e => setGAge(e.target.value)}
                     />
                 </Grid>
 
@@ -270,8 +251,6 @@ function PersonalDetails(props) {
                         size="small"
                         value={guardOccu}
                         onChange ={handleInputs}
-
-                        // onChange={e => setGOccu(e.target.value)}
                     />
                 </Grid>
 
@@ -286,20 +265,8 @@ function PersonalDetails(props) {
                         size="small"
                         value={guardMob}
                         onChange ={handleInputs}
-
-                        // onChange={e => setGMob(e.target.value)}
                     />
                 </Grid>
-
-
-
-                {/* <Grid item xs={6} sm={6} md={6}>
-          
-          <Button variant='contained' color='primary' disableElevation fullWidth onClick={props.handlePrev}>
-              Previous 
-          </Button> 
-      </Grid> */}
-
 
 
                 <Grid item xs={12} sm={12} md={12}>

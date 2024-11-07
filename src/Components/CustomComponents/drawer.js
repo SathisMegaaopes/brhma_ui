@@ -8,7 +8,6 @@ const CustomDrawer = ({ title, editTitle, children, open, close, handleCreate, v
             <Drawer
                 anchor={'right'}
                 open={open}
-            // onClose={close}
             >
 
                 {/* viewMode */}
@@ -34,14 +33,6 @@ const CustomDrawer = ({ title, editTitle, children, open, close, handleCreate, v
                             {children}
                         </Box>
 
-                        {/* <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}>
-                            <Button sx={{ mr: 1 }} color='error' onClick={close}>
-                                Cancel
-                            </Button>
-                            <Button variant="outlined" color="primary" onClick={handleCreate} >
-                                Create
-                            </Button>
-                        </Box> */}
                     </Box>
 
                     :
@@ -49,7 +40,6 @@ const CustomDrawer = ({ title, editTitle, children, open, close, handleCreate, v
                     <Box sx={{ width: 500, height: '100%', display: 'flex', flexDirection: 'column', p: 3, pt: 12 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Typography variant="h6" sx={{ pl: 1 }}>
-                                {/* {editMode ? 'Update Department Details' : title} */}
                                 {editMode ? editTitle : title}
                             </Typography>
                             <Button disableRipple sx={{
@@ -77,35 +67,6 @@ const CustomDrawer = ({ title, editTitle, children, open, close, handleCreate, v
                     </Box>
                 }
 
-                {/* 
-                <Box sx={{ width: 500, height: '100%', display: 'flex', flexDirection: 'column', p: 3, pt: 12 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <Typography variant="h6" sx={{ pl: 1 }}>
-                            {title}
-                        </Typography>
-                        <Button disableRipple sx={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'flex-end', '&:hover': {
-                                backgroundColor: 'transparent',
-                                boxShadow: 'none',
-                            },
-                        }} onClick={close}>
-                            <CloCseIcon />
-                        </Button>
-                    </Box>
-
-                    <Box sx={{ flexGrow: 1, my: 2 }}>
-                        {children}
-                    </Box>
-
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 2 }}>
-                        <Button sx={{ mr: 1 }} color='error' onClick={close}>
-                            Cancel
-                        </Button>
-                        <Button variant="outlined" color="primary" onClick={handleCreate} >
-                            Create
-                        </Button>
-                    </Box>
-                </Box> */}
             </Drawer>
 
         </div>

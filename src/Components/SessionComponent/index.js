@@ -119,7 +119,6 @@ const UserSession = ({ reload, onbreak, setOnbreak }) => {
         <>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    {/* <TableContainer component={Paper}> */}
                     <Card variant='outlined'>
                         <Table size='small'>
                             <TableHead>
@@ -159,7 +158,6 @@ const UserSession = ({ reload, onbreak, setOnbreak }) => {
                                 </TableRow>
                             </TableBody>
                         </Table>
-                        {/* </TableContainer> */}
                     </Card>
                 </Grid>
                 <Grid item xs={12}>

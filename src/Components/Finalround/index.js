@@ -45,7 +45,6 @@ function FinalRound(props) {
     const [selectedBonus, setSelectedBonus] = React.useState("No");
     const [selectedBonusVal, setSelectedBonusVal] = React.useState("");
     const [selectedDOJ, setSelectedDOJ] = React.useState(dayjs());
-    // const [selectedDOJ, setSelectedDOJ] = React.useState("09/10/2024");
     const [selectedCTC, setSelectedCTC] = React.useState("");
     const [selectedNet, setSelectedNet] = React.useState("");
     const [selectedDesi, setSelectedDesi] = React.useState("");
@@ -328,12 +327,6 @@ function FinalRound(props) {
                                 />
                             </DemoContainer>
                         </LocalizationProvider>
-                        {/* <TextField label='Joining Date' required fullWidth 
-            value={selectedDOJ}
-            onChange={e=>setSelectedDOJ(e.target.value)}
-            error={selectedDOJ==="" ? true : false}
-            placeholder='Enter in YYYY-MM-DD Format' 
-                     />    */}
                     </Grid>
                     <Grid item xs={6} sm={4} md={4}>
                         <TextField label='CTC' required fullWidth

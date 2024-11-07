@@ -40,7 +40,6 @@ function    MOSCandiateTable(props) {
 
 
     useEffect(() => {
-        // onboardedIDs
 
         let url = `${URL}employeeonboard/onboardedIDs`;
 
@@ -181,12 +180,7 @@ function    MOSCandiateTable(props) {
                                                     <DeleteIcon />
                                                 </Button>
                                             </TableCell>
-                                            {/* result */}
-                                            {/* <TableCell align="center" onClick={() => hadleNavigatetoOnboard(item.candidate_id)} >
-                                                {item.result === 1 && <Button>
-                                                    <GroupAddSharpIcon />
-                                                </Button>}
-                                            </TableCell> */}
+
 
                                             <TableCell align="center" >
                                                 {item.result === 1 && (

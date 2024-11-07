@@ -120,26 +120,6 @@ function CandidateInterview(){
     }
 
 
-    // React.useEffect(()=>{
-    //     let url = URL+"employeelist";
-    //     axios.get(url)
-    //     .then((resp)=>{
-    //         if(resp.data.status===0)
-    //         {
-    //             setEmployeeList(resp.data.data);
-                
-    //         }
-    //         else
-    //         {
-    //             setEmployeeList(null);
-    //             console.log("ERRR : "+resp.data.message);
-    //         }
-    //     })
-    //     .catch((err)=>{
-    //         console.log(JSON.stringify(err));
-    //     })
-    //     .finally();
-    // },[]);
     return(
         <Container sx={{marginTop:"24px",height:"100vh"}}>
             {/* <MOSLogo/> */}
@@ -161,12 +141,7 @@ function CandidateInterview(){
                 
                 />
                 </Grid>
-                {/* <Grid item sx={1} sm={1} md={1}>
-                    <Button variant='outlined' color='info'  size='large'
-                    >onClick={e => searchCandidate(e)}
-                        <SearchOutlinedIcon/>
-                    </Button>
-                </Grid> */}
+              
             </Grid>  
             <Grid container  spacing={2}  sx={{marginTop:"24px"}} > 
             {candidate_result.length > 0 && client===null ? 
@@ -226,20 +201,7 @@ action={
                 helperText={searchError ? "No Results Found!" : "Press enter to search candidate"}
                 
                 />
-            {/* <Autocomplete size='small' fullWidth
-        
-        freeSolo
-        value={user_session?.user_details?.emp_id}
-            error={user_session?.user_details?.emp_id==="" ? true : false}
-            
-        options={user_session?.user_details?.emp_id+ " - "+user_session?.user_details?.emp_name}
-        renderInput={(params) => <TextField {...params} label="Interviewer" />}
-      /> */}
-            {/* <TextField fullWidth id="yop" label="Interviewer Name" 
-            variant="outlined" size="small" required
-            value={interviewName}
-            error={interviewName==="" ? true : false}
-            onChange={e=>setInterviewerName(e.target.value)}/> */}
+           
             </Grid>
             <Grid item sx={6} sm={6} md={6}>
             <FormControl fullWidth size='small'>
@@ -258,38 +220,7 @@ action={
             </Grid>
             <Grid item xs={12} md={12} sm={12}>
             <CandidateReportCard candidate={client}/>
-                {/* <Card>
-                <CardHeader
-                    avatar={
-                    <Avatar aria-label="candidate name" sx={{backgroundColor:"#272727",color:"#ede8de",textTransform:"capitalize"}}>
-                    {client.f_name_basic.substring(0,2)}
-                    </Avatar>
-                    }
-                    title={client.f_name_basic+" "+client.l_name_basic}
-                    subheader={"ID "+client.candidate_id}
-                    />
-                <CardContent>
-                    <Table size='small'>
-                        <TableRow>
-                            <TableCell>Registration Date</TableCell>
-                            <TableCell>{DateFormater(client.reg_date)}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Designation</TableCell>
-                            <TableCell>{client.job_profile_basic}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Mobile</TableCell>
-                            <TableCell>{client.mobile_basic}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>eMail</TableCell>
-                            <TableCell>{client.email_basic}</TableCell>
-                        </TableRow>
-
-                        </Table>    
-                </CardContent>    
-                </Card> */}
+               
             </Grid>
             </Grid> 
            </> : null }
@@ -305,7 +236,6 @@ action={
             interviewName!=="" && currentRound===6 ? 
             <FinalRound client={client} interviewName={interviewName} interviewRound={currentRound}/> : ""}  
             </Grid>
-            {/* <MOSFooter /> */}
             </Container>
     )
 }

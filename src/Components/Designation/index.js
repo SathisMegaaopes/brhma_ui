@@ -10,6 +10,7 @@ import DatanotFound from '../CustomComponents/datanotfound';
 import { useFetchData } from '../EmployeeTable/customHook';
 import URL from '../Global/Utils/url_route';
 import axios from 'axios';
+import debounce from 'lodash.debounce';
 
 const DesignationMaster = () => {
 
@@ -21,6 +22,7 @@ const DesignationMaster = () => {
     const [showSnackbar, setShowSnackbar] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [reload, setReload] = useState(false);
+    const [debouncedSearchData, setDebouncedSearchData] = useState(searchInuputData);
 
     const handleOpenModal = () => {
         setOpenModal(true);
@@ -31,12 +33,17 @@ const DesignationMaster = () => {
     }
 
 
-    const searchData = { "searchData": searchInuputData }
+    const debouncedSetSearchData = debounce((value) => {
+        setDebouncedSearchData(value);
+    }, 500);
+
+
+    const searchData = { "searchData": debouncedSearchData }
 
     const designationsURL = `${URL}designations`
     const employeeUrl = `${URL}todolist/employee`;
 
-    const { data: designationData, error: designationError, loading: designationLoading } = useFetchData(designationsURL, searchData, searchInuputData, reload);
+    const { data: designationData, error: designationError, loading: designationLoading } = useFetchData(designationsURL, searchData, debouncedSearchData, reload);
 
     const { data: employeeData, loading: employeeLoading, error: employeeError } = useFetchData(employeeUrl);
 
@@ -44,7 +51,7 @@ const DesignationMaster = () => {
         if (data) {
             return data.map((item) => ({
                 label: item.f_name + " " + item.l_name,
-                value: item.f_name + " " + item.l_name
+                value: item.f_name + " " + item.l_name  
             }))
 
         } else {
@@ -58,8 +65,6 @@ const DesignationMaster = () => {
             ]
         }
     }
-
-    // handleCreate
 
 
     const handleCreate = async () => {
@@ -126,7 +131,11 @@ const DesignationMaster = () => {
                         </IconButton>
                         <InputBase
                             sx={{ ml: 1, flex: 1, color: 'black' }}
-                            onChange={(e) => setSearchInputData(e.target.value)}
+                            onChange={(e) => {
+                                debouncedSetSearchData(e.target.value)
+                                // setSearchInputData(e.target.value)
+                            }
+                            }
                             placeholder="Search Designation Names"
                             inputProps={{ 'aria-label': 'Search Designation Names' }}
                         />

@@ -322,8 +322,6 @@ const EmployeePosition = ({
                   }}
 
                 >
-                  {/* <MenuItem value="Probation">Probation</MenuItem>
-                    <MenuItem value="Confirmed">Confirmed</MenuItem> */}
                   <MenuItem value={0}>Probation</MenuItem>
                   <MenuItem value={1}>Confirmed</MenuItem>
                 </StyledInput>
@@ -369,8 +367,6 @@ const EmployeePosition = ({
                   }}
 
                 >
-                  {/* <MenuItem value="Active">Active</MenuItem>
-                    <MenuItem value="In Active">In Active</MenuItem> */}
                   <MenuItem value={1}>Active</MenuItem>
                   <MenuItem value={0}>In Active</MenuItem>
                 </StyledInput>
@@ -569,8 +565,6 @@ const EmployeePosition = ({
                     }));
                   }}
                 >
-                  {/* <MenuItem value="Yes">Yes</MenuItem>
-                    <MenuItem value="No">No</MenuItem> */}
                   <MenuItem value={1}>Yes</MenuItem>
                   <MenuItem value={0}>No</MenuItem>
                 </StyledInput>
@@ -689,9 +683,6 @@ const EmployeePosition = ({
                     }));
                   }}
                 >
-                  {/* <MenuItem value="Billable">Billable</MenuItem>
-                    <MenuItem value="Non-Billable">Non-Billable</MenuItem>
-                    <MenuItem value="Partially">Partially Billed</MenuItem> */}
                   <MenuItem value={0}>Billable</MenuItem>
                   <MenuItem value={1}>Non-Billable</MenuItem>
                   <MenuItem value={2}>Partially Billed</MenuItem>
@@ -700,8 +691,6 @@ const EmployeePosition = ({
             />
           </Grid>
         </Grid>
-
-        {/* {(insertRequest === 1 || insertRequest === 2) && */}
 
         <Grid container alignItems="center" paddingBottom={2}>
           <Grid item xs={4}>
@@ -746,8 +735,6 @@ const EmployeePosition = ({
             />
           </Grid>
         </Grid>
-
-        {/* } */}
 
 
       </Grid>

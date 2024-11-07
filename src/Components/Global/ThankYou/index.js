@@ -16,10 +16,10 @@ function ThankYou(){
         }
     })
 
-    console.log(sessionStorage.getItem("candidate_id"),'this is the sessionStorage sathis')
     const handleClose = () =>{
         sessionStorage.removeItem("candidate_id");
     }
+    
     return(
        
             <Grid container sx={{background:"#272727", height:"100vh"}}>

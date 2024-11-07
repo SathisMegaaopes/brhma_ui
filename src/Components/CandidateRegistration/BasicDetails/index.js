@@ -17,14 +17,7 @@ import dayjs from 'dayjs';
 
 function BasicDetails(props) {
 
-
     const [images, setImages] = React.useState([]);
-
-    const maxNumber = 1;
-
-    const onChangeImage = (imageList, addUpdateIndex) => {
-        setImages(imageList);
-    };
 
     const ref_data = referred_by_data;
 
@@ -184,11 +177,6 @@ function BasicDetails(props) {
         }
     }, [dob]);
 
-    const parseFormattedDate = (formattedDate) => {
-        const [day, month, year] = formattedDate.split('/').map(Number);
-        return new Date(year, month - 1, day);
-    };
-
 
     const checkMobileExists = () => {
         if (mobile.length < 10 || mobile.length > 10) {
@@ -203,7 +191,6 @@ function BasicDetails(props) {
                     .then((response) => {
                         let res = response.data;
                         setEmp(res.emp_details);
-                        console.log(res.emp_details)
                         if (res.status === 0) {
                             setCheckMobile(false);
 

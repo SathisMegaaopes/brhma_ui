@@ -311,10 +311,6 @@ const EmployeeBasicInformation = ({ handleProfileUpload, profileImageUrl, contro
                                                 }));
                                             }}
                                         >
-                                            {/* <MenuItem value="Male">Male</MenuItem>
-                            <MenuItem value="Female">Female</MenuItem>
-                            <MenuItem value="Others">Others</MenuItem> */}
-
                                             <MenuItem value={1}>Male</MenuItem>
                                             <MenuItem value={2}>Female</MenuItem>
                                             <MenuItem value={3}>Others</MenuItem>
@@ -823,8 +819,6 @@ const EmployeeBasicInformation = ({ handleProfileUpload, profileImageUrl, contro
                                             }));
                                         }}
                                     >
-                                        {/* <MenuItem value="Yes">Yes</MenuItem>
-                        <MenuItem value="No">No</MenuItem> */}
                                         <MenuItem value={1}>Yes</MenuItem>
                                         <MenuItem value={0}>No</MenuItem>
                                     </StyledInput>

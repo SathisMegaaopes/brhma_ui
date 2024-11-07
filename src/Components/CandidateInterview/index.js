@@ -34,7 +34,6 @@ function CandidateInterview() {
 
     const user_session = JSON.parse(sessionStorage.getItem("user_info"));
     const emp_id = user_session.user_details.emp_id.toString();
-    // const emp_name = user_session.user_details.emp_name.toString();
     const emp_name = user_session.user_details.emp_name;
     const [currentRound, setCurrentRound] = React.useState(0);
     const [interviewName, setInterviewerName] = React.useState(emp_id);
@@ -50,7 +49,6 @@ function CandidateInterview() {
     const [searchKey, setSearchKey] = React.useState("");
     const [searchError, setSearchError] = React.useState(false);
 
-    const [employeeList, setEmployeeList] = React.useState(null);
 
     const DateFormater = (val) => {
         let new_date = new Date(val);
@@ -92,18 +90,10 @@ function CandidateInterview() {
 
     }
 
-    const handleComplete = (e) => {
-        let name = e.target.textContent;
-        const myArray = name.split("-");
-        let emp_id = myArray[0].trim();
-        setInterviewerName(emp_id);
-    }
-
 
     const fnDisableRound = (round) => {
         let data = "round_" + round;
 
-        let res = false;
         if (client[data] === 0) {
             return false;
         }

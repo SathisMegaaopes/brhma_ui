@@ -4,8 +4,6 @@ import { Container, Grid, Button, TextField, Typography } from "@mui/material";
 
 function EduDetails(props) {
 
-    // console.log(props,'educationDetails')
-
     const [sslc_year, setSslcYear] = React.useState(props.data.sslc_year);
     const [sslc_university, setSslcUniversity] = React.useState(props.data.sslc_university);
     const [puc_year, setPucYear] = React.useState(props.data.puc_year);
@@ -34,7 +32,6 @@ function EduDetails(props) {
         };
 
         props.handleEdu(edudetails);
-        // props.handleNext();
     }
 
     React.useEffect(() => {
@@ -122,8 +119,6 @@ function EduDetails(props) {
         }
     }
 
-    // console.log(errors)
-
     return (
         <Container >
             <Grid container spacing={2} >
@@ -147,10 +142,6 @@ function EduDetails(props) {
                         onChange={handlesslcYear}
                         error={sslc_year === "" ? true : false}
                         required
-
-                    // inputProps={{ maxLength: 4 }}                //old code
-                    // onChange={e => setSslcYear(e.target.value)}
-
                     />
                 </Grid>
 
@@ -167,9 +158,6 @@ function EduDetails(props) {
                         onChange={handlesslcUniversity}
                         inputProps={{ pattern: "[a-zA-Z]*" }}
                         error={sslc_university === "" ? true : false}
-                    // onKeyPress={handleKeyPress}               //old code
-                    // inputProps={{ maxLength: 4 }}
-                    // onChange={e => setSslcUniversity(e.target.value)}
                     />
                 </Grid>
 
@@ -185,7 +173,6 @@ function EduDetails(props) {
                 <Grid item xs={4} sm={4} md={3} >
                     <TextField fullWidth
                         id="yop_pu"
-                        // name = ""
                         label="Year Of Passing"
                         variant="outlined"
                         size="small"
@@ -193,7 +180,6 @@ function EduDetails(props) {
                         type='number'
                         value={puc_year}
                         inputProps={{ maxLength: 4 }}
-                        // onChange={e => setPucYear(e.target.value)}   //old code 
                         onChange={handlePucYear}
                         error={puc_year === "" ? true : false} />
                 </Grid>
@@ -210,7 +196,6 @@ function EduDetails(props) {
                         value={puc_university}
                         onChange={handlepucUniversity}
                         error={puc_university === "" ? true : false}
-                    // onChange={e => setPucuniversity(e.target.value)}  // old code 
                     />
                 </Grid>
 
@@ -232,7 +217,6 @@ function EduDetails(props) {
                         size="small"
                         value={ug_year}
                         onChange={handleBalanceInput}
-                        // onChange={e => setUgYear(e.target.value)}
                          />
                 </Grid>
 
@@ -247,7 +231,6 @@ function EduDetails(props) {
                         size="small"
                         value={ug_university}
                         onChange={handleBalanceInput}
-                        // onChange={e => setUguniversity(e.target.value)} 
                         />
                 </Grid>
 
@@ -269,7 +252,6 @@ function EduDetails(props) {
                         type='number'
                         value={pg_year}
                         onChange={handleBalanceInput}
-                        // onChange={e => setPgYear(e.target.value)}
                         />
                 </Grid>
 
@@ -284,20 +266,8 @@ function EduDetails(props) {
                         size="small"
                         value={pg_university}
                         onChange={handleBalanceInput}
-                        // onChange={e => setPgUniversity(e.target.value)} 
                         />
                 </Grid>
-
-
-
-
-                {/* <Grid item xs={6} sm={6} md={6}>
-          
-                <Button variant='contained' color='primary' disableElevation fullWidth onClick={props.handlePrev}>
-                    Previous 
-                </Button> 
-            </Grid> */}
-
 
 
                 <Grid item xs={12} sm={12} md={12}>

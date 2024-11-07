@@ -161,14 +161,8 @@ const DeparmentMaster = () => {
   }, 500)
 
 
-  // const { data: departmentData, loading: departmentLoading, error: departmentError } = useFetchData(departmentUrl,
-  //   { searchData: searchData }, searchData, reload);
-
-
   const { data: departmentData, loading: departmentLoading, error: departmentError } = useFetchData(departmentUrl,
     { searchData: debounceSearch }, debounceSearch, reload);
-
-  console.log(departmentLoading, 'loading da')
 
   const { data: employeeData, loading: employeeLoading, error: employeeError } = useFetchData(employeeUrl);
 
@@ -243,7 +237,6 @@ const DeparmentMaster = () => {
               placeholder="Search Department Names"
               inputProps={{ 'aria-label': 'Search Department Names' }}
               onChange={(e) => {
-                // setSearchData(e.target.value);
                 debouncedSearchData(e.target.value);
               }}
             />
@@ -412,97 +405,6 @@ const DeparmentMaster = () => {
         )}
 
 
-        {/* {departmentData?.data?.length > 0 && !departmentLoading ?
-
-          <TableContainer component={Paper} variant="outlined" >
-
-            <Table size='small'>
-              <TableHead sx={{ height: 50 }}>
-                <TableRow>
-
-                  <TableCell sx={{ fontSize: 18 }}> Department Name</TableCell>
-
-                  <TableCell sx={{ fontSize: 18 }}> Description </TableCell>
-
-                  <TableCell sx={{ fontSize: 18 }}>Manager</TableCell>
-
-                  <TableCell sx={{ textAlign: 'center', fontSize: 18 }}>Actions</TableCell>
-
-                </TableRow>
-              </TableHead>
-
-              <TableBody >
-
-                {departmentData?.data?.map((item, index) => (
-
-                  <TableRow key={item.id}
-
-                    style={{ cursor: 'pointer' }} >
-
-                    <TableCell sx={{ padding: 2 }}>
-
-                      <Typography sx={{ fontWeight: 400, fontSize: 20 }} onClick={() => {
-                        handleUpdateData(item.id, 0)
-                      }}>
-                        {item.name} Department
-                      </Typography>
-
-
-                      <Typography sx={{ color: 'gray' }}>
-                        {item.parent_department}
-                      </Typography>
-
-                    </TableCell>
-
-                    <TableCell>
-
-                      <Typography sx={{ fontWeight: 400 }}>
-                        {item.description}
-                      </Typography>
-
-                    </TableCell>
-
-                    <TableCell>
-
-                      <Typography sx={{ fontWeight: 400 }}>
-                        {item.lead_name}
-                      </Typography>
-
-                    </TableCell>
-
-                    <TableCell sx={{ textAlign: 'center' }} >
-
-                      <Button onClick={
-                        () => {
-                          handleUpdateData(item.id, 1);
-                        }}
-
-                      >
-                        <ModeEditIcon />
-                      </Button>
-
-
-
-                    </TableCell>
-
-
-                  </TableRow>
-
-                ))}
-
-              </TableBody>
-
-
-            </Table>
-          </TableContainer>
-
-          :
-
-          <DatanotFound />
-
-        } */}
-
-
       </Grid>
 
       <Snackbar
@@ -643,7 +545,6 @@ const DeparmentMaster = () => {
                 <Autocomplete
                   disablePortal
                   value={parentDepartment}
-                  // options={options1}
                   options={mapOptions(companyData?.data)}
                   onChange={(e, value) => setParentDepartment(value.value)}
                   renderInput={(params) => (
@@ -722,7 +623,6 @@ const DeparmentMaster = () => {
                   sx={{
                     mb: 2,
                     '& .MuiInputBase-root': {
-                      // height: 45,
                       fontSize: '17px',
                     },
                     '& .MuiInputLabel-root': {

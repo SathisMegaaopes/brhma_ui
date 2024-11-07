@@ -51,7 +51,6 @@ let currentDate = `${day}-${month}-${year}`;
         })
         .catch()
         .finally(()=>{
-           // setLoader(false);
         });
     },[]);
 
@@ -152,68 +151,8 @@ let currentDate = `${day}-${month}-${year}`;
                 <Grid>
                    {candidateList.length!==0 ?  <CandidateTable data={candidateList}/> : ""}
                 </Grid>
-                {/* <Grid item xs={6} sm={2}  md={2} lg={2}>
-                <Card variant="outlined">
-                    
-                    <CardContent>
-                    <Typography variant="body1">Shortlist</Typography>
-                        <Typography variant="caption">
-                            Overall Count <Typography variant="h5">6</Typography>
-                        </Typography>
-                            <Divider/>
-                            <Typography variant="caption">
-                            My Count  <Typography variant="h5">1</Typography>
-                        </Typography>
-                    </CardContent>
-                    </Card>
-                </Grid>
-                
-                <Grid item xs={6} sm={2}  md={2} lg={2}>
-                <Card variant="outlined">
-                    
-                    <CardContent>
-                    <Typography variant="body1">On Hold</Typography>
-                        <Typography variant="caption">
-                            Overall Count <Typography variant="h5">3</Typography>
-                        </Typography>
-                            <Divider/>
-                            <Typography variant="caption">
-                            My Count  <Typography variant="h5">0</Typography>
-                        </Typography>
-                    </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={6} sm={2}  md={2} lg={2}>
-                <Card variant="outlined">
-                    
-                    <CardContent>
-                    <Typography variant="body1">Selected</Typography>
-                        <Typography variant="caption">
-                            Overall Count <Typography variant="h5">3</Typography>
-                        </Typography>
-                            <Divider/>
-                            <Typography variant="caption">
-                            My Count  <Typography variant="h5">3</Typography>
-                        </Typography>
-                    </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={6} sm={2}  md={2} lg={2}>
-                <Card variant="outlined">
-                    
-                    <CardContent>
-                    <Typography variant="body1">Rejected</Typography>
-                        <Typography variant="caption">
-                            Overall Count <Typography variant="h5">3</Typography>
-                        </Typography>
-                            <Divider/>
-                            <Typography variant="caption">
-                            My Count  <Typography variant="h5">3</Typography>
-                        </Typography>
-                    </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={12}>{" "}</Grid> */}
+        
+        
             </Grid></Paper>
             </Container>
     )
