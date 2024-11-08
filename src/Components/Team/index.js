@@ -2,7 +2,11 @@ import {
     Autocomplete, Box, Button, CircularProgress, Grid, IconButton,
     InputBase, Paper, Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, TextField, Typography,
-    Snackbar, Alert
+    Snackbar, Alert,
+    Dialog,
+    DialogContent,
+    DialogContentText,
+    DialogActions
 } from '@mui/material';
 import React, { useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
@@ -13,6 +17,7 @@ import { useFetchData } from '../EmployeeTable/customHook';
 import axios from 'axios';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import debounce from 'lodash.debounce';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 const TeamMaster = () => {
@@ -32,6 +37,8 @@ const TeamMaster = () => {
     const [editmodeID, setEditModeId] = useState(null);
     const [reload, setReload] = useState(false);
     const [debouncedSearchData, setDebouncedSearchData] = useState(searchData);
+    const [deletemodal, setDeletemodal] = useState(false);
+    const [deletingId, setDeletingID] = useState(null);
 
 
     const handleOpenModal = () => {
@@ -157,6 +164,34 @@ const TeamMaster = () => {
     }
 
 
+    const hanldeDeleteTeam = async (id) => {
+
+        let url = `${URL}team/delete`;
+
+        try {
+
+            const response = await axios.post(url, { "id": id });
+
+            if (response?.data?.status === 1) {
+
+                setReload(!reload)
+                setDeletemodal(false)
+                setDeletingID(null);
+
+            } else {
+
+                console.log('Something wrong in the API')
+
+            }
+
+        } catch (error) {
+
+            console.error('Something went wrong in executing function' + error);
+            setDeletingID(null);
+
+        }
+
+    }
 
     //mode === 1 => Edit , mode === 0 => View
 
@@ -264,6 +299,28 @@ const TeamMaster = () => {
                     </Button>
                 </Grid>
             </Grid>
+
+            <Dialog
+                open={deletemodal}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure to delete this candidate
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {
+                        setDeletemodal(false);
+                        setDeletingID(null);
+                    }}>Disagree</Button>
+
+                    <Button onClick={() => hanldeDeleteTeam(deletingId)} autoFocus>
+                        Agree
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
             <Grid item xs={12} sx={{ paddingTop: 2, paddingRight: 4 }} >
 
@@ -375,15 +432,24 @@ const TeamMaster = () => {
 
 
                                             <TableCell
-                                                onClick={() => {
-                                                    handleUpdateData(item.id, 1);
-                                                }}
 
                                                 sx={{ textAlign: 'center' }} >
                                                 <Button
-
+                                                    onClick={() => {
+                                                        handleUpdateData(item.id, 1);
+                                                    }}
                                                 >
                                                     <ModeEditIcon />
+                                                </Button>
+
+                                                <Button onClick={
+                                                    () => {
+                                                        setDeletingID(item.id);
+                                                        setDeletemodal(true)
+                                                    }}
+                                                    color='error'
+                                                >
+                                                    <DeleteIcon />
                                                 </Button>
                                             </TableCell>
                                         </TableRow>

@@ -1,4 +1,4 @@
-import { Alert, Autocomplete, Avatar, Box, Button, CircularProgress, Divider, Drawer, FormControl, Grid, IconButton, InputAdornment, InputBase, InputLabel, MenuItem, Paper, Select, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, Avatar, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, Divider, Drawer, FormControl, Grid, IconButton, InputAdornment, InputBase, InputLabel, MenuItem, Paper, Select, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -11,6 +11,7 @@ import { useFetchData } from '../EmployeeTable/customHook';
 import URL from '../Global/Utils/url_route';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const DesignationMaster = () => {
 
@@ -23,6 +24,8 @@ const DesignationMaster = () => {
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [reload, setReload] = useState(false);
     const [debouncedSearchData, setDebouncedSearchData] = useState(searchInuputData);
+    const [deletemodal, setDeletemodal] = useState(false);
+    const [deletingId, setDeletingID] = useState(null);
 
     const handleOpenModal = () => {
         setOpenModal(true);
@@ -51,7 +54,7 @@ const DesignationMaster = () => {
         if (data) {
             return data.map((item) => ({
                 label: item.f_name + " " + item.l_name,
-                value: item.f_name + " " + item.l_name  
+                value: item.f_name + " " + item.l_name
             }))
 
         } else {
@@ -107,6 +110,35 @@ const DesignationMaster = () => {
         }
     }
 
+    const hanldeDeleteDesignations = async (id) => {
+
+        let url = `${URL}designations/delete`;
+
+        try {
+
+            const response = await axios.post(url, { "id": id });
+
+            if (response?.data?.status === 1) {
+
+                setReload(!reload)
+                setDeletemodal(false)
+                setDeletingID(null);
+
+            } else {
+
+                console.log('Something wrong in the API')
+
+            }
+
+        } catch (error) {
+
+            console.error('Something went wrong in executing function' + error);
+            setDeletingID(null);
+
+        }
+
+    }
+
 
     return (
         <Grid container sx={{ width: '100%', paddingLeft: 6, paddingTop: 3 }}>
@@ -149,6 +181,28 @@ const DesignationMaster = () => {
                 </Grid>
             </Grid>
 
+            <Dialog
+                open={deletemodal}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure to delete this candidate
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => {
+                        setDeletemodal(false);
+                        setDeletingID(null);
+                    }}>Disagree</Button>
+
+                    <Button onClick={() => hanldeDeleteDesignations(deletingId)} autoFocus>
+                        Agree
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
             <Grid item xs={12} sx={{ paddingTop: 2, paddingRight: 4 }} >
 
 
@@ -189,6 +243,7 @@ const DesignationMaster = () => {
                                         <TableCell sx={{ fontSize: 18 }}>Designation Name</TableCell>
                                         <TableCell sx={{ fontSize: 18 }}>Lead Name</TableCell>
                                         <TableCell sx={{ fontSize: 18 }}>Status</TableCell>
+                                        <TableCell sx={{ fontSize: 18 }}>Delete</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -208,6 +263,17 @@ const DesignationMaster = () => {
                                                 <Typography sx={{ fontWeight: 400 }}>
                                                     {item.billable === 0 ? 'Billable' : 'Non - Billable'}
                                                 </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Button onClick={
+                                                    () => {
+                                                        setDeletingID(item.id);
+                                                        setDeletemodal(true)
+                                                    }}
+                                                    color='error'
+                                                >
+                                                    <DeleteIcon />
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}

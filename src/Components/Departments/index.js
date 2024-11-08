@@ -1,9 +1,9 @@
 import {
-  Alert, Autocomplete, Box, Button, CircularProgress, Grid, IconButton, InputBase,
+  Alert, Autocomplete, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, Grid, IconButton, InputBase,
   Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   TextField, Typography
 } from '@mui/material';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import CustomDrawer from '../CustomComponents/drawer';
 import DatanotFound from '../CustomComponents/datanotfound';
@@ -12,6 +12,7 @@ import URL from '../Global/Utils/url_route';
 import axios from 'axios'
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import debounce from 'lodash.debounce'
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 const DeparmentMaster = () => {
@@ -29,7 +30,9 @@ const DeparmentMaster = () => {
   const [addMode, setAddMode] = useState(false);
   const [editmodeID, setEditModeId] = useState(null);
   const [reload, setReload] = useState(false);
-  const [debounceSearch, setDebounceSearch] = useState(searchData)
+  const [debounceSearch, setDebounceSearch] = useState(searchData);
+  const [deletemodal, setDeletemodal] = useState(false);
+  const [deletingId, setDeletingID] = useState(null);
 
 
   const handleOpenModal = () => {
@@ -103,11 +106,37 @@ const DeparmentMaster = () => {
 
   }
 
-  const options1 = [
-    { label: 'MegaaOpes Solutions Private Limited ', value: 'MegaaOpes Solutions Private Limited ' },
-    { label: 'MegaaOpes Solutions LLP ', value: 'MegaaOpes Solutions LLP ' },
-    { label: 'MegaaOpes Solutions OPC ', value: 'MegaaOpes Solutions OPC ' },
-  ];
+
+  const hanldeDeleteDepartment = async (id) => {
+
+    let url = `${URL}department/delete`;
+
+
+    try {
+
+      const response = await axios.post(url, { "id": id });
+
+      if (response?.data?.status === 1) {
+
+        setReload(!reload)
+        setDeletemodal(false)
+        setDeletingID(null);
+
+      } else {
+
+        console.log('Something wrong in the API')
+
+      }
+
+    } catch (error) {
+
+      console.error('Something went wrong in executing function' + error);
+      setDeletingID(null);
+
+    }
+
+  }
+
 
   const handleCreate = async (mode) => {
 
@@ -212,6 +241,28 @@ const DeparmentMaster = () => {
 
   return (
     <Grid container sx={{ width: '100%', paddingLeft: 6, paddingTop: 3 }}>
+
+      <Dialog
+        open={deletemodal}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure to delete this candidate
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => {
+            setDeletemodal(false);
+            setDeletingID(null);
+          }}>Disagree</Button>
+
+          <Button onClick={() => hanldeDeleteDepartment(deletingId)} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Grid container xs={12} sx={{ backgroundColor: '', paddingRight: 4 }}>
 
@@ -381,7 +432,15 @@ const DeparmentMaster = () => {
                           <ModeEditIcon />
                         </Button>
 
-
+                        <Button onClick={
+                          () => {
+                            setDeletingID(item.id);
+                            setDeletemodal(true)
+                          }}
+                          color='error'
+                        >
+                          <DeleteIcon />
+                        </Button>
 
                       </TableCell>
 

@@ -1,21 +1,35 @@
 @font-face {
-  font-family: "brhma_normal";  
+  font-family: "brhma_normal";
   src: local("palatinolinotype"),
     url("./fonts/palatinolinotype.ttf") format("truetype");
-} 
+}
+
 /* 
 .important{
   width: 1000px;
 } */
 
-html, body {
+/* /* html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
+} */
+
+
+
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#root {
   height: 100%;
 }
 
 * {
   box-sizing: border-box;
 }
-
-
